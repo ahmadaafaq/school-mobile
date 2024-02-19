@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -9,6 +10,7 @@
 import { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import { Checkbox, useTheme } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import { ALIGNMENT, FONT, SIZES } from '../../theme/theme';
 
@@ -27,7 +29,7 @@ const CustomCheckBox = ({ label }) => {
             margin: SIZES.smallMedium,
             paddingHorizontal: SIZES.xSmall,
             marginTop: SIZES.xSmall
-        },
+        }
     });
 
     return (
@@ -47,6 +49,10 @@ const CustomCheckBox = ({ label }) => {
             }}> {label} </Text>
         </SafeAreaView>
     );
+};
+
+CustomCheckBox.propTypes = {
+    label: PropTypes.string
 };
 
 export default CustomCheckBox;

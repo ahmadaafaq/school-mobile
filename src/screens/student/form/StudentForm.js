@@ -7,20 +7,20 @@
 */
 
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { TextInput, useTheme } from 'react-native-paper';
 
+import PropTypes from "prop-types";
 import { useFormik } from "formik";
 
-import API from "../../../../src/apis";
-import CustomCheckBox from "../../../../src/screens/common/CustomCheckBox";
-import CustomDatePicker from "../../../../src/screens/common/CustomDatePicker";
-import CustomInputBox from "../../../../src/screens/common/CustomInputBox";
+import CustomCheckBox from "../../common/CustomCheckBox";
+import CustomDatePicker from "../../common/CustomDatePicker";
+import CustomInputBox from "../../common/CustomInputBox";
 // import Loader from "../common/Loader";
 import studentValidation from "./Validation";
 
-import CustomDropdown, { MultipleDropdown } from "../../../../src/screens/common/CustomDropdown";
-import { SIZES, FONT, ALIGNMENT } from "../../../../src/assets/constants";
+import CustomDropdown, { MultipleDropdown } from "../../common/CustomDropdown";
+import { SIZES, ALIGNMENT } from "../../../assets/constants";
 
 const initialValues = {
     firstname: "",
@@ -52,8 +52,13 @@ const StudentForm = ({
     setDirty,
     reset,
     setReset,
+    classData,
+    setClassData,
+    allSubjects,
     userId,
-    updatedValues = null,
+    iCardDetails,
+    setICardDetails,
+    updatedValues = null
 }) => {
     const [initialState, setInitialState] = useState(initialValues);
     const [classes, setClasses] = useState([]);
@@ -80,13 +85,13 @@ const StudentForm = ({
         initialValues: initialState,
         validationSchema: studentValidation,
         enableReinitialize: true,
-        onSubmit: () => watchForm(),
+        onSubmit: () => watchForm()
     });
 
     React.useImperativeHandle(refId, () => ({
         Submit: async () => {
             await formik.submitForm();
-        },
+        }
     }));
 
     const watchForm = () => {
@@ -95,7 +100,7 @@ const StudentForm = ({
                 values: formik.values,
                 validated: formik.isSubmitting
                     ? Object.keys(formik.errors).length === 0
-                    : false,
+                    : false
             });
         }
     };
@@ -105,6 +110,7 @@ const StudentForm = ({
             formik.resetForm();
             setReset(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reset]);
 
     // useEffect(() => {
@@ -180,31 +186,31 @@ const StudentForm = ({
     return (
         <View style={{ margin: 20 }}>
             <ScrollView ref={refId}>
-
                 <CustomInputBox
+                    name="firstname"
                     placeholder="Firstname*"
                     placeholderTextColor={theme.colors.white[700]}
                     value={formik.values.firstname}
                     onChangeText={formik.handleChange("firstname")}
                     onBlur={formik.handleBlur("firstname")}
                     error={!!formik.touched.firstname && !!formik.errors.firstname}
-                    underlineColor={`${theme.colors.white[700]}`}
-                    activeUnderlineColor={`${theme.colors.blue[400]}`}
+                    helperText={formik.touched.firstname && formik.errors.firstname}
+                    underlineColor={theme.colors.white[700]}
+                    activeUnderlineColor={theme.colors.blue[400]}
+                />
+                <CustomInputBox
+                    name="lastname"
+                    placeholder="Lastname*"
+                    placeholderTextColor={theme.colors.white[700]}
+                    value={formik.values.lastname}
+                    onChangeText={formik.handleChange("lastname")}
+                    onBlur={formik.handleBlur("lastname")}
+                    error={!!formik.touched.lastname && !!formik.errors.lastname}
+                    helperText={formik.touched.lastname && formik.errors.lastname}
+                    underlineColor={theme.colors.white[700]}
+                    activeUnderlineColor={theme.colors.blue[400]}
                 />
 
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        style={{ flex: 1, color: theme.colors.white[500] }}
-                        placeholder="Lastname*"
-                        placeholderTextColor={theme.colors.white[700]}
-                        value={formik.values.lastname}
-                        onChangeText={formik.handleChange("lastname")}
-                        onBlur={formik.handleBlur("lastname")}
-                        error={!!formik.touched.lastname && !!formik.errors.lastname}
-                        underlineColor={`${theme.colors.white[700]}`}
-                        activeUnderlineColor={`${theme.colors.blue[400]}`}
-                    />
-                </View>
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={{ flex: 1, color: theme.colors.white[500] }}
@@ -273,9 +279,9 @@ const StudentForm = ({
                     />
                 </View>
 
-                <CustomDropdown placeholder="Class" data={data} selected={selected} setSelected={setSelected} />
-                <CustomDropdown placeholder="Section" data={data} selected={selected} setSelected={setSelected} />
-                <MultipleDropdown placeholder="Subjects" data={data} selected={selected} setSelected={setSelected} />
+                <CustomDropdown placeholder="Class" data={data} setSelected={setSelected} />
+                <CustomDropdown placeholder="Section" data={data} setSelected={setSelected} />
+                <MultipleDropdown placeholder="Subjects" data={data} setSelected={setSelected} />
 
                 <CustomDatePicker label="Select Date Of Birth" />
                 <CustomDatePicker label="Select Admission Date" />
@@ -346,9 +352,9 @@ const StudentForm = ({
                         activeUnderlineColor={`${theme.colors.blue[400]}`}
                     />
                 </View>
-                <CustomDropdown placeholder="Caste Group" data={data} selected={selected} setSelected={setSelected} />
-                <CustomDropdown placeholder="Gender" data={data} selected={selected} setSelected={setSelected} />
-                <CustomDropdown placeholder="Status" data={data} selected={selected} setSelected={setSelected} />
+                <CustomDropdown placeholder="Caste Group" data={data} setSelected={setSelected} />
+                <CustomDropdown placeholder="Gender" data={data} setSelected={setSelected} />
+                <CustomDropdown placeholder="Status" data={data} setSelected={setSelected} />
 
                 {/* <DatePicker
                     value={formik.values.dob}
@@ -368,6 +374,23 @@ const StudentForm = ({
             {/* {loading === true ? <Loader /> : null} */}
         </View >
     );
+};
+
+StudentForm.propTypes = {
+    onChange: PropTypes.func,
+    refId: PropTypes.shape({
+        current: PropTypes.any
+    }),
+    setDirty: PropTypes.func,
+    reset: PropTypes.bool,
+    setReset: PropTypes.func,
+    classData: PropTypes.array,
+    setClassData: PropTypes.func,
+    allSubjects: PropTypes.array,
+    userId: PropTypes.number,
+    updatedValues: PropTypes.object,
+    iCardDetails: PropTypes.object,
+    setICardDetails: PropTypes.func
 };
 
 export default StudentForm;

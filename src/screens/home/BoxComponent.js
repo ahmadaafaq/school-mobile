@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,9 +7,10 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { Dimensions, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
+import PropTypes from 'prop-types';
 
 import { SIZES, FONT } from "../../assets/constants";
 
@@ -18,7 +20,7 @@ const WINDOW_HEIGHT = Dimensions.get("window").height;
 const BoxComponent = ({ title, content, growth, bg, ml = 25, mr = 10 }) => {
     const theme = useTheme();
 
-    const styles = {
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             justifyContent: 'space-around',
@@ -57,7 +59,7 @@ const BoxComponent = ({ title, content, growth, bg, ml = 25, mr = 10 }) => {
             fontFamily: FONT.bold,
             fontSize: 13
         }
-    };
+    });
 
     return (
         <Card
@@ -74,6 +76,15 @@ const BoxComponent = ({ title, content, growth, bg, ml = 25, mr = 10 }) => {
             </View>
         </Card>
     );
+};
+
+BoxComponent.propTypes = {
+    title: PropTypes.string,
+    content: PropTypes.number,
+    growth: PropTypes.string,
+    bg: PropTypes.string,
+    mr: PropTypes.number,
+    ml: PropTypes.number
 };
 
 export default BoxComponent;

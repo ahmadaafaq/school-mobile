@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -7,11 +8,14 @@
 */
 
 import { View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 import styles from './search.style';
-import { COLORS, icons } from "../../assets/constants";
+import { icons } from "../../assets/constants";
 
 const SearchContainer = () => {
+    const theme = useTheme();
+
     return (
         <View style={styles.searchContainer}>
             <TouchableOpacity style={styles.searchBtn}>
@@ -21,9 +25,9 @@ const SearchContainer = () => {
                     style={styles.searchBtnImage}
                 />
             </TouchableOpacity>
-            <TextInput style={styles.searchInput} placeholder='Search..' placeholderTextColor={COLORS.white[700]} />
+            <TextInput style={styles.searchInput} placeholder='Search..' placeholderTextColor={theme.colors.whiteSmoke[500]} />
         </View>
-    )
+    );
 };
 
 export default SearchContainer;

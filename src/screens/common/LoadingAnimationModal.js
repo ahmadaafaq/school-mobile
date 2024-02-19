@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -8,12 +9,27 @@
 
 import { useEffect, useRef } from 'react';
 import { View, Modal, Animated, Easing, StyleSheet } from 'react-native';
-
-import { COLORS } from '../../assets/constants';
+import { useTheme } from 'react-native-paper';
 
 const CustomActivityIndicator = () => {
+    const theme = useTheme();
     const lowestScale = 0.4;
     const scaleAnim = useRef(new Animated.Value(lowestScale)).current;
+
+    const styles = StyleSheet.create({
+        indicatorBox: {
+            width: 70,
+            height: 70,
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        indicator: {
+            backgroundColor: theme.colors.yaleBlue[400],
+            width: 40,
+            height: 40,
+            borderRadius: 100
+        }
+    });
 
     useEffect(() => {
         const animationLoop = Animated.loop(
@@ -43,7 +59,7 @@ const CustomActivityIndicator = () => {
         return () => {
             animationLoop.stop();
         };
-    }, [scaleAnim])
+    }, [scaleAnim]);
 
     return (
         <View style={styles.indicatorBox}>
@@ -55,6 +71,18 @@ const CustomActivityIndicator = () => {
 };
 
 const LoadingAnimationModal = () => {
+    const theme = useTheme();
+
+    const styles = StyleSheet.create({
+        indicatorWrapper: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: theme.colors.whiteSnow[400],
+            opacity: 0.97
+        }
+    });
+
     return (
         <Modal transparent={true}>
             <View style={styles.indicatorWrapper}>
@@ -63,27 +91,5 @@ const LoadingAnimationModal = () => {
         </Modal>
     );
 };
-
-const styles = StyleSheet.create({
-    indicatorWrapper: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: COLORS.whiteSnow,
-        opacity: 0.97
-    },
-    indicatorBox: {
-        width: 70,
-        height: 70,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    indicator: {
-        backgroundColor: COLORS.yaleBlue,
-        width: 40,
-        height: 40,
-        borderRadius: 100
-    }
-});
 
 export default LoadingAnimationModal;

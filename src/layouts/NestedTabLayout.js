@@ -1,3 +1,5 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -53,5 +55,5 @@ export default () => {
                 }}
             />
         </Tabs>
-    )
+    );
 };
