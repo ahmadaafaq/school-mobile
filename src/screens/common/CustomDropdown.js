@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,17 +7,34 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { SelectList } from 'react-native-dropdown-select-list';
-import { MultipleSelectList } from 'react-native-dropdown-select-list';
+import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
+import PropTypes from 'prop-types';
 
-import { ALIGNMENT, FONT, SIZES } from '../../theme/theme';
+import { FONT, SIZES } from '../../theme/theme';
 
-
-export const MultipleDropdown = ({ data, placeholder, selected, setSelected }) => {
+export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
     const theme = useTheme();
+
+    const styles = StyleSheet.create({
+        boxStyles: {
+            borderWidth: 0,
+            borderRadius: 4,
+            width: "92%",
+            margin: SIZES.smallMedium,
+            backgroundColor: theme.colors.whiteSmoke[500]
+        },
+        dropdownStyles: {
+            width: "92%",
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            borderColor: theme.colors.whiteSmoke[500],
+            borderRadius: 8,
+            marginTop: -10,
+            marginLeft: 16
+        }
+    });
 
     return (
         <SafeAreaView>
@@ -25,18 +43,12 @@ export const MultipleDropdown = ({ data, placeholder, selected, setSelected }) =
                 data={data}
                 save="value"
                 placeholder={placeholder}
-                placeholderTextColor={theme.colors.white[400]}
+                placeholderTextColor={theme.colors.whiteSmoke[400]}
                 fontFamily={FONT.regular}
-                boxStyles={{
-                    borderWidth: 0, borderRadius: 4, width: "92%", margin: SIZES.smallMedium, backgroundColor: theme.colors.white[500]
-                }}
-                dropdownStyles={{
-                    width: "92%", borderTopWidth: 0, borderBottomWidth: 0, borderRadius: 8, marginTop: -10, marginLeft: 16, borderColor: theme.colors.white[500]
-                }}
-                dropdownItemStyles={{
-                    backgroundColor: theme.colors.white[500]
-                }}
-                inputStyles={{ color: theme.colors.white[700] }}
+                boxStyles={styles.boxStyles}
+                dropdownStyles={styles.dropdownStyles}
+                dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
+                inputStyles={{ color: theme.colors.whiteSmoke[700] }}
             // badgeStyles={{
             //     backgroundColor: theme.colors.blackish[400]
             // }}
@@ -48,8 +60,27 @@ export const MultipleDropdown = ({ data, placeholder, selected, setSelected }) =
     );
 };
 
-const CustomDropdown = ({ data, placeholder, selected, setSelected }) => {
+const CustomDropdown = ({ data, placeholder, setSelected }) => {
     const theme = useTheme();
+
+    const styles = StyleSheet.create({
+        boxStyles: {
+            borderWidth: 0,
+            borderRadius: 4,
+            width: "92%",
+            margin: SIZES.smallMedium,
+            backgroundColor: theme.colors.whiteSmoke[500]
+        },
+        dropdownStyles: {
+            width: "92%",
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            borderRadius: 8,
+            marginTop: -10,
+            marginLeft: 16,
+            borderColor: theme.colors.whiteSmoke[500]
+        }
+    });
 
     return (
         <SafeAreaView>
@@ -58,24 +89,30 @@ const CustomDropdown = ({ data, placeholder, selected, setSelected }) => {
                 data={data}
                 save="value"
                 placeholder={placeholder}
-                placeholderTextColor={theme.colors.white[400]}
+                placeholderTextColor={theme.colors.whiteSmoke[400]}
                 fontFamily={FONT.regular}
-                boxStyles={{
-                    borderWidth: 0, borderRadius: 4, width: "92%", margin: SIZES.smallMedium, backgroundColor: theme.colors.white[500]
-                }}
-                dropdownStyles={{
-                    width: "92%", borderTopWidth: 0, borderBottomWidth: 0, borderRadius: 8, marginTop: -10, marginLeft: 16, borderColor: theme.colors.white[500]
-                }}
-                dropdownItemStyles={{
-                    backgroundColor: theme.colors.white[500]
-                }}
-                inputStyles={{ color: theme.colors.white[700] }}
+                boxStyles={styles.boxStyles}
+                dropdownStyles={styles.dropdownStyles}
+                dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
+                inputStyles={{ color: theme.colors.whiteSmoke[700] }}
             // dropdownTextStyles={{
             // color: theme.colors.white[600]
             // }}
             />
         </SafeAreaView>
     );
+};
+
+MultipleDropdown.propTypes = {
+    data: PropTypes.array,
+    placeholder: PropTypes.string,
+    setSelected: PropTypes.func
+};
+
+CustomDropdown.propTypes = {
+    data: PropTypes.array,
+    placeholder: PropTypes.string,
+    setSelected: PropTypes.func
 };
 
 export default CustomDropdown;

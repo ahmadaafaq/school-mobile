@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,9 +7,9 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { Dimensions, View, Image, Text, FlatList, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Dimensions, View, Text, FlatList, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 import { ALIGNMENT, COLORS, FONT, SIZES } from "../../assets/constants";
 import ProgressBar from '../common/ProgressBar';
@@ -53,7 +54,7 @@ const ElevatedListing = () => {
         windowSize: 2
     };
 
-    const styles = {
+    const styles = StyleSheet.create({
         listContainer: {
             flex: 1,
             marginTop: 20,
@@ -116,7 +117,7 @@ const ElevatedListing = () => {
             letterSpacing: 0.015,
             textTransform: 'capitalize'
         }
-    };
+    });
 
     return (
         <SafeAreaView style={styles.listContainer}>
@@ -158,7 +159,7 @@ const ElevatedListing = () => {
                     }}
                 />
             </ScrollView>
-        </SafeAreaView >
+        </SafeAreaView>
     );
 };
 

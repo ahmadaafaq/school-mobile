@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -9,7 +11,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 // import dayjs from "dayjs";
 
@@ -17,27 +19,27 @@ import API from "../../../apis";
 import AddressForm from "../../address/AddressForm";
 // import ImagePicker from "../image/ImagePicker";
 // import Loader from "../common/Loader";
-// importextom "../commext;
 import StudentForm from "./StudentForm";
 
+import { FONT } from "../../../theme/theme";
 import { setMenuItem } from "../../../redux/actions/MenuItemAction";
 import { Utility } from "../../../utility";
 
 const MainForm = () => {
     const [title, setTitle] = useState("Create");
-    const [loading, setLoading] = useState(false);
+    const [_loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         studentData: { values: null, validated: false },
         addressData: { values: null, validated: false },
         imageData: { values: null, validated: true }
     });
     const [updatedValues, setUpdatedValues] = useState(null);
-    const [deletedImage, setDeletedImage] = useState([]);
-    const [preview, setPreview] = useState([]);
+    // const [deletedImage, setDeletedImage] = useState([]);
+    // const [preview, setPreview] = useState([]);
     const [dirty, setDirty] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [reset, setReset] = useState(false);
-    const [allSubjects, setAllSubjects] = useState([]);
+    // const [allSubjects, setAllSubjects] = useState([]);
 
     const studentFormRef = useRef();
     const addressFormRef = useRef();
@@ -51,7 +53,7 @@ const MainForm = () => {
     const selected = useSelector(state => state.menuItem.selected);
     // const toastInfo = useSelector(state => state.toastInfo);
     // const { state } = useLocation();
-    const { toastAndNavigate, getAsyncStorage } = Utility();
+    const { getAsyncStorage } = Utility();
 
     //after page refresh the id in router state becomes undefined, so getting student id from url params
     // let id = state?.id || userParams?.id;
@@ -76,24 +78,25 @@ const MainForm = () => {
                 responses.forEach(response => {
                     if (response.data.status !== "Success") {
                         status = false;
-                    };
+                    }
                 });
                 if (status) {
                     setLoading(false);
                     // toastAndNavigate(dispatch, true, "info", "Successfully Updated", navigateTo, `/student/listing/${getLocalStorage('class')}`);
-                };
+                }
                 setLoading(false);
             })
             .catch(err => {
                 setLoading(false);
                 // toastAndNavigate(dispatch, true, "error", err?.response?.data?.msg);
-                throw err;
+                console.log("Error in Student Update", err);
             });
     }, [formData]);
 
-    const populateStudentData = (id) => {
+    const populateStudentData = useCallback(id => {
         setLoading(true);
         const paths = [`/get-by-pk/student/${id}`, `/get-address/student/${id}`];
+
         API.CommonAPI.multipleAPICall("GET", paths)
             .then(responses => {
                 if (responses[0].data.data) {
@@ -113,10 +116,11 @@ const MainForm = () => {
                 // toastAndNavigate(dispatch, true, "error", err?.response?.data?.msg);
                 throw err;
             });
-    };
+    }, []);
 
-    const createStudent = () => {
+    const createStudent = useCallback(formData => {
         setLoading(true);
+
         formData.studentData.values = {
             ...formData.studentData.values,
             // subjects: getIdsFromObjects(formData.studentData.values?.subjects)
@@ -129,7 +133,7 @@ const MainForm = () => {
                         parent_id: student.data.id,
                         parent: 'student',
                     })
-                        .then(address => {
+                        .then(() => {
                             setLoading(false);
                             // toastAndNavigate(dispatch, true, "success", "Successfully Created", navigateTo, `/student/listing/${getLocalStorage('class')}`);
                         })
@@ -145,7 +149,7 @@ const MainForm = () => {
                 // toastAndNavigate(dispatch, true, "error", err?.response?.data?.msg);
                 throw err;
             });
-    };
+    }, []);
 
     // useEffect(() => {
     //     API.SubjectAPI.getAll(false, 0, 20)
@@ -169,7 +173,7 @@ const MainForm = () => {
             populateStudentData(id);
         }
         if (formData.studentData.validated && formData.addressData.validated) {
-            formData.studentData.values?.id ? updateStudentAndAddress(formData) : createStudent();
+            formData.studentData.values?.id ? updateStudentAndAddress(formData) : createStudent(formData);
         } else {
             setSubmitted(false);
         }
@@ -187,21 +191,24 @@ const MainForm = () => {
             setFormData({ ...formData, studentData: data });
         } else if (form === 'address') {
             setFormData({ ...formData, addressData: data });
-        } else if (form === 'parent') {
-            setFormData({ ...formData, imageData: data });
         }
     };
 
+    const styles = StyleSheet.create({
+        textStyle: {
+            color: theme.colors.grayishWhite[600],
+            display: "inline-block",
+            fontFamily: FONT.medium,
+            fontSize: 15,
+            fontWeight: 600,
+            letterSpacing: 0.12,
+            marginLeft: 20
+        }
+    });
+
     return (
         <SafeAreaView m="10px">
-            <Text
-                fontFamily={typography.fontFamily}
-                fontSize={typography.h2.fontSize}
-                color={colors.grey[100]}
-                fontWeight="bold"
-                display="inline-block"
-                marginLeft="20px"
-            >
+            <Text style={styles.textStyle}>
                 {`${title} ${selected}`}
             </Text>
             <StudentForm
@@ -243,7 +250,7 @@ const MainForm = () => {
             // ENV={ENV}
             /> */}
 
-            <View display="flex" justifyContent="end" m="20px">
+            <View style={{ display: "flex", justifyContent: "end", margin: "20px" }}>
                 {   //hide reset button on student update  type="reset" color="warning" variant="contained"
                     title === "Update" ? null :
                         <Button style={{ marginRight: 3 }}
@@ -251,14 +258,14 @@ const MainForm = () => {
                             onPress={() => {
                                 if (window.confirm("Do You Really Want To Reset?")) {
                                     setReset(true);
-                                };
+                                }
                             }}
                         >
                             Reset
                         </Button>
                 }
                 <Button color="error" variant="contained" sx={{ mr: 3 }}
-                    onPress={() => router.push(`/student/listing/${getLocalStorage('class') || ''}`)}>
+                    onPress={() => router.push(`/student/listing/${getAsyncStorage('class') || ''}`)}>
                     Cancel
                 </Button>
                 <Button type="submit" onPress={() => handleSubmit()} disabled={!dirty}

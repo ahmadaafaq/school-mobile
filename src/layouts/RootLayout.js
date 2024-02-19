@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,7 +7,7 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Alert, useColorScheme } from 'react-native';
 import { Provider as StoreProvider } from 'react-redux';
 import { PaperProvider, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
@@ -48,7 +49,7 @@ const RootLayout = () => {
     const [loaded, error] = useFonts({
         DMBold: require("../assets/fonts/DMSans-Bold.ttf"),
         DMMedium: require("../assets/fonts/DMSans-Medium.ttf"),
-        DMRegular: require("../assets/fonts/DMSans-Regular.ttf"),
+        DMRegular: require("../assets/fonts/DMSans-Regular.ttf")
     });
 
     // const [paperTheme, setPaperTheme] = useState(LightTheme);
@@ -102,7 +103,7 @@ const RootLayout = () => {
                 </Stack>
             </PaperProvider>
         </StoreProvider>
-    )
+    );
 };
 
 export default RootLayout;

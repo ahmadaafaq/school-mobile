@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -7,7 +8,7 @@
 */
 
 import { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 
@@ -18,6 +19,7 @@ import Search from '../common/Search';
 
 const HomePage = () => {
     const [loading, setLoading] = useState(true);
+    // eslint-disable-next-line no-unused-vars
     const [searchTerm, setSearchTerm] = useState('');
     const theme = useTheme();
 
@@ -31,7 +33,7 @@ const HomePage = () => {
     }, []);
 
 
-    const styles = {
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             paddingVertical: 2,
@@ -41,7 +43,7 @@ const HomePage = () => {
             flexDirection: 'row',
             marginVertical: 10
         }
-    };
+    });
 
     return (
         <SafeAreaView style={styles.container}>
@@ -50,19 +52,19 @@ const HomePage = () => {
                 <Search />
 
                 <View style={styles.boxContainer}>
-                    <Box title='Active Students' content='12361' growth='14 More' bg={theme.colors.grayishGreen[500]} />
-                    <Box title='Active Teachers' content='361' growth='8 More' bg={theme.colors.grayishRed[500]} ml={10} mr={20} />
+                    <Box title='Active Students' content={12361} growth='14 More' bg={theme.colors.grayishGreen[500]} />
+                    <Box title='Active Teachers' content={361} growth='8 More' bg={theme.colors.grayishRed[500]} ml={10} mr={20} />
                 </View>
                 <View style={styles.boxContainer}>
-                    <Box title='Active Employees' content='20' growth='2 More' bg={theme.colors.grayishYellow[500]} />
-                    <Box title='Active Buses' content='12' growth='1 More' bg={theme.colors.blue[500]} ml={10} mr={20} />
+                    <Box title='Active Employees' content={20} growth='2 More' bg={theme.colors.grayishYellow[500]} />
+                    <Box title='Active Buses' content={12} growth='1 More' bg={theme.colors.blue[500]} ml={10} mr={20} />
                 </View>
 
                 <ElevatedListing />
             </ScrollView>
             {loading ? <LoadingAnimationModal /> : null}
         </SafeAreaView>
-    )
+    );
 };
 
 export default HomePage;

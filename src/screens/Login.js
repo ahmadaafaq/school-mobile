@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -7,21 +8,20 @@
 */
 
 import { useState } from 'react';
-import { Image, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Dimensions, Image, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput, KeyboardAvoidingView } from 'react-native';
-import { Dimensions } from "react-native";
 import { useTheme } from 'react-native-paper';
 
 import { useRouter } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { COLORS, SIZES, ALIGNMENT } from "../assets/constants";
+import { SIZES, ALIGNMENT } from "../assets/constants";
 import LoginBg from "../assets/images/login-bg2.png";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 
 const LoginScreen = () => {
-    const [isValid, setIsValid] = useState(null);       //to validate entered phone number
+    const [_isValid, setIsValid] = useState(null);       //to validate entered phone number
     const router = useRouter();
     const theme = useTheme();
 
@@ -30,8 +30,7 @@ const LoginScreen = () => {
         router.push('/(tabs)/(homeTabDrawer)/home');
     };
 
-
-    const styles = {
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             padding: SIZES.large,
@@ -74,7 +73,7 @@ const LoginScreen = () => {
             fontSize: 12,
             color: theme.colors.blackish[500]
         }
-    };
+    });
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
@@ -84,37 +83,37 @@ const LoginScreen = () => {
                 </View>
                 {/* <Text style={{ color: theme.colors.spanishPink[500], fontSize: 25 }}> mode: {theme} </Text> */}
                 <View style={styles.inputContainer}>
-                    <FontAwesome5 name='school' color={COLORS.yaleBlue} size={22}
+                    <FontAwesome5 name='school' color={theme.colors.yaleBlue[500]} size={22}
                         style={styles.icon}
                     />
                     <TextInput
-                        style={{ flex: 1, color: COLORS.yaleBlue }}
+                        style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
                         placeholder="School Code"
-                        placeholderTextColor={COLORS.white[700]}
+                        placeholderTextColor={theme.colors.white[700]}
                         keyboardType="email-address"
                     />
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <FontAwesome5 name='user-circle' color={COLORS.yaleBlue} size={22}
+                    <FontAwesome5 name='user-circle' color={theme.colors.yaleBlue[500]} size={22}
                         style={styles.icon}
                     />
                     <TextInput
-                        style={{ flex: 1, color: COLORS.yaleBlue }}
+                        style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
                         placeholder="Username*"
-                        placeholderTextColor={COLORS.white[700]}
+                        placeholderTextColor={theme.colors.white[700]}
                         keyboardType="email-address"
                     />
                 </View>
 
                 <View style={styles.inputContainer}>
-                    <FontAwesome5 name='unlock' color={COLORS.yaleBlue} size={22}
+                    <FontAwesome5 name='unlock' color={theme.colors.yaleBlue[500]} size={22}
                         style={styles.icon}
                     />
                     <TextInput
-                        style={{ flex: 1, color: COLORS.yaleBlue }}
+                        style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
                         placeholder="Password*"
-                        placeholderTextColor={COLORS.white[700]}
+                        placeholderTextColor={theme.colors.white[700]}
                         keyboardType="numeric"
                     />
                 </View>
@@ -127,14 +126,14 @@ const LoginScreen = () => {
                     <Text style={styles.signUpStyle}> By continuing, you agree to our </Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', width: WINDOW_WIDTH - 40, paddingBottom: 4 }}>
-                    <Text style={{ color: COLORS.white[700], fontSize: 11 }}> Terms of Service</Text>
-                    <Text style={{ color: COLORS.white[700], fontSize: 11 }}>      Privacy Policy</Text>
-                    <Text style={{ color: COLORS.white[700], fontSize: 11 }}>      Content Policy</Text>
+                    <Text style={{ color: theme.colors.white[700], fontSize: 11 }}> Terms of Service</Text>
+                    <Text style={{ color: theme.colors.white[700], fontSize: 11 }}>      Privacy Policy</Text>
+                    <Text style={{ color: theme.colors.white[700], fontSize: 11 }}>      Content Policy</Text>
                 </View>
 
             </ScrollView>
         </KeyboardAvoidingView>
-    )
+    );
 };
 
 export default LoginScreen;

@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -9,24 +10,26 @@
 import { View, Text, StyleSheet } from 'react-native';
 
 const AboutScreen = () => {
+
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "space-around",
+            backgroundColor: "midnightblue"
+        },
+        text: {
+            fontSize: 20,
+            color: "maroon"
+        }
+    });
+
     return (
         <View style={styles.container}>
             <Text style={styles.text}>This is the about screen</Text>
         </View>
     )
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "space-around",
-        backgroundColor: "midnightblue"
-    },
-    text: {
-        fontSize: 20,
-        color: "maroon"
-    }
-});
 
 export default AboutScreen;
