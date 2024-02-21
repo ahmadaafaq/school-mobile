@@ -29,7 +29,7 @@ const CustomProgressBar = ({ progress, color }) => {
 
 CustomProgressBar.propTypes = {
     progress: PropTypes.number,
-    color: PropTypes.object,
+    color: PropTypes.string,
 };
 
 export default CustomProgressBar;

@@ -60,8 +60,8 @@ const ElevatedListing = () => {
             marginTop: 20,
             marginHorizontal: 25,
             paddingVertical: 10,
-            backgroundColor: theme.colors.whiteSnow[500],
-            borderRadius: 14,
+            backgroundColor: theme.colors.indigo[100],
+            borderRadius: 20,
             // borderWidth: 2
         },
         nameText: {

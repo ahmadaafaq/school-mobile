@@ -36,10 +36,7 @@ const LoginScreen = () => {
             padding: SIZES.large,
             backgroundColor: theme.colors.grayishWhite[500]
         },
-        scrollViewContent: {
-            flexGrow: 1,
-            justifyContent: 'flex-start',
-        },
+        scrollViewContent: { flexGrow: 1, justifyContent: 'flex-start' },
         submitButton: {
             backgroundColor: theme.colors.yaleBlue[500],
             margin: SIZES.xSmall,
