@@ -100,6 +100,22 @@ const RootLayout = () => {
                             headerShown: false
                         }}
                     />
+                    {/* test screen */}
+                    <Stack.Screen
+                        name='homework'
+                        options={{
+                            headerTitle: "Homework",
+                            headerStyle: {
+                                backgroundColor: COLORS.indigo[400], // Set the background color for the header
+                            },
+                            headerTitleStyle: {
+                                color: COLORS.white[100], // Set the color for the header title
+                            },
+                            // headerShown: false,
+                            headerRight: () => <AntDesign onPress={() => Alert.alert("Your application version is compatible")}
+                                name='infocirlceo' color={COLORS.tealBlue} size={22} />
+                        }}
+                    />
                 </Stack>
             </PaperProvider>
         </StoreProvider>

@@ -7,9 +7,9 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 
 import { SIZES, FONT } from "../../assets/constants";
@@ -17,64 +17,46 @@ import { SIZES, FONT } from "../../assets/constants";
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const BoxComponent = ({ title, content, growth, bg, ml = 25, mr = 10 }) => {
+const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
     const theme = useTheme();
 
     const styles = StyleSheet.create({
         container: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: WINDOW_WIDTH / 5.5,
+            height: WINDOW_HEIGHT / 9.5,
+            marginBottom: mb,
+            padding: 20,
+            backgroundColor: bg,
+            borderRadius: 20
+        },
+        element: {
             flex: 1,
-            justifyContent: 'space-around',
-            alignItems: 'flex-start',
-            width: WINDOW_WIDTH / 2.5,
-            height: WINDOW_HEIGHT / 6,
-            marginLeft: ml,
-            marginRight: mr,
-            padding: 15,
-            backgroundColor: bg
+            justifyContent: 'center',
+            alignItems: 'center'
         },
         titleStyle: {
-            color: theme.colors.whiteSmoke[200],
+            color: theme.colors.whiteSmoke[900],
             fontFamily: FONT.bold,
             fontSize: 13,
-            fontWeight: 500,
-            marginBottom: 30
+            fontWeight: 400,
+            letterSpacing: 0.12,
         },
-        contentStyle: {
-            color: theme.colors.whiteSmoke[200],
-            fontFamily: FONT.bold,
-            fontSize: SIZES.large,
-            marginBottom: 4
-        },
-        subContainer: {
-            flexDirection: 'row'
-        },
-        icon: {
-            height: 16,
-            width: 16,
-            marginRight: 4,
-            color: theme.colors.whiteSmoke[200]
-        },
-        subContentStyle: {
-            color: theme.colors.whiteSmoke[200],
-            fontFamily: FONT.bold,
-            fontSize: 13
-        }
     });
 
     return (
-        <Card
-            mode=''
-            style={styles.container}
+        <TouchableOpacity style={styles.element}
+            onPress={(i) =>  handlePress()}
         >
-            <Text style={styles.titleStyle}>{title}</Text>
-            <Text style={styles.contentStyle}>{content}</Text>
-            <View style={styles.subContainer}>
-                <FontAwesome5 name='arrow-up' size={16}
-                    style={styles.icon}
-                />
-                <Text style={styles.subContentStyle}>{growth}</Text>
-            </View>
-        </Card>
+            <Card
+                mode=''
+                style={styles.container}
+            >
+                <View><MaterialIcons name={iconName} size={35} color={theme.colors.whiteSmoke[100]} /></View>
+            </Card>
+            <View><Text style={styles.titleStyle}>{title}</Text></View>
+        </TouchableOpacity>
     );
 };
 

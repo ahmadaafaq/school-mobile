@@ -22,8 +22,9 @@ const DrawerLayout = () => {
                 drawerActiveTintColor: theme.colors.yaleBlue[500],
                 drawerType: "front",
                 swipeEdgeWidth: 0,
-                swipeEnabled: false
+                swipeEnabled: false,
             }}
+            style={{backgroundColor:'black'}}
         >
             <Drawer.Screen
                 name="home"
@@ -32,10 +33,10 @@ const DrawerLayout = () => {
                     headerTitle: "School CRM",
                     headerTitleAlign: 'center',
                     headerShadowVisible: false,
-                    headerTintColor: theme.colors.yaleBlue[500],
-                    headerStyle: { backgroundColor: theme.colors.grayishWhite[500], borderBottomWidth: 0 },
+                    headerTintColor: theme.colors.yaleBlue[100], // topbar text color
+                    headerStyle: { backgroundColor: theme.colors.blue[600], borderBottomWidth: 0 }, //topbar background color
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.xmLarge },
-                    drawerStyle: { fontSize: 12, backgroundColor: theme.colors.whiteSnow[500] },
+                    drawerStyle: { fontSize: 12, backgroundColor: theme.colors.blue[100] }, // drawer background color
                     drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />
                 }}
             />
