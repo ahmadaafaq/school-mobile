@@ -7,23 +7,37 @@
  */
 
 import { AddressAPI } from "./AddressAPI";
-import { CityAPI } from "./CityAPI";
+import { BusAPI } from "./BusAPI";
 import { ClassAPI } from "./ClassAPI";
 import { CommonAPI } from "./CommonAPI";
-import { CountryAPI } from "./CountryAPI";
+import { DashboardAPI } from "./DashboardAPI";
+import { HolidayAPI } from "./HolidayAPI";
+import { ImageAPI } from "./ImageAPI";
+import { MarksheetAPI } from "./MarksheetAPI";
+import { PaymentAPI } from "./PaymentAPI";
+import { SchoolAPI } from "./SchoolAPI";
 import { SectionAPI } from "./SectionAPI";
-import { StateAPI } from "./StateAPI";
 import { StudentAPI } from "./StudentAPI";
+import { SubjectAPI } from "./SubjectAPI";
 import { TeacherAPI } from "./TeacherAPI";
+import { UserAPI } from "./UserAPI";
+import { UserRoleAPI } from "./UserRoleAPI";
 
 export default {
     AddressAPI,
-    CityAPI,
+    BusAPI,
     ClassAPI,
     CommonAPI,
-    CountryAPI,
+    DashboardAPI,
+    HolidayAPI,
+    ImageAPI,
+    MarksheetAPI,
+    PaymentAPI,
+    SchoolAPI,
     SectionAPI,
-    StateAPI,
     StudentAPI,
-    TeacherAPI
+    SubjectAPI,
+    TeacherAPI,
+    UserAPI,
+    UserRoleAPI
 };

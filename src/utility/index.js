@@ -9,7 +9,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import API from "../apis";
-// import { displayToast } from "../../redux/actions/ToastAction";
+import { displayToast } from "../redux/actions/ToastAction";
 
 export const Utility = () => {
     /** Adds the keyword "Class" to a number, creating a formatted class representation.
@@ -208,8 +208,8 @@ export const Utility = () => {
     /** Gets user initials from the first and last name stored in auth information.
      * @returns {string} - User initials.
      */
-    const getInitials = () => {
-        const authInfo = getLocalStorage("auth");
+    const getInitials = async () => {
+        const authInfo = await getAsyncStorage("auth");
         if (authInfo?.username) {
             const [firstName, lastName] = authInfo.username.split(" ");
             const firstNameInitial = firstName?.[0]?.toUpperCase() || '';
@@ -224,8 +224,8 @@ export const Utility = () => {
      * @param {string} roleName - The role name to be formatted.
      * @returns {Object} - An object containing formatted username and role.
      */
-    const getNameAndType = (roleName) => {
-        const authInfo = getLocalStorage("auth");
+    const getNameAndType = async (roleName) => {
+        const authInfo = await getAsyncStorage("auth");
         const fullName = (authInfo?.username || '').split(" ");
         const firstName = fullName[0]?.charAt(0).toUpperCase() + fullName[0]?.slice(1) || '';
         const lastName = fullName[1]?.charAt(0).toUpperCase() + fullName[1]?.slice(1) || '';
@@ -251,18 +251,6 @@ export const Utility = () => {
         return arrayId.toString();
     };
 
-    /** Get selected values by matching IDs from a comma-separated string.
-     * @param {string} - A comma-separated string of IDs.
-     * @returns {Array} - An array of objects of selected values.
-     */
-    // remove it
-    const getValuesFromArray = (ids, model) => {
-        const idArray = ids?.split(",");
-        if (idArray) {
-            return model.filter(value => idArray.includes(value.id.toString()));
-        }
-    };
-
     /** Retrieves user role and priority information by making an asynchronous API call.
      * @returns {Promise<Object|null>} - A promise that resolves to an object containing user role and priority information,
      *                                   or null if there is an error during the API call.
@@ -285,32 +273,31 @@ export const Utility = () => {
      * @param {string} key - The key for which to retrieve the value from local storage.
      * @returns {any|null} - The value associated with the key, or null if the key is not found.
      */
-    const getLocalStorage = (key) => {
-        const storedValue = AsyncStorage.getItem(key);
-        if (typeof storedValue !== 'undefined' && storedValue !== null && storedValue !== 'undefined') {
-            return JSON.parse(storedValue);
-        }
-        return null;
+    const getAsyncStorage = (key) => {
+        return AsyncStorage.getItem(key)
+            .then(storedValue => {
+                if (typeof storedValue !== 'undefined' && storedValue !== null && storedValue !== 'undefined') {
+                    return JSON.parse(storedValue);
+                }
+                return null;
+            })
+            .catch(error => {
+                console.log('Error retrieving data from AsyncStorage:', error);
+                return null;
+            });
     };
+
 
     /** Retrieves the user's role from Async Storage.
      * @returns {string|null} - The user's role, or null if the role is not available in Async Storage.
      */
-    const getRole = () => {
-        const authData = getLocalStorage("auth");
+    const getRole = async () => {
+        const authData = await getAsyncStorage("auth");
         if (authData && authData.role !== undefined) {
             return authData.role;
         }
         return null;
     };
-    /** Converts a numeric index to the corresponding uppercase alphabetic character.
-     * @param {number} index - The numeric index to be converted.
-     * @returns {string} The uppercase alphabetic character corresponding to the index.
-     */
-    const indexToAlphabet = (index) => {
-        const alphabeticIndex = String.fromCharCode(65 + index);
-        return alphabeticIndex;
-    }
 
     /** Checks if an object is empty (has no own enumerable properties).
     * @param {Object} obj - The object to be checked for emptiness.
@@ -329,9 +316,10 @@ export const Utility = () => {
      * @param {string} key - The key to be removed from Async Storage.
      * @returns {void} - This function does not return any value.
      */
-    const remLocalStorage = (key) => {
+    const remAsyncStorage = async (key) => {
         try {
-            AsyncStorage.removeItem(key);
+            await AsyncStorage.removeItem(key);
+            console.log(`${key} successfully removed in AsyncStorage`);
         } catch (err) {
             console.error(`Error removing ${key} from AsyncStorage:`, err);
         }
@@ -342,32 +330,34 @@ export const Utility = () => {
       * @param {any} value - The value associated with the key.
       * @returns {void} - This function does not return any value.
       */
-    const setLocalStorage = (key, value) => {
+    const setAsyncStorage = async (key, value) => {
         try {
-            AsyncStorage.setItem(key, JSON.stringify(value));
+            await AsyncStorage.setItem(key, JSON.stringify(value));
+            console.log(`${key} successfully set in AsyncStorage`);
         } catch (err) {
             console.error(`Error setting ${key} in AsyncStorage:`, err);
         }
     };
 
-    /** Displays a toast alert, sets its severity and message, and navigates to a specified path (optional) after a delay.
+
+    /** Displays a toast alert, sets its color and message, and navigates to a specified path (optional) after a delay.
      * @param {function} dispatch - The Redux dispatch function.
      * @param {boolean} display - Whether to display the toast alert.
-     * @param {string} severity - The severity level of the toast alert (e.g., 'success', 'info', 'warning', 'error').
+     * @param {string} ccolor - The severity level of the toast alert (e.g., 'success', 'info', 'warning', 'error').
      * @param {string} msg - The message to be displayed in the toast alert.
      * @param {function} navigateTo - The navigation function to be called after the delay.
      * @param {string|null} path - The optional path to navigate to after hiding the toast alert.
      * @returns {void} - This function does not return any value.
      */
-    const toastAndNavigate = (dispatch, display, severity, msg, navigateTo, _path = null) => {
-        // dispatch(displayToast({ toastAlert: display, toastSeverity: severity, toastMessage: msg }));
+    const toastAndNavigate = (dispatch, display, msg, bgColor, fontColor, navigateTo, path = null) => {
+        dispatch(displayToast({ alerting: display, message: msg, backgroundColor: bgColor, textColor: fontColor }));
 
-        // setTimeout(() => {
-        //     dispatch(displayToast({ toastAlert: !display, toastSeverity: "", toastMessage: "" }));
-        //     if (path) {
-        //         navigateTo(path);
-        //     }
-        // }, 2000);
+        setTimeout(() => {
+            dispatch(displayToast({ alerting: !display, message: '', backgroundColor: '', textColor: '' }));
+            if (path) {
+                navigateTo(path);
+            }
+        }, 2000);
     };
 
     /** Verifies a token using an asynchronous API call.
@@ -400,15 +390,13 @@ export const Utility = () => {
         formatImageName,
         getInitials,
         getNameAndType,
-        getLocalStorage,
+        getAsyncStorage,
         getRole,
         getRoleAndPriorityById,
         getIdsFromObject,
-        getValuesFromArray,
-        indexToAlphabet,
         isObjEmpty,
-        remLocalStorage,
-        setLocalStorage,
+        remAsyncStorage,
+        setAsyncStorage,
         toastAndNavigate,
         verifyToken
     };

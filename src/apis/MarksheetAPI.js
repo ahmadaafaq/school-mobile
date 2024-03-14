@@ -12,14 +12,19 @@ import { Utility } from "../utility";
 
 const { getAsyncStorage } = Utility();
 
-export const ClassAPI = {
-    /** Get classes from the database that meets the specified query parameters
+export const MarksheetAPI = {
+    /** Get marksheet from the database that meets the specified query parameters
      */
     getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
-        const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
+        let queryParam = '';
+        if (conditionObj) {
+            Object.keys(conditionObj).map(key => {
+                queryParam += `&${key}=${conditionObj[key]}`
+            })
+        }
         const searchParam = search ? `&search=${search}` : '';
         const { data: response } = await api.request({
-            url: `/get-classes?page=${page}&size=${size}${queryParam}${searchParam}`,
+            url: `/get-marksheet?page=${page}&size=${size}${queryParam}${searchParam}`,
             headers: {
                 "x-access-token": getAsyncStorage("auth")?.token
             },
@@ -29,48 +34,34 @@ export const ClassAPI = {
         return response;
     },
 
-    /** Create class in the database
+    /** Create marksheet in the database
      */
-    createClass: async (classs, cancel = false) => {
+    createMarksheet: async (marksheet, cancel = false) => {
         return await api.request({
-            url: `/create-class`,
+            url: `/create-marksheet`,
             headers: {
                 "x-access-token": getAsyncStorage("auth").token
             },
             method: "POST",
-            data: classs,
-            signal: cancel ? cancelApiObject[this.createClass.name].handleRequestCancellation().signal : undefined,
+            data: marksheet,
+            signal: cancel ? cancelApiObject[this.createMarksheet.name].handleRequestCancellation().signal : undefined,
         });
     },
 
-    /** Update class in the database
+    /** Update marksheet in the database
      */
-    updateClass: async (fields, cancel = false) => {
+    updateMarksheet: async (fields, cancel = false) => {
         return await api.request({
-            url: `/update-class`,
+            url: `/update-marksheet`,
             headers: {
                 "x-access-token": getAsyncStorage("auth").token
             },
             method: "PATCH",
             data: fields,
-            signal: cancel ? cancelApiObject[this.updateClass.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.updateMarksheet.name].handleRequestCancellation().signal : undefined,
         });
-    },
-
-    /** Get class and section list by joining 2 tables from the database
-     */
-    getClassSectionList: async (cancel = false) => {
-        const { data: response } = await api.request({
-            url: `/get-class-section-list`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
-            method: "GET",
-            signal: cancel ? cancelApiObject[this.getClassSectionList.name].handleRequestCancellation().signal : undefined,
-        });
-        return response;
     }
 };
 
-// defining the cancel API object for ClassAPI
-const cancelApiObject = defineCancelApiObject(ClassAPI);
+// defining the cancel API object for marksheetAPI
+const cancelApiObject = defineCancelApiObject(MarksheetAPI);

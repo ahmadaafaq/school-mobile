@@ -2,7 +2,7 @@
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
  * This software is the confidential information of School CRM Inc., and is licensed as
- * restricted rights software. The use,reproduction, or disclosure of this software is subject to
+ * restricted rights software. The use, reproduction, or disclosure of this software is subject to
  * restrictions set forth in your license agreement with School CRM.
  */
 
@@ -12,14 +12,14 @@ import { Utility } from "../utility";
 
 const { getAsyncStorage } = Utility();
 
-export const TeacherAPI = {
-  /** Get teachers from the database that meets the specified query parameters
+export const SchoolAPI = {
+  /** Get schools from the database that meets the specified query parameters
    */
   getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
     const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
-      url: `/get-teachers?page=${page}&size=${size}${queryParam}${searchParam}`,
+      url: `/get-schools?page=${page}&size=${size}${queryParam}${searchParam}`,
       headers: {
         "x-access-token": getAsyncStorage("auth")?.token
       },
@@ -29,39 +29,39 @@ export const TeacherAPI = {
     return response;
   },
 
-  /** Create teacher in the database
+  /** Create school in the database
    */
-  createTeacher: async (teacher, cancel = false) => {
+  createSchool: async (school, cancel = false) => {
     return await api.request({
-      url: `/create-teacher`,
+      url: `/create-school`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
       method: "POST",
-      data: teacher,
-      signal: cancel ? cancelApiObject[this.createTeacher.name].handleRequestCancellation().signal : undefined
+      data: school,
+      signal: cancel ? cancelApiObject[this.createSchool.name].handleRequestCancellation().signal : undefined
     });
   },
 
-  /** Update teacher in the database
+  /** Update school in the database
    */
-  updateTeacher: async (fields, cancel = false) => {
+  updateSchool: async (fields, cancel = false) => {
     return await api.request({
-      url: `/update-teacher`,
+      url: `/update-school`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
       method: "PATCH",
       data: fields,
-      signal: cancel ? cancelApiObject[this.updateTeacher.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.updateSchool.name].handleRequestCancellation().signal : undefined
     });
   },
 
-  /** Insert data into teacher_class_subject mapping table in the database
-   */
+  /** Insert data into school_class_section_subject mapping table in the database
+    */
   insertIntoMappingTable: async (data, cancel = false) => {
     return await api.request({
-      url: `/create-teacher-class-mapping`,
+      url: `/create-school-class-mapping`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
@@ -71,34 +71,49 @@ export const TeacherAPI = {
     });
   },
 
-  /** Get teacher class and section detail from database
+  /** Get school class and section detail from database
    */
-  getTeacherDetail: async (teacher_id, cancel = false) => {
+  getSchoolClasses: async (school_id, cancel = false) => {
     const { data: response } = await api.request({
-      url: `/get-teacher-detail/${teacher_id}`,
+      url: `/get-school-classes`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getTeacherDetail.name].handleRequestCancellation().signal : undefined
+      params: getAsyncStorage("auth")?.role === 1 ? { school_id: school_id } : null,    //this is included in backend req.query
+      signal: cancel ? cancelApiObject[this.getSchoolClasses.name].handleRequestCancellation().signal : undefined
     });
     return response;
   },
 
-  /** delete values from teacher_class_subject mapping table on every update
+  /** delete values from school_class_section_subject mapping table on every update
    */
   deleteFromMappingTable: async (fields, cancel = false) => {
     return await api.request({
-      url: `/delete-from-teacher-mapping`,
+      url: `/delete-from-school-mapping`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
       method: "DELETE",
       data: fields,
-      signal: cancel ? cancelApiObject[this.deleteFromMappingTable.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.deleteFromMappingTable.name].handleRequestCancellation().signal : undefined,
     });
+  },
+
+  /** Get school details for idCard
+   */
+  getDetailsForICard: async (cancel = false) => {
+    const { data: response } = await api.request({
+      url: 'get-icard-details',
+      headers: {
+        "x-access-token": getAsyncStorage("auth").token
+      },
+      method: "GET",
+      signal: cancel ? cancelApiObject[this.getDetailsForICard.name].handleRequestCancellation().signal : undefined
+    });
+    return response;
   }
 };
 
-// defining the cancel API object for TeacherAPI
-const cancelApiObject = defineCancelApiObject(TeacherAPI);
+// defining the cancel API object for SchoolAPI
+const cancelApiObject = defineCancelApiObject(SchoolAPI);

@@ -8,15 +8,17 @@
 
 import axios from "axios";
 import { BASE_URL } from '@env';
-// import { Utility } from "../../components/utility";
+import { Utility } from "../../utility";
 
-// const { getLocalStorage } = Utility();
-// online url 'https://school-crm-node-app.onrender.com/api/v1'
+const baseURL = BASE_URL;
+const { getAsyncStorage } = Utility();
+
 export const api = axios.create({
   withCredentials: true,
-  baseURL: BASE_URL,
+  baseURL: baseURL,
   validateStatus: (status) => (status >= 200 && status < 300) || status == 404
 });
+console.log(baseURL, 'url')
 
 // defining a custom error handler for all APIs
 const errorHandler = (error) => {
@@ -25,7 +27,7 @@ const errorHandler = (error) => {
   // logging only errors that are not 401
   if (statusCode && statusCode !== 401) {
     throw error;
-  };
+  }
   return Promise.reject(error);
 };
 
@@ -38,7 +40,7 @@ api.interceptors.response.use(undefined, (error) => {
 //ask for token on every request made
 api.interceptors.request.use(req => {
   req.headers['Type'] = "school-mobile";
-  // getLocalStorage("schoolInfo") ? req.headers['School_info'] = JSON.stringify(getLocalStorage("schoolInfo")) : null;
+  getAsyncStorage("schoolInfo") ? req.headers['School_info'] = JSON.stringify(getAsyncStorage("schoolInfo")) : null;
 
   return req;
 });
