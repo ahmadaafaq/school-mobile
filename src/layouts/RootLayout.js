@@ -54,7 +54,7 @@ const RootLayout = () => {
 
     // const [paperTheme, setPaperTheme] = useState(LightTheme);
     const colorScheme = useColorScheme();
-    const paperTheme = colorScheme === 'dark' ? DarkTheme : LightTheme;
+    const paperTheme = colorScheme === 'light' ? LightTheme : DarkTheme;
 
 
     // Expo Router uses Error Boundaries to catch errors in the navigation tree
@@ -85,14 +85,11 @@ const RootLayout = () => {
                         name='index'
                         options={{
                             headerTitle: "School CRM",
-                            headerShown: false,
-                            headerRight: () => <AntDesign onPress={() => Alert.alert("Your application version is compatible")}
-                                name='infocirlceo' color={COLORS.tealBlue} size={22} />
+                            headerShown: false
                         }}
                     />
-
                     {/* this (tabs) group is for the nested Tabs Layout inside of our Stack Layout which will also contain the Drawer Layout
-                 only on Home Tab */}
+                        only on Home Tab */}
                     <Stack.Screen
                         name="(tabs)"
                         options={{

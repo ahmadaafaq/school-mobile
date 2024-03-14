@@ -12,65 +12,66 @@ import { Utility } from "../utility";
 
 const { getAsyncStorage } = Utility();
 
-export const ClassAPI = {
-    /** Get classes from the database that meets the specified query parameters
+export const SubjectAPI = {
+    /** Get subjects from the database that meets the specified query parameters
      */
     getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
         const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
         const searchParam = search ? `&search=${search}` : '';
         const { data: response } = await api.request({
-            url: `/get-classes?page=${page}&size=${size}${queryParam}${searchParam}`,
+            url: `/get-subjects?page=${page}&size=${size}${queryParam}${searchParam}`,
             headers: {
                 "x-access-token": getAsyncStorage("auth")?.token
             },
             method: "GET",
-            signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });
         return response;
     },
 
-    /** Create class in the database
+    /** Create subject in the database
      */
-    createClass: async (classs, cancel = false) => {
+    createSubject: async (subject, cancel = false) => {
         return await api.request({
-            url: `/create-class`,
+            url: `/create-subject`,
             headers: {
                 "x-access-token": getAsyncStorage("auth").token
             },
             method: "POST",
-            data: classs,
-            signal: cancel ? cancelApiObject[this.createClass.name].handleRequestCancellation().signal : undefined,
+            data: subject,
+            signal: cancel ? cancelApiObject[this.createSubject.name].handleRequestCancellation().signal : undefined
         });
     },
 
-    /** Update class in the database
+    /** Update subject in the database
      */
-    updateClass: async (fields, cancel = false) => {
+    updateSubject: async (fields, cancel = false) => {
         return await api.request({
-            url: `/update-class`,
+            url: `/update-subject`,
             headers: {
                 "x-access-token": getAsyncStorage("auth").token
             },
             method: "PATCH",
             data: fields,
-            signal: cancel ? cancelApiObject[this.updateClass.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.updateSubject.name].handleRequestCancellation().signal : undefined
         });
     },
 
-    /** Get class and section list by joining 2 tables from the database
+    /** Getting subjects by class from the database
      */
-    getClassSectionList: async (cancel = false) => {
+    getSubjectsByClass: async (classId, cancel = false) => {
+
         const { data: response } = await api.request({
-            url: `/get-class-section-list`,
+            url: `/get-subjects-by-class/${classId}`,
             headers: {
-                "x-access-token": getAsyncStorage("auth").token
+                "x-access-token": getAsyncStorage("auth")?.token
             },
             method: "GET",
-            signal: cancel ? cancelApiObject[this.getClassSectionList.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.getSubjectsByClass.name].handleRequestCancellation().signal : undefined
         });
         return response;
     }
 };
 
-// defining the cancel API object for ClassAPI
-const cancelApiObject = defineCancelApiObject(ClassAPI);
+// defining the cancel API object for SubjectAPI
+const cancelApiObject = defineCancelApiObject(SubjectAPI);

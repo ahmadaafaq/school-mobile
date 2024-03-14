@@ -6,9 +6,11 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-export const ActionTypes = {
-    DISPLAY_TOAST: "DISPLAY_TOAST",
-    SET_MENU_ITEM: "SET_MENU_ITEM",
-    SET_STUDENTS: "SET_STUDENTS",
-    SET_TEACHERS: "SET_TEACHERS"
+import { ActionTypes } from "../constants/action-types";
+
+export const displayToast = (obj) => {
+    return {
+        type: ActionTypes.DISPLAY_TOAST,
+        payload: obj
+    };
 };

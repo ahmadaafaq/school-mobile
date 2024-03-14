@@ -8,32 +8,32 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-// import { Utility } from "../components/utility";
+import { Utility } from "../utility";
+
+const { getAsyncStorage } = Utility();
 
 export const CommonAPI = {
     /** method like GET/POST for network request, true if header and cancel signal is false
      */
     commonConfig: (method, header, cancel = false) => {
-        // const { getLocalStorage } = Utility();
         const commonConfig = {
             method: method,
             signal: cancel ? cancelApiObject[this.commonConfig.name].handleRequestCancellation().signal : undefined,
         }
-        // if (header) {
-        //     commonConfig.headers = {
-        //         "x-access-token": getLocalStorage("auth")?.token
-        //     }
-        // }
+        if (header) {
+            commonConfig.headers = {
+                "x-access-token": getAsyncStorage("auth")?.token
+            }
+        }
         return commonConfig;
     },
 
     /** Verify the authenticity of the provided token
      */
     verifyToken: async (cancel = false) => {
-        // const { getLocalStorage } = Utility();
-        // if (!getLocalStorage("auth")?.token) {
-        //     return false;
-        // }
+        if (!getAsyncStorage("auth")?.token) {
+            return false;
+        }
         const commonConfig = CommonAPI.commonConfig("GET", true, cancel);
         try {
             const { data: response } = await api.request({
@@ -91,6 +91,30 @@ export const CommonAPI = {
             .catch(err => {
                 throw err;
             });
+    },
+
+    /** Api that connects to backend and return encrypted text and iv
+     */
+    encryptText: async (text, cancel = false) => {
+        const commonConfig = CommonAPI.commonConfig("POST", true, cancel);
+        const { data: response } = await api.request({
+            url: '/encrypt-text',
+            data: text,
+            ...commonConfig
+        });
+        return response;
+    },
+
+    /** Api that connects to backend and return decrypted text
+     */
+    decryptText: async (fields, cancel = false) => {
+        const commonConfig = CommonAPI.commonConfig("POST", true, cancel);
+        const { data: response } = await api.request({
+            url: '/decrypt-text',
+            data: fields,
+            ...commonConfig
+        });
+        return response;
     }
 };
 

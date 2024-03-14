@@ -12,14 +12,14 @@ import { Utility } from "../utility";
 
 const { getAsyncStorage } = Utility();
 
-export const SectionAPI = {
-  /** Get sections from the database that meets the specified query parameters
+export const HolidayAPI = {
+  /** Get Holidays from the database that meets the specified query parameters
    */
   getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
     const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
-      url: `/get-sections?page=${page}&size=${size}${queryParam}${searchParam}`,
+      url: `/get-holidays?page=${page}&size=${size}${queryParam}${searchParam}`,
       headers: {
         "x-access-token": getAsyncStorage("auth")?.token
       },
@@ -29,34 +29,34 @@ export const SectionAPI = {
     return response;
   },
 
-  /** Create section in the database
+  /** Create Holiday in the database
    */
-  createSection: async (section, cancel = false) => {
+  createHoliday: async (holiday, cancel = false) => {
     return await api.request({
-      url: `/create-section`,
+      url: `/create-holiday`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
       method: "POST",
-      data: section,
-      signal: cancel ? cancelApiObject[this.createSection.name].handleRequestCancellation().signal : undefined
+      data: holiday,
+      signal: cancel ? cancelApiObject[this.createHoliday.name].handleRequestCancellation().signal : undefined
     });
   },
 
-  /** Update section in the database
+  /** Update Holiday in the database
    */
-  updateSection: async (fields, cancel = false) => {
+  updateHoliday: async (fields, cancel = false) => {
     return await api.request({
-      url: `/update-section`,
+      url: `/update-holiday`,
       headers: {
         "x-access-token": getAsyncStorage("auth").token
       },
       method: "PATCH",
       data: fields,
-      signal: cancel ? cancelApiObject[this.updateSection.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.updateHoliday.name].handleRequestCancellation().signal : undefined
     });
   }
 };
 
-// defining the cancel API object for SectionAPI
-const cancelApiObject = defineCancelApiObject(SectionAPI);
+// defining the cancel API object for HolidayAPI
+const cancelApiObject = defineCancelApiObject(HolidayAPI);

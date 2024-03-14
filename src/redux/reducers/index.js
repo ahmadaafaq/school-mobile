@@ -8,6 +8,7 @@
 
 import { combineReducers } from "redux";
 
+import { displayToastReducer } from "./ToastReducer";
 import { menuItemReducer } from "./MenuItemReducer";
 import { setStudentsReducer } from "./StudentReducer";
 import { setTeachersReducer } from "./TeacherReducer";
@@ -15,7 +16,8 @@ import { setTeachersReducer } from "./TeacherReducer";
 const reducers = combineReducers({
     allStudents: setStudentsReducer,
     allTeachers: setTeachersReducer,
-    menuItem: menuItemReducer
+    menuItem: menuItemReducer,
+    toastInfo: displayToastReducer
 });
 
 export default reducers;

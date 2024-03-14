@@ -8,23 +8,31 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-// import { Utility } from "../components/utility";
+import { Utility } from "../utility";
 
-// const { getLocalStorage } = Utility();
+const { getAsyncStorage } = Utility();
 
 export const StudentAPI = {
   /** Get students from the database that meets the specified query parameters
    */
   getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
-    const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
+    // Send the data that is used in where condition
+    let queryParam = '';
+    if (conditionObj) {
+      Object.keys(conditionObj).map(key => {
+        queryParam += `&${key}=${conditionObj[key]}`
+      })
+    }
+    // Send the data that is used in listing page search
     const searchParam = search ? `&search=${search}` : '';
+
     const { data: response } = await api.request({
       url: `/get-students?page=${page}&size=${size}${queryParam}${searchParam}`,
-      // headers: {
-      //   "x-access-token": getLocalStorage("auth")?.token
-      // },
+      headers: {
+        "x-access-token": getAsyncStorage("auth")?.token
+      },
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined,
+      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });
     return response;
   },
@@ -34,12 +42,12 @@ export const StudentAPI = {
   createStudent: async (student, cancel = false) => {
     return await api.request({
       url: `/create-student`,
-      // headers: {
-      //   "x-access-token": getLocalStorage("auth").token
-      // },
+      headers: {
+        "x-access-token": getAsyncStorage("auth").token
+      },
       method: "POST",
       data: student,
-      signal: cancel ? cancelApiObject[this.createStudent.name].handleRequestCancellation().signal : undefined,
+      signal: cancel ? cancelApiObject[this.createStudent.name].handleRequestCancellation().signal : undefined
     });
   },
 
@@ -48,26 +56,28 @@ export const StudentAPI = {
   updateStudent: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-student`,
-      // headers: {
-      //   "x-access-token": getLocalStorage("auth").token
-      // },
+      headers: {
+        "x-access-token": getAsyncStorage("auth").token
+      },
       method: "PATCH",
       data: fields,
-      signal: cancel ? cancelApiObject[this.updateStudent.name].handleRequestCancellation().signal : undefined,
+      signal: cancel ? cancelApiObject[this.updateStudent.name].handleRequestCancellation().signal : undefined
     });
   },
 
-  getStudentsByClassAndSection: async (classId, sectionId, cancel = false) => {
+  /** Get class and section from student_id
+   */
+  getClassOfStudent: async (student_id, cancel = false) => {
     const { data: response } = await api.request({
-      url: `/get-student-by-class?classId=${classId}&sectionId=${sectionId}`,
-      // headers: {
-      //   "x-access-token": getLocalStorage("auth")?.token
-      // },
+      url: `/get-class-of-student/${student_id}`,
+      headers: {
+        "x-access-token": getAsyncStorage("auth").token
+      },
       method: "GET",
-      signal: cancel ? cancelApiObject[StudentAPI.getStudentsByClassAndSection.name].handleRequestCancellation().signal : undefined,
+      signal: cancel ? cancelApiObject[this.getSchoolClasses.name].handleRequestCancellation().signal : undefined
     });
     return response;
-  },
+  }
 };
 
 // defining the cancel API object for StudentAPI
