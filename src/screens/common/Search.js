@@ -9,11 +9,12 @@
 
 import { View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import styles from './search.style';
 import { icons } from "../../assets/constants";
 
-const SearchContainer = () => {
+const SearchContainer = ({ searchTerm = null, setSearchTerm = null }) => {
     const theme = useTheme();
 
     return (
@@ -25,9 +26,20 @@ const SearchContainer = () => {
                     style={styles.searchBtnImage}
                 />
             </TouchableOpacity>
-            <TextInput style={styles.searchInput} placeholder='Search..' placeholderTextColor={theme.colors.whiteSmoke[500]} />
+            <TextInput
+                style={styles.searchInput}
+                placeholder='Search..'
+                placeholderTextColor={theme.colors.whiteSmoke[500]}
+                value={searchTerm}
+                onChangeText={value => setSearchTerm(value)}
+            />
         </View>
     );
+};
+
+SearchContainer.propTypes = {
+    searchTerm: PropTypes.string,
+    setSearchTerm: PropTypes.func
 };
 
 export default SearchContainer;

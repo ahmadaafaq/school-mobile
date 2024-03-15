@@ -8,13 +8,12 @@
 */
 
 import { useEffect } from "react";
-import { Alert, useColorScheme } from 'react-native';
+import { useColorScheme } from 'react-native';
 import { Provider as StoreProvider } from 'react-redux';
 import { PaperProvider, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 
 import { useFonts } from "expo-font";
 import { Stack, SplashScreen } from "expo-router";
-import { AntDesign } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from "../assets/constants";
 import { LightScheme } from "../theme/lightScheme";
@@ -99,18 +98,15 @@ const RootLayout = () => {
                     />
                     {/* test screen */}
                     <Stack.Screen
-                        name='homework'
+                        name='(homework)'
                         options={{
                             headerTitle: "Homework",
+                            headerTitleStyle: {
+                                color: COLORS.white[100] // Set the color for the header title
+                            },
                             headerStyle: {
                                 backgroundColor: COLORS.indigo[400], // Set the background color for the header
-                            },
-                            headerTitleStyle: {
-                                color: COLORS.white[100], // Set the color for the header title
-                            },
-                            // headerShown: false,
-                            headerRight: () => <AntDesign onPress={() => Alert.alert("Your application version is compatible")}
-                                name='infocirlceo' color={COLORS.tealBlue} size={22} />
+                            }
                         }}
                     />
                 </Stack>

@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -14,7 +15,7 @@ import API from '../../apis';
 import ServerPaginationGrid from './ListingTable';
 
 import { setMenuItem } from "../../redux/actions/MenuItemAction";
-import { setTeachers } from "../../redux/actions/TeacherAction";
+import { setAllTeachers } from "../../redux/actions/TeacherAction";
 import { useCommon } from "../../hooks/common";
 import { Utility } from "../../utility";
 
@@ -38,7 +39,7 @@ const ListingComponent = () => {
     return (
         <View style={styles.container}>
             <ServerPaginationGrid
-                action={setTeachers}
+                action={setAllTeachers}
                 api={API.TeacherAPI}
                 getQuery={getPaginatedData}
                 rows={listData.rows}

@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,32 +7,44 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import React, { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from 'expo-router';
 
 import Search from '../../common/Search';
+import LoadingAnimationModal from "../../common/LoadingAnimationModal";
 import ListingComponent from './ListingComponent';
+
 import { Utility } from "../../../utility";
 
-const StudentListing = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+const SalonPage = () => {
+    const [searchTerm, setSearchTerm] = useState(null);
+    const [loading, setLoading] = useState(true);
     const theme = useTheme();
     const { setAsyncStorage } = Utility();
 
     // writing this function separately because an effect function must no return anything besides a function, used for cleanup, 
     // you are returning promise, getting this error when calling directly
-    const setMenuInAsyncStorage = async () => {
-        await setAsyncStorage('menu', { selected: 'Student' });
-    };
+    const setMenuInAsyncStorage = useCallback(() => {
+        setAsyncStorage('menu', { selected: 'Homework' });
+    }, [setAsyncStorage]);
 
     useFocusEffect(
-        React.useCallback(() => {
+        useCallback(() => {
             setMenuInAsyncStorage();
-        }, [])
+        }, [setMenuInAsyncStorage])
     );
+
+    // Simulating data fetching delay
+    useEffect(() => {
+        const dataFetchDelay = setTimeout(() => {
+            setLoading(false);
+        }, 7000);
+
+        return () => clearTimeout(dataFetchDelay);      // useEffect will clear the timeout when the component unmounts
+    }, []);
 
     const styles = StyleSheet.create({
         container: {
@@ -48,13 +61,15 @@ const StudentListing = () => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={theme.colors.magicMint[500]} />
-            <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]} style={{ flexGrow: 1 }}>
-                <Search />
+            <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}
+                style={{ flexGrow: 1 }}
+            >
+                <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 <ListingComponent />
-
             </ScrollView>
+            {loading ? <LoadingAnimationModal /> : null}
         </SafeAreaView>
-    )
+    );
 };
 
-export default StudentListing;
+export default SalonPage;

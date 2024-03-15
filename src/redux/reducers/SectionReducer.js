@@ -8,16 +8,18 @@
 
 import { ActionTypes } from "../constants/action-types";
 
-export const setTeachers = (teachers) => {
-    return {
-        type: ActionTypes.SET_TEACHERS,
-        payload: teachers
-    };
+const initialState = {
+    listData: []
 };
 
-export const setAllTeachers = (teachers) => {
-    return {
-        type: ActionTypes.SET_ALL_TEACHERS,
-        payload: teachers
-    };
+export const setSchoolSectionsReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_SCHOOL_SECTIONS:
+            return {
+                ...state,
+                listData: action.payload || []
+            };
+        default:
+            return state;
+    }
 };

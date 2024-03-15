@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -15,13 +16,13 @@ import API from '../../../apis';
 import ServerPaginationGrid from './ListingTable';
 
 import { setMenuItem } from "../../../redux/actions/MenuItemAction";
-import { setStudents } from "../../../redux/actions/StudentAction";
+import { setTeacherHomeworks } from "../../../redux/actions/HomeworkAction";
 import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
 const ListingComponent = () => {
     const dispatch = useDispatch();
-    const { listData, loading } = useSelector(state => state.allStudents);
+    const { listData, loading } = useSelector(state => state.teacherHomework);
     const selected = useSelector(state => state.menuItem.selected);
     const router = useRouter();
 
@@ -35,17 +36,17 @@ const ListingComponent = () => {
             dispatch(setMenuItem(selectedMenu?.selected));
         };
         getSelectedMenu();
-    }, []);
+    }, [dispatch, getAsyncStorage]);
 
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => router.push('/(tabs)/(homeTabDrawer)/(student)/studentForm')}>
-                <Text> New Admission </Text>
+            <TouchableOpacity onPress={() => router.push('/(homework)/homeworkForm')}>
+                <Text> New Homewolk </Text>
             </TouchableOpacity>
             <ServerPaginationGrid
-                action={setStudents}
-                api={API.StudentAPI}
+                action={setTeacherHomeworks}
+                api={API.HomeworkAPI}
                 getQuery={getPaginatedData}
                 rows={listData.rows}
                 count={listData.count}

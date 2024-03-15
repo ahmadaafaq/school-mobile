@@ -10,13 +10,25 @@ import { combineReducers } from "redux";
 
 import { displayToastReducer } from "./ToastReducer";
 import { menuItemReducer } from "./MenuItemReducer";
+import { setSchoolClassesReducer } from "./ClassReducer";
+import { setSchoolSectionsReducer } from "./SectionReducer";
+import { setSchoolSubjectsReducer } from "./SubjectReducer";
+import { setAllStudentsReducer } from "./StudentReducer";
 import { setStudentsReducer } from "./StudentReducer";
+import { setAllTeachersReducer } from "./TeacherReducer";
 import { setTeachersReducer } from "./TeacherReducer";
+import { setTeacherHomeworksReducer } from "./HomeworkReducer";
 
 const reducers = combineReducers({
-    allStudents: setStudentsReducer,
-    allTeachers: setTeachersReducer,
+    someStudents: setStudentsReducer,
+    allStudents: setAllStudentsReducer,
+    allTeachers: setAllTeachersReducer,
+    someTeachers: setTeachersReducer,
+    teacherHomework: setTeacherHomeworksReducer,
     menuItem: menuItemReducer,
+    schoolClasses: setSchoolClassesReducer,
+    schoolSections: setSchoolSectionsReducer,
+    schoolSubjects: setSchoolSubjectsReducer,
     toastInfo: displayToastReducer
 });
 

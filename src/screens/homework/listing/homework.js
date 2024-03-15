@@ -1,10 +1,18 @@
-import { View, Text, StyleSheet } from 'react-native'
+/* eslint-disable react/react-in-jsx-scope */
+/**
+ * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
+ *
+ * This software is the confidential information of School CRM Inc., and is licensed as
+ * restricted rights software. The use, reproduction, or disclosure of this software is subject to
+ * restrictions set forth in your license agreement with School CRM.
+*/
+
+import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import React from 'react'
 
-import { SIZES, FONT } from "../src/assets/constants";
+import { FONT } from "../../../assets/constants";
 
-import Box from '../src/screens/home/BoxComponent';
+import Box from '../../common/BoxComponent';
 
 const homework = () => {
     const theme = useTheme();

@@ -54,8 +54,10 @@ const LoginScreen = () => {
         }
         if (formData.school_code && (formData.email && formData.password)) {
             setLoading(true);
+            console.log('ander aaya login m')
             API.UserAPI.login(formData)
                 .then(async response => {
+                    console.log(response, 'api resoonse login')
                     setLoading(false);
                     if (response.status === 'Success' &&
                         (response.data === "User does not exist" || response.data === "Username and Password do not match")) {

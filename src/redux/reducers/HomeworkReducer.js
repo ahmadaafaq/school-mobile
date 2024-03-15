@@ -13,27 +13,9 @@ const initialState = {
     loading: true
 };
 
-const allState = {
-    listData: [],
-    loading: true
-};
-
-export const setTeachersReducer = (state = initialState, action) => {
+export const setTeacherHomeworksReducer = (state = initialState, action) => {
     switch (action.type) {
-        case ActionTypes.SET_TEACHERS:
-            return {
-                ...state,
-                listData: action.payload.listData,
-                loading: action.payload.loading
-            };
-        default:
-            return state;
-    }
-};
-
-export const setAllTeachersReducer = (state = allState, action) => {
-    switch (action.type) {
-        case ActionTypes.SET_ALL_TEACHERS:
+        case ActionTypes.SET_TEACHER_HOMEWORK:
             return {
                 ...state,
                 listData: action.payload.listData,

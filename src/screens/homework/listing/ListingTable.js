@@ -9,6 +9,7 @@
 import { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
 import { DataTable, useTheme } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import LoadingAnimationModal from '../../common/LoadingAnimationModal';
 import { FONT } from "../../../assets/constants";
@@ -20,8 +21,8 @@ const ListingTable = ({
     condition = false,
     rows,
     count,
-    selected,
-    loading
+    loading,
+    selected
 }) => {
     const theme = useTheme();
     const numberOfItemsPerPageList = [5, 10, 20];
@@ -37,9 +38,7 @@ const ListingTable = ({
     useEffect(() => {
         getQuery(page, itemsPerPage, action, api, condition);
         setPage(0);
-    }, [selected, page, itemsPerPage, action, api, condition]);
-
-    console.log('Listing Table', rows, count);
+    }, [selected, page, itemsPerPage, action, api, condition, getQuery]);
 
     // Override default styles for DataTable.Pagination
     const paginationStyles = StyleSheet.create({
@@ -54,9 +53,10 @@ const ListingTable = ({
                 color: theme.colors.magicMint[600], fontSize: 12, fontFamily: FONT.medium
             }
         });
-        console.log('text', text)
+        console.log('label text', text)
         return <Text style={styles.text}>{text}</Text>;
-    }
+    };
+    console.log('Listing Table rows & count', rows, count);
 
     return (
         <SafeAreaView style={{ paddingHorizontal: 10 }}>
@@ -71,24 +71,19 @@ const ListingTable = ({
                         }}>
                         <DataTable.Title
                             textStyle={{
-                                width: 140, paddingLeft: 45, color: theme.colors.blue[400], fontSize: 14, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
-                            }}
-                        >Name</DataTable.Title>
-                        <DataTable.Title
-                            textStyle={{
-                                width: 100, paddingLeft: 35, color: theme.colors.grayishRed[400], fontSize: 14, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
+                                width: 120, paddingLeft: 45, color: theme.colors.blue[400], fontSize: 14, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
                             }}
                         >Class</DataTable.Title>
                         <DataTable.Title
                             textStyle={{
-                                width: 140, paddingLeft: 25, color: theme.colors.blue[400], fontSize: 14, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
-                            }}
-                        >Blood Group</DataTable.Title>
-                        <DataTable.Title
-                            textStyle={{
                                 width: 130, paddingLeft: 35, color: theme.colors.grayishRed[400], fontSize: 14, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
                             }}
-                        >Contact</DataTable.Title>
+                        >Title</DataTable.Title>
+                        <DataTable.Title
+                            textStyle={{
+                                width: 140, paddingLeft: 25, color: theme.colors.blue[400], fontSize: 14, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
+                            }}
+                        >Description</DataTable.Title>
                         <DataTable.Title
                             textStyle={{
                                 width: 130, paddingLeft: 35, color: theme.colors.blue[400], fontSize: 14, fontFamily: FONT.bold
@@ -104,24 +99,19 @@ const ListingTable = ({
                         >
                             <DataTable.Cell
                                 textStyle={{
-                                    width: 140, paddingLeft: 20, color: theme.colors.blue[400], fontSize: 13, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
-                                }}
-                            >{row.firstname} {row.lastname}</DataTable.Cell>
-                            <DataTable.Cell
-                                textStyle={{
                                     width: 100, paddingLeft: 40, color: theme.colors.grayishRed[400], fontSize: 13, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
                                 }}
-                            >{row.class}{row.section}</DataTable.Cell>
+                            >{row.class_id}{row.section_id}</DataTable.Cell>
                             <DataTable.Cell
                                 textStyle={{
                                     width: 140, paddingLeft: 55, color: theme.colors.blue[400], fontSize: 13, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
                                 }}
-                            >{row.blood_group.toUpperCase()}</DataTable.Cell>
+                            >{row.title}</DataTable.Cell>
                             <DataTable.Cell
                                 textStyle={{
                                     width: 130, paddingLeft: 25, color: theme.colors.grayishRed[400], fontSize: 13, fontFamily: FONT.bold, borderRightWidth: 0.8, borderRightColor: theme.colors.moonstoneBlue[500]
                                 }}
-                            >{row.contact_no}</DataTable.Cell>
+                            >{row.description}</DataTable.Cell>
                             <DataTable.Cell
                                 textStyle={{
                                     width: 130, paddingLeft: 40, color: theme.colors.blue[400], fontSize: 13, fontFamily: FONT.bold
@@ -136,15 +126,15 @@ const ListingTable = ({
                         showFastPaginationControls
                         numberOfPages={Math.ceil(count / itemsPerPage)}
                         onPageChange={page => {
-                            console.log('this is the page jh', page)
+                            console.log('this is the page change', page)
                             setPage(page)
                         }}
                         label={<ColoredText text={`${from + 1}-${to} of ${count}`} />}
                         numberOfItemsPerPage={itemsPerPage}
                         numberOfItemsPerPageList={numberOfItemsPerPageList}
-                        onItemsPerPageChange={(i, v) => {
-                            console.log('Items per page changed:', v);
-                            // setItemsPerPage(numberOfItemsPerPage);
+                        onItemsPerPageChange={(e, numberOfItemsPerPage) => {
+                            console.log('Items per page changed:', numberOfItemsPerPage);
+                            setItemsPerPage(numberOfItemsPerPage);
                         }}
                         selectPageDropdownLabel={<ColoredText text="Rows Per Page" />}
                     // selectPageDropdownRippleColor='yellow'
@@ -152,8 +142,21 @@ const ListingTable = ({
                 </DataTable>
                 {loading ? <LoadingAnimationModal /> : null}
             </ScrollView>
-        </SafeAreaView >
+        </SafeAreaView>
     );
+};
+
+ListingTable.propTypes = {
+    action: PropTypes.func,
+    api: PropTypes.object,
+    getQuery: PropTypes.func,
+    condition: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+    columns: PropTypes.array,
+    rows: PropTypes.array,
+    count: PropTypes.number,
+    loading: PropTypes.bool,
+    selected: PropTypes.string,
+    text: PropTypes.string
 };
 
 export default ListingTable;
