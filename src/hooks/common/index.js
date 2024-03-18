@@ -10,19 +10,19 @@
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-// import { Utility } from "../../utility";
+import { Utility } from "../../utility";
 
 export const useCommon = () => {
     const dispatch = useDispatch();
     const selected = useSelector(state => state.menuItem.selected);
-    // const { getLocalStorage } = Utility();
+    const { getAsyncStorage } = Utility();
 
     /** Get data for pagination according to given parameters to be used in API call
      */
-    const getPaginatedData = useCallback((page = 0, size, action, api, condition = false, search = false) => {
-        // const authInfo = getLocalStorage("auth");
+    const getPaginatedData = useCallback(async (page = 0, size, action, api, condition = false, search = false) => {
+        const authInfo = await getAsyncStorage("auth");
 
-        api.getAll(condition, page, size, search, authInfo = null)
+        api.getAll(condition, page, size, search, authInfo)
             .then(res => {
                 console.log('getall response', res.data.rows)
                 if (res.status === 'Success') {
@@ -32,8 +32,8 @@ export const useCommon = () => {
                 }
             })
             .catch(err => {
-                console.error("An error occurred: ", err);
                 dispatch(action({ listData: [], loading: false }));
+                console.error("An error occurred in getPaginated Data: ", err);
             });
     }, [selected]);
 

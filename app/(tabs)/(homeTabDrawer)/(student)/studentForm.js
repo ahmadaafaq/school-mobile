@@ -6,4 +6,4 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-export { default } from 'src/screens/student/form/MainForm';
+// export { default } from 'src/screens/student/form/MainForm';

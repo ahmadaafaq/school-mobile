@@ -9,19 +9,19 @@
 
 import { Stack } from 'expo-router';
 
-const StudentLayout = () => {
+const HomeworkLayout = () => {
     return (
         <Stack>
             <Stack.Screen
-                name="studentListing"
-                options={{ headerTitle: "Student", headerShown: false }}
+                name="homeworkListing"
+                options={{ headerTitle: "Homework", headerShown: false }}
             />
             <Stack.Screen
-                name="studentForm"
-                options={{ headerTitle: "Admission Form" }}
+                name="homeworkForm"
+                options={{ headerTitle: "Homework Form" }}
             />
         </Stack>
     );
 };
 
-export default StudentLayout;
+export default HomeworkLayout;

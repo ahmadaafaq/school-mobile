@@ -6,4 +6,11 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-// export { default } from 'src/screens/student/listing';
+import { ActionTypes } from "../constants/action-types";
+
+export const setTeacherHomeworks = (teacherHw) => {
+    return {
+        type: ActionTypes.SET_TEACHER_HOMEWORK,
+        payload: teacherHw
+    };
+};

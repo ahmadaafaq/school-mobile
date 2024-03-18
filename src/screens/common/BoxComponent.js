@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -7,12 +6,12 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { Dimensions, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 
-import { SIZES, FONT } from "../../assets/constants";
+import { FONT } from "../../assets/constants";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -41,13 +40,13 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
             fontFamily: FONT.bold,
             fontSize: 13,
             fontWeight: 400,
-            letterSpacing: 0.12,
-        },
+            letterSpacing: 0.12
+        }
     });
 
     return (
         <TouchableOpacity style={styles.element}
-            onPress={(i) =>  handlePress()}
+            onPress={() => handlePress()}
         >
             <Card
                 mode=''
@@ -62,11 +61,10 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
 
 BoxComponent.propTypes = {
     title: PropTypes.string,
-    content: PropTypes.number,
-    growth: PropTypes.string,
     bg: PropTypes.string,
-    mr: PropTypes.number,
-    ml: PropTypes.number
+    mb: PropTypes.number,
+    iconName: PropTypes.string,
+    handlePress: PropTypes.func
 };
 
 export default BoxComponent;

@@ -24,7 +24,7 @@ const DrawerLayout = () => {
                 swipeEdgeWidth: 0,
                 swipeEnabled: false,
             }}
-            style={{backgroundColor:'black'}}
+            style={{ backgroundColor: 'black' }}
         >
             <Drawer.Screen
                 name="home"
@@ -40,7 +40,7 @@ const DrawerLayout = () => {
                     drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />
                 }}
             />
-            <Drawer.Screen
+            {/* <Drawer.Screen
                 name='(student)'
                 options={{
                     title: "Student",
@@ -51,7 +51,7 @@ const DrawerLayout = () => {
                     drawerStyle: { fontSize: 12, backgroundColor: theme.colors.whiteSnow[500] },
                     drawerIcon: ({ color }) => <FontAwesome5 name="user-graduate" size={18} color={color} />
                 }}
-            />
+            /> */}
             <Drawer.Screen
                 name='teacherListing'
                 options={{

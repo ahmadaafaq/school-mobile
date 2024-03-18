@@ -12,6 +12,7 @@ import { ClassAPI } from "./ClassAPI";
 import { CommonAPI } from "./CommonAPI";
 import { DashboardAPI } from "./DashboardAPI";
 import { HolidayAPI } from "./HolidayAPI";
+import { HomeworkAPI } from "./HomeworkAPI";
 import { ImageAPI } from "./ImageAPI";
 import { MarksheetAPI } from "./MarksheetAPI";
 import { PaymentAPI } from "./PaymentAPI";
@@ -30,6 +31,7 @@ export default {
     CommonAPI,
     DashboardAPI,
     HolidayAPI,
+    HomeworkAPI,
     ImageAPI,
     MarksheetAPI,
     PaymentAPI,

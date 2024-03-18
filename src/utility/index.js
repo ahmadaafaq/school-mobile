@@ -287,7 +287,6 @@ export const Utility = () => {
             });
     };
 
-
     /** Retrieves the user's role from Async Storage.
      * @returns {string|null} - The user's role, or null if the role is not available in Async Storage.
      */

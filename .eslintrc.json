@@ -24,6 +24,7 @@
             {
                 "varsIgnorePattern": "^_" // Ignore variables starting with underscore
             }
-        ]
+        ],
+        "react/react-in-jsx-scope": "off"
     }
 }
