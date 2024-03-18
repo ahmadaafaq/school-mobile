@@ -60,19 +60,19 @@ export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
     );
 };
 
-const CustomDropdown = ({ data, placeholder, setSelected }) => {
+const CustomDropdown = ({ data, placeholder, setSelected, width }) => {
     const theme = useTheme();
 
     const styles = StyleSheet.create({
         boxStyles: {
             borderWidth: 0,
             borderRadius: 4,
-            width: "92%",
+            width: width,
             margin: SIZES.smallMedium,
             backgroundColor: theme.colors.whiteSmoke[500]
         },
         dropdownStyles: {
-            width: "92%",
+            width: width,
             borderTopWidth: 0,
             borderBottomWidth: 0,
             borderRadius: 8,
@@ -112,7 +112,8 @@ MultipleDropdown.propTypes = {
 CustomDropdown.propTypes = {
     data: PropTypes.array,
     placeholder: PropTypes.string,
-    setSelected: PropTypes.func
+    setSelected: PropTypes.func,
+    width: PropTypes.string
 };
 
 export default CustomDropdown;

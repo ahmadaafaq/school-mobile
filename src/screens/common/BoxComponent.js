@@ -40,8 +40,8 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
             fontFamily: FONT.bold,
             fontSize: 13,
             fontWeight: 400,
-            letterSpacing: 0.12,
-        },
+            letterSpacing: 0.12
+        }
     });
 
     return (

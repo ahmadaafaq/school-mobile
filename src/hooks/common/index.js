@@ -16,11 +16,11 @@ export const useCommon = () => {
     const dispatch = useDispatch();
     const selected = useSelector(state => state.menuItem.selected);
     const { getAsyncStorage } = Utility();
-    const authInfo = getAsyncStorage("auth");
 
     /** Get data for pagination according to given parameters to be used in API call
      */
-    const getPaginatedData = useCallback((page = 0, size, action, api, condition = false, search = false) => {
+    const getPaginatedData = useCallback(async (page = 0, size, action, api, condition = false, search = false) => {
+        const authInfo = await getAsyncStorage("auth");
 
         api.getAll(condition, page, size, search, authInfo)
             .then(res => {
@@ -32,8 +32,8 @@ export const useCommon = () => {
                 }
             })
             .catch(err => {
-                console.error("An error occurred: ", err);
                 dispatch(action({ listData: [], loading: false }));
+                console.error("An error occurred in getPaginated Data: ", err);
             });
     }, [selected]);
 

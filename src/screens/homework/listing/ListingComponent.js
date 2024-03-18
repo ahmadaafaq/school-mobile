@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
@@ -7,55 +8,69 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useCallback, useEffect } from 'react';
+import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from 'expo-router';
 
-import API from '../../../apis';
-import ServerPaginationGrid from './ListingTable';
+import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
+import { COLORS, FONT, SIZES } from "../../../assets/constants";
 import { setMenuItem } from "../../../redux/actions/MenuItemAction";
-import { setTeacherHomeworks } from "../../../redux/actions/HomeworkAction";
-import { useCommon } from "../../../hooks/common";
+
 import { Utility } from "../../../utility";
 
 const ListingComponent = () => {
     const dispatch = useDispatch();
-    const { listData, loading } = useSelector(state => state.teacherHomework);
-    const selected = useSelector(state => state.menuItem.selected);
+    const { listData } = useSelector(state => state.teacherHomework);
     const router = useRouter();
-
-    const { getPaginatedData } = useCommon();
+    const flatListOptimizationProps = {
+        initialNumToRender: 0,
+        maxToRenderPerBatch: 1,
+        removeClippedSubviews: true,
+        scrollEventThrottle: 16,
+        windowSize: 2,
+        keyExtractor: useCallback(e => e.id, []),
+        getItemLayout: useCallback(
+            (_, index) => ({
+                index,
+                length: WINDOW_WIDTH,
+                offset: index * WINDOW_WIDTH,
+            }),
+            []
+        )
+    };
     const { getAsyncStorage } = Utility();
 
     useEffect(() => {
         const getSelectedMenu = async () => {
             const selectedMenu = await getAsyncStorage('menu');
-            console.log('inside useEffect listing', selectedMenu);
+            console.log('inside useEffect homework listing', selectedMenu);
             dispatch(setMenuItem(selectedMenu?.selected));
         };
         getSelectedMenu();
-    }, [dispatch, getAsyncStorage]);
-
+    }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <TouchableOpacity onPress={() => router.push('/(homework)/homeworkForm')}>
                 <Text> New Homewolk </Text>
             </TouchableOpacity>
-            <ServerPaginationGrid
-                action={setTeacherHomeworks}
-                api={API.HomeworkAPI}
-                getQuery={getPaginatedData}
-                rows={listData.rows}
-                count={listData.count}
-                selected={selected}
-                loading={loading}
-            />
-        </View>
-    )
-}
+            <Text style={styles.headerText}>
+                {listData?.count} Homeworks Found
+            </Text>
+            <ScrollView horizontal={true} style={{ width: "100%" }} >
+                <FlatList
+                    data={listData?.rows}
+                    renderItem={ListingItem}
+                    pagingEnabled={true}
+                    keyExtractor={(item) => item.id.toString()}
+                    {...flatListOptimizationProps}
+                />
+            </ScrollView>
+        </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -66,6 +81,15 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         color: "#000000"
+    },
+    headerText: {
+        color: COLORS.moonstoneBlue,
+        fontSize: SIZES.mediumLarge,
+        fontFamily: FONT.medium,
+        paddingLeft: SIZES.medium,
+        paddingBottom: 4,
+        letterSpacing: 0.12,
+        fontWeight: '400'
     }
 });
 
