@@ -14,3 +14,10 @@ export const setTeacherHomeworks = (teacherHw) => {
         payload: teacherHw
     };
 };
+
+export const setHomeworkClassAndSubjectData = (dataObj) => {
+    return {
+        type: ActionTypes.SET_HOMEWORK_CLASS_SUBJECT_DATA,
+        payload: dataObj
+    };
+};

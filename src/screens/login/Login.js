@@ -76,7 +76,6 @@ const LoginScreen = () => {
                             school: response.data.school_name
                         };
                         const navigatedPath = await getAsyncStorage("navigatedPath");
-                        console.log(authInfo, 'authinfo')
                         setAsyncStorage("auth", authInfo);
                         response.data?.school_info ? setAsyncStorage("schoolInfo", response.data.school_info) : null;
                         if (navigatedPath) {

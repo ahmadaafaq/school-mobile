@@ -79,7 +79,7 @@ const HomePage = () => {
                 <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1 }}>
                     {/* <Search /> */}
 
-                    <TopSection title='Faraz Husain' content={12} bg={theme.colors.blue[600]} imageSource={require("../../assets/images/studentPhoto.jpg")} rollno={200087} teacherName="savita devi" />
+                    <TopSection title='Rishit Dhiman' content={12} bg={theme.colors.blue[600]} imageSource={require("../../assets/images/studentPhoto.jpg")} rollno={200087} teacherName="savita devi" />
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
                         <Box title='Homework' bg={theme.colors.grayishGreen[500]} mb={10} iconName="menu-book" handlePress={handleHwPress} />

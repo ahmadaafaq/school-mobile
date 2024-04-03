@@ -7,9 +7,10 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { HelperText, useTheme, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
+
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { HelperText, useTheme, TextInput, Divider } from 'react-native-paper';
 
 import { ALIGNMENT, SIZES } from '../../theme/theme';
 
@@ -29,10 +30,9 @@ const CustomInputBox = ({
 
     const styles = StyleSheet.create({
         inputContainer: {
-            height: 50,
+            height: name !== "description" ? 50 : 150,
             flexDirection: ALIGNMENT.rowDirection,
             alignItems: ALIGNMENT.centered,
-            borderBottomWidth: 0.8,
             borderBottomColor: theme.colors.whiteSmoke[700],
             backgroundColor: theme.colors.whiteSmoke[500],
             margin: SIZES.smallMedium,
@@ -44,8 +44,9 @@ const CustomInputBox = ({
     return (
         <SafeAreaView style={styles.inputContainer}>
             <TextInput
-                style={{ flex: 1, color: theme.colors.white[500] }}
+                style={{ flex: 1, height: name !== "description" ? 50 : 150, color: theme.colors.white[500] }}
                 name={name}
+                multiline={name === 'description'}
                 placeholder={placeholder}
                 placeholderTextColor={placeholderTextColor}
                 value={value}
@@ -55,9 +56,11 @@ const CustomInputBox = ({
                 underlineColor={underlineColor}
                 activeUnderlineColor={activeUnderlineColor}
             />
-            <HelperText type="error" visible={helperText}>
-                See what happens
-            </HelperText>
+            <View>
+                <Text style={{ color: 'red' }}>
+                    {helperText}
+                </Text>
+            </View>
         </SafeAreaView>
     );
 };
@@ -65,14 +68,14 @@ const CustomInputBox = ({
 CustomInputBox.propTypes = {
     name: PropTypes.string,
     placeholder: PropTypes.string,
-    placeholderTextColor: PropTypes.object,
+    placeholderTextColor: PropTypes.string,
     value: PropTypes.string,
     onChangeText: PropTypes.func,
     onBlur: PropTypes.func,
     error: PropTypes.bool,
-    helperText: PropTypes.bool,
-    underlineColor: PropTypes.object,
-    activeUnderlineColor: PropTypes.object
+    helperText: PropTypes.string,
+    underlineColor: PropTypes.string,
+    activeUnderlineColor: PropTypes.string
 };
 
 export default CustomInputBox;

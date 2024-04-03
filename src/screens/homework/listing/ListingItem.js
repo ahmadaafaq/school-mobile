@@ -6,23 +6,32 @@
  * restrictions set forth in your license agreement with School CRM.
  */
 
-import { View, Text, StyleSheet, Dimensions, Image, Pressable } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 
-import { COLORS, SIZES } from "../../../assets/constants";
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+
+import { FONT, SIZES } from "../../../assets/constants";
 
 export const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
-const ITEM_HEIGHT = Math.round(WINDOW_HEIGHT * 0.6);
-const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.9);
 
-const ListingItem = ({ item, index }) => {
+const ListingItem = ({ item, index, theme }) => {
+    const date = new Date(2024, 3, 1, 8, 0);
+    const formatOptions = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        weekday: 'long',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    };
+    console.log(date.toLocaleString('en-US', formatOptions));
 
+    const handlePress = (item) => {
+        console.log("listing item", item);
 
-    const handleSalonPress = (item) => {
-        console.log("item", item);
         // router.push({
         //     pathname: '/salonDetail',
         //     params: {
@@ -33,122 +42,53 @@ const ListingItem = ({ item, index }) => {
 
     const styles = StyleSheet.create({
         container: {
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            height: WINDOW_HEIGHT - 340,
-            width: WINDOW_WIDTH
+            height: WINDOW_HEIGHT / 5.5,
+            width: WINDOW_WIDTH - 25,
+            borderWidth: 2,
+            borderRadius: 8,
+            borderColor: theme.colors.soapBlue[500],
+            margin: 15,
+            paddingHorizontal: 10,
         },
-        image: {
-            width: ITEM_WIDTH,
-            height: ITEM_HEIGHT - 240,
-            borderRadius: SIZES.xSmall
-        },
-        heartContainer: {
-            width: 30,
-            height: 30,
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            top: '4%',
-            right: '4%',
-            backgroundColor: 'white',
-            borderRadius: 50
-        },
-        heartIcon: {
-            height: 16,
-            width: 16,
-            tintColor: COLORS.moonstoneBlue
-        },
-        starContainer: {
-            width: 110,
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            paddingTop: 12,
-            paddingLeft: 4
-        },
-        starIcon: {
-            fontFamily: 'FontAwesome5Free-Solid',
-            color: COLORS.yellow[600],
-            verticalAlign: 'middle'
-        },
-        nameText: {
-            color: COLORS.moonstoneBlue,
+        titleText: {
+            color: theme.colors.soapBlue[600],
+            fontFamily: FONT.regular,
             fontSize: SIZES.medium,
-            paddingTop: SIZES.xSmall,
-            paddingLeft: 4,
-            letterSpacing: 0.62,
+            paddingTop: SIZES.small,
+            paddingLeft: SIZES.xSmall,
+            letterSpacing: 0.22,
             fontWeight: '400',
             textTransform: 'capitalize'
         },
         subText: {
-            color: COLORS.white[700],
-            fontSize: SIZES.smallMedium,
-            paddingLeft: 4,
-            paddingTop: 6,
-            textTransform: 'capitalize'
-        },
-        typeContainer: {
-            flexDirection: 'row',
-            paddingTop: 12,
-            paddingLeft: 8
-        },
-        typeIcon: {
-            fontFamily: 'FontAwesome5Free-Light',
-            verticalAlign: 'middle',
-            color: COLORS.hotPink,
-            fontSize: 16,
-            paddingRight: 10
-        },
-        typeText: {
-            color: COLORS.hotPink,
-            fontSize: SIZES.smallMedium,
+            color: theme.colors.white[600],
+            fontSize: SIZES.small,
+            paddingLeft: SIZES.small,
+            paddingTop: SIZES.xSmall,
+            letterSpacing: 0.12,
             textTransform: 'capitalize'
         },
     });
 
     return (
         <View style={styles.container}>
-            <Pressable onPress={() => handleSalonPress(item)}>
-                {/* <Image
-                    source={{ uri: item.banner_image }}
-                    style={styles.image}
-                /> */}
-
-                <View style={styles.heartContainer}>
-                    <Image
-                        // source={require('../../assets/icons/heart-ol.png')}
-                        style={styles.heartIcon}
-                    />
-                </View>
-
-                <View style={styles.starContainer}>
-                    <FontAwesome5 name="star" solid style={styles.starIcon} />
-                    <Text style={{ color: COLORS.moonstoneBlue }}> {index + 2}.2
-                        <Text style={{ color: COLORS.white[700] }}>   (699)</Text>
-                    </Text>
-                </View>
-
-                <Text style={styles.nameText}>{item.title} </Text>
-                <Text style={styles.subText}> {item.description} </Text>
-
-                <View style={styles.typeContainer}>
-                    <FontAwesome5 name="thumbs-up" style={styles.typeIcon} />
-                    <Text style={styles.typeText}> Rated high for quality of service </Text>
-                </View>
-
-                <View style={styles.typeContainer}>
-                    <FontAwesome5 name="wallet" style={styles.typeIcon} />
-                    <Text style={styles.typeText}> services starting from &#8377; 299 </Text>
-                </View>
-
-            </Pressable>
+            <TouchableOpacity onPress={() => handlePress(item)}
+                style={{ height: '100%' }}
+            >
+                <Text style={styles.titleText}>{item.title}</Text>
+                <Text style={styles.titleText}>{item.subject_id}</Text>
+                <Text style={styles.subText}>Due date</Text>
+                <Text style={styles.titleText}>{date.toLocaleString('en-US', formatOptions)}</Text>
+            </TouchableOpacity>
         </View>
     );
 };
 
+
 ListingItem.propTypes = {
-    item: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    index: PropTypes.number
+    item: PropTypes.object,
+    index: PropTypes.number,
+    theme: PropTypes.object
 };
 
 export default ListingItem;

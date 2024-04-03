@@ -9,12 +9,18 @@
 import { ActionTypes } from "../constants/action-types";
 
 const initialState = {
+    homeworkClassAndSubjectData: {},
     listData: [],
     loading: true
 };
 
 export const setTeacherHomeworksReducer = (state = initialState, action) => {
     switch (action.type) {
+        case ActionTypes.SET_HOMEWORK_CLASS_SUBJECT_DATA:
+            return {
+                ...state,
+                homeworkClassAndSubjectData: action.payload
+            };
         case ActionTypes.SET_TEACHER_HOMEWORK:
             return {
                 ...state,

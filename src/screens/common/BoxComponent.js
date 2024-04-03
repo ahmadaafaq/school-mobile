@@ -6,10 +6,11 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
+import PropTypes from 'prop-types';
+
 import { Dimensions, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
-import PropTypes from 'prop-types';
 
 import { FONT } from "../../assets/constants";
 

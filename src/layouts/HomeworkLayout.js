@@ -18,7 +18,7 @@ const HomeworkLayout = () => {
             />
             <Stack.Screen
                 name="homeworkForm"
-                options={{ headerTitle: "Homework Form" }}
+                options={{ headerTitle: "Create New" }}
             />
         </Stack>
     );

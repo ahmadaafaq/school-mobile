@@ -14,3 +14,10 @@ export const setSchoolSubjects = (subjects) => {
         payload: subjects
     };
 };
+
+export const setAllSubjects = (subjects) => {
+    return {
+        type: ActionTypes.SET_ALL_SUBJECTS,
+        payload: subjects
+    };
+};

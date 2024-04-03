@@ -8,22 +8,27 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
+import PropTypes from 'prop-types';
+
 import { useCallback, useEffect } from 'react';
 import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from 'expo-router';
+import { useTheme } from 'react-native-paper';
 
 import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
-import { COLORS, FONT, SIZES } from "../../../assets/constants";
+import { FONT, SIZES } from "../../../assets/constants";
 import { setMenuItem } from "../../../redux/actions/MenuItemAction";
 
 import { Utility } from "../../../utility";
 
-const ListingComponent = () => {
-    const dispatch = useDispatch();
+const ListingComponent = ({ class_id, class_name, section_id, section_name, subject_id, subject_name }) => {
     const { listData } = useSelector(state => state.teacherHomework);
+    const dispatch = useDispatch();
     const router = useRouter();
+    const theme = useTheme();
+
     const flatListOptimizationProps = {
         initialNumToRender: 0,
         maxToRenderPerBatch: 1,
@@ -35,12 +40,26 @@ const ListingComponent = () => {
             (_, index) => ({
                 index,
                 length: WINDOW_WIDTH,
-                offset: index * WINDOW_WIDTH,
+                offset: index * WINDOW_WIDTH
             }),
             []
         )
     };
     const { getAsyncStorage } = Utility();
+
+    const handlePress = () => {
+        router.push({
+            pathname: '/(homework)/homeworkForm',
+            params: {
+                class_id: class_id,
+                class_name: class_name,
+                section_id: section_id,
+                section_name: section_name,
+                subject_id: subject_id,
+                subject_name: subject_name
+            }
+        });
+    };
 
     useEffect(() => {
         const getSelectedMenu = async () => {
@@ -51,10 +70,44 @@ const ListingComponent = () => {
         getSelectedMenu();
     }, []);
 
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center"
+        },
+        touchableOpacityStyles: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '50%',
+            height: 70,
+            borderRadius: 18,
+            marginBottom: 15,
+            backgroundColor: theme.colors.brightBlue[500]
+        },
+        touchableOpacityText: {
+            color: theme.colors.white[500],
+            fontFamily: FONT.regular,
+            fontSize: 15,
+            letterSpacing: 0.12,
+            fontWeight: '400'
+        },
+        headerText: {
+            color: theme.colors.brightBlue[500],
+            fontSize: SIZES.mediumLarge,
+            fontFamily: FONT.medium,
+            marginBottom: 20,
+            letterSpacing: 0.12,
+            fontWeight: '400'
+        }
+    });
+
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => router.push('/(homework)/homeworkForm')}>
-                <Text> New Homewolk </Text>
+            <TouchableOpacity onPress={() => handlePress()}
+                style={styles.touchableOpacityStyles}
+            >
+                <Text style={styles.touchableOpacityText}> Create New Homework </Text>
             </TouchableOpacity>
             <Text style={styles.headerText}>
                 {listData?.count} Homeworks Found
@@ -62,35 +115,24 @@ const ListingComponent = () => {
             <ScrollView horizontal={true} style={{ width: "100%" }} >
                 <FlatList
                     data={listData?.rows}
-                    renderItem={ListingItem}
+                    renderItem={({ item, index }) => <ListingItem item={item} index={index} theme={theme} />}
                     pagingEnabled={true}
                     keyExtractor={(item) => item.id.toString()}
                     {...flatListOptimizationProps}
                 />
+
             </ScrollView>
         </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    text: {
-        fontSize: 20,
-        color: "#000000"
-    },
-    headerText: {
-        color: COLORS.moonstoneBlue,
-        fontSize: SIZES.mediumLarge,
-        fontFamily: FONT.medium,
-        paddingLeft: SIZES.medium,
-        paddingBottom: 4,
-        letterSpacing: 0.12,
-        fontWeight: '400'
-    }
-});
+ListingComponent.propTypes = {
+    class_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    class_name: PropTypes.string,
+    section_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    section_name: PropTypes.string,
+    subject_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    subject_name: PropTypes.string
+};
 
 export default ListingComponent;

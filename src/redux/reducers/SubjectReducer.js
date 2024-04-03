@@ -8,13 +8,29 @@
 
 import { ActionTypes } from "../constants/action-types";
 
+const initialSchoolState = {
+    listData: []
+};
+
 const initialState = {
     listData: []
 };
 
-export const setSchoolSubjectsReducer = (state = initialState, action) => {
+export const setSchoolSubjectsReducer = (state = initialSchoolState, action) => {
     switch (action.type) {
         case ActionTypes.SET_SCHOOL_SUBJECTS:
+            return {
+                ...state,
+                listData: action.payload
+            };
+        default:
+            return state;
+    }
+};
+
+export const setAllSubjectsReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_ALL_SUBJECTS:
             return {
                 ...state,
                 listData: action.payload
