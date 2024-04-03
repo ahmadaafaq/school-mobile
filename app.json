@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "school-crm-mobile",
+    "slug": "school-crm-mobile",
+    "scheme": "acme",
+    "splash": {
+      "image": "src/assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#194F92"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
