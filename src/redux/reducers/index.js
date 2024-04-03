@@ -13,6 +13,7 @@ import { menuItemReducer } from "./MenuItemReducer";
 import { setSchoolClassesReducer } from "./ClassReducer";
 import { setSchoolSectionsReducer } from "./SectionReducer";
 import { setSchoolSubjectsReducer } from "./SubjectReducer";
+import { setAllSubjectsReducer } from "./SubjectReducer";
 import { setAllStudentsReducer } from "./StudentReducer";
 import { setStudentsReducer } from "./StudentReducer";
 import { setAllTeachersReducer } from "./TeacherReducer";
@@ -29,6 +30,7 @@ const reducers = combineReducers({
     schoolClasses: setSchoolClassesReducer,
     schoolSections: setSchoolSectionsReducer,
     schoolSubjects: setSchoolSubjectsReducer,
+    allSubjects: setAllSubjectsReducer,
     toastInfo: displayToastReducer
 });
 

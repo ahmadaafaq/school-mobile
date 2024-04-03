@@ -60,25 +60,26 @@ export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
     );
 };
 
-const CustomDropdown = ({ data, placeholder, setSelected, width }) => {
+const CustomDropdown = ({ data, placeholder, setSelected, search, width = 'auto', height = 'auto' }) => {
     const theme = useTheme();
 
     const styles = StyleSheet.create({
         boxStyles: {
-            borderWidth: 0,
-            borderRadius: 4,
             width: width,
-            margin: SIZES.smallMedium,
+            height: height,
+            borderWidth: 0,
+            borderRightWidth: 1,
+            borderRadius: 0,
             backgroundColor: theme.colors.whiteSmoke[500]
         },
         dropdownStyles: {
-            width: width,
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
-            borderRadius: 8,
-            marginTop: -10,
-            marginLeft: 16,
-            borderColor: theme.colors.whiteSmoke[500]
+            width: width - 5,
+            borderWidth: 0,
+            borderBottomWidth: 1,
+            borderRadius: 0,
+            marginTop: -8,
+            marginLeft: 1
+            // borderColor: theme.colors.whiteSmoke[500]
         }
     });
 
@@ -88,16 +89,19 @@ const CustomDropdown = ({ data, placeholder, setSelected, width }) => {
                 setSelected={(val) => setSelected(val)}
                 data={data}
                 save="value"
+                search={search}
                 placeholder={placeholder}
                 placeholderTextColor={theme.colors.whiteSmoke[400]}
                 fontFamily={FONT.regular}
                 boxStyles={styles.boxStyles}
+                inputStyles={{ color: theme.colors.whiteSmoke[700], fontFamily: FONT.medium }}
                 dropdownStyles={styles.dropdownStyles}
                 dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
-                inputStyles={{ color: theme.colors.whiteSmoke[700] }}
-            // dropdownTextStyles={{
-            // color: theme.colors.white[600]
-            // }}
+                dropdownTextStyles={{
+                    color: theme.colors.white[700],
+                    textAlign: 'center',
+                    fontFamily: FONT.medium
+                }}
             />
         </SafeAreaView>
     );
@@ -113,7 +117,9 @@ CustomDropdown.propTypes = {
     data: PropTypes.array,
     placeholder: PropTypes.string,
     setSelected: PropTypes.func,
-    width: PropTypes.string
+    search: PropTypes.bool,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 export default CustomDropdown;

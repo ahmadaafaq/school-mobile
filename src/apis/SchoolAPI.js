@@ -74,13 +74,11 @@ export const SchoolAPI = {
   /** Get school class and section detail from database
    */
   getSchoolClasses: async (school_id, cancel = false) => {
+    const userRole = await getAsyncStorage("auth");
     const { data: response } = await api.request({
       url: `/get-school-classes`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "GET",
-      params: getAsyncStorage("auth")?.role === 1 ? { school_id: school_id } : null,    //this is included in backend req.query
+      params: userRole?.role === 1 ? { school_id: school_id } : null,    //this is included in backend req.query
       signal: cancel ? cancelApiObject[this.getSchoolClasses.name].handleRequestCancellation().signal : undefined
     });
     return response;
