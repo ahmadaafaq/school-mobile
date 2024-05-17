@@ -15,13 +15,13 @@ import { setSchoolSectionsReducer } from "./SectionReducer";
 import { setSchoolSubjectsReducer } from "./SubjectReducer";
 import { setAllSubjectsReducer } from "./SubjectReducer";
 import { setAllStudentsReducer } from "./StudentReducer";
-import { setStudentsReducer } from "./StudentReducer";
+import { setSchoolStudentsReducer } from "./StudentReducer";
 import { setAllTeachersReducer } from "./TeacherReducer";
 import { setTeachersReducer } from "./TeacherReducer";
 import { setTeacherHomeworksReducer } from "./HomeworkReducer";
 
 const reducers = combineReducers({
-    someStudents: setStudentsReducer,
+    schoolStudents: setSchoolStudentsReducer,
     allStudents: setAllStudentsReducer,
     allTeachers: setAllTeachersReducer,
     someTeachers: setTeachersReducer,

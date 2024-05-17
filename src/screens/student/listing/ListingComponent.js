@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -9,12 +7,11 @@
 */
 
 import { useCallback, useEffect } from 'react';
-import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import { FlatList, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from 'expo-router';
 import { useTheme } from 'react-native-paper';
 
-import ListingItem, { WINDOW_WIDTH } from './ListingItem';
+import { ListingTable, WINDOW_WIDTH } from './ListingTable';
 
 import { FONT, SIZES } from "../../../assets/constants";
 import { setMenuItem } from "../../../redux/actions/MenuItemAction";
@@ -23,9 +20,8 @@ import { Utility } from "../../../utility";
 
 const ListingComponent = () => {
     const dispatch = useDispatch();
-    const router = useRouter();
     const theme = useTheme();
-    const { listData } = useSelector(state => state.teacherHomework);
+    const { listData } = useSelector(state => state.schoolStudents);
 
     const flatListOptimizationProps = {
         initialNumToRender: 0,
@@ -44,10 +40,6 @@ const ListingComponent = () => {
         )
     };
     const { getAsyncStorage } = Utility();
-
-    const handlePress = () => {
-        router.push('/(homework)/homeworkForm');
-    };
 
     useEffect(() => {
         const getSelectedMenu = async () => {
@@ -92,18 +84,13 @@ const ListingComponent = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => handlePress()}
-                style={styles.touchableOpacityStyles}
-            >
-                <Text style={styles.touchableOpacityText}> Create New Homework </Text>
-            </TouchableOpacity>
             <Text style={styles.headerText}>
-                {listData?.count} Homeworks Found
+                {listData?.count} Students Found
             </Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
                 <FlatList
                     data={listData?.rows}
-                    renderItem={({ item, index }) => <ListingItem item={item} index={index} theme={theme} />}
+                    renderItem={({ item, index }) => <ListingTable item={item} index={index} theme={theme} />}
                     pagingEnabled={true}
                     keyExtractor={(item) => item.id.toString()}
                     {...flatListOptimizationProps}

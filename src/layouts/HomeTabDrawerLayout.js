@@ -40,22 +40,21 @@ const DrawerLayout = () => {
                     drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />
                 }}
             />
-            {/* <Drawer.Screen
-                name='(student)'
+            <Drawer.Screen
+                name='teacherListing'
                 options={{
-                    title: "Student",
+                    title: "",
                     headerShadowVisible: false,
                     headerTintColor: theme.colors.yaleBlue[500],
                     headerStyle: { backgroundColor: theme.colors.grayishWhite[500], borderBottomWidth: 0 },
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.large },
-                    drawerStyle: { fontSize: 12, backgroundColor: theme.colors.whiteSnow[500] },
-                    drawerIcon: ({ color }) => <FontAwesome5 name="user-graduate" size={18} color={color} />
+                    drawerStyle: { fontSize: 12, backgroundColor: theme.colors.whiteSnow[500] }
                 }}
-            /> */}
+            />
             <Drawer.Screen
-                name='teacherListing'
+                name='(student)'
                 options={{
-                    title: "Teacher",
+                    title: "Students",
                     headerShadowVisible: false,
                     headerTintColor: theme.colors.yaleBlue[500],
                     headerStyle: { backgroundColor: theme.colors.grayishWhite[500], borderBottomWidth: 0 },

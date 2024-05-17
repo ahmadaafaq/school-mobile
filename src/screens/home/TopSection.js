@@ -8,7 +8,7 @@
 */
 
 import { Dimensions, StyleSheet, Image, View } from 'react-native';
-import { Card, Divider, Text, useTheme } from 'react-native-paper';
+import { Card, Text, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 import { SIZES, FONT } from "../../assets/constants";
@@ -16,7 +16,7 @@ import { SIZES, FONT } from "../../assets/constants";
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const TopSection = ({ title, content, bg, imageSource, rollno, teacherName }) => {
+const TopSection = ({ schoolName, title, content, bg, imageSource, rollno, teacherName }) => {
     const theme = useTheme();
 
     const styles = StyleSheet.create({
@@ -78,12 +78,12 @@ const TopSection = ({ title, content, bg, imageSource, rollno, teacherName }) =>
             style={styles.container}
         >
             <View>
-                <Text style={styles.headStyle}>ST FRANCES CONVENT SCHOOL</Text>
-                <View style={{ width: 200, height: 1, backgroundColor: theme.colors.whiteSmoke[500], marginBottom: 30, marginLeft: 100 }}></View>
+                <Text style={styles.headStyle}>{schoolName}</Text>
+                <View style={{ width: WINDOW_WIDTH - 60, height: 1, backgroundColor: theme.colors.whiteSmoke[500], margin: 20, marginTop: 5 }}></View>
             </View>
             <View>
                 <View style={styles.viewStyle}>
-                    <Image source={imageSource} style={styles.imageStyle} />
+                    <Image alt="No Photo Given" style={styles.imageStyle} />
                 </View>
                 <View style={styles.textStyle}>
                     <Text style={styles.titleStyle}>{title}</Text>

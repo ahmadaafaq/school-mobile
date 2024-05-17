@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const UserAPI = {
   /** Login user after verification
@@ -30,9 +27,6 @@ export const UserAPI = {
   profile: async (cancel = false) => {
     return await api.request({
       url: `/profile`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "GET",
       signal: cancel ? cancelApiObject[this.profile.name].handleRequestCancellation().signal : undefined
     });
@@ -45,9 +39,6 @@ export const UserAPI = {
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
       url: `/get-users?page=${page}&size=${size}${queryParam}${searchParam}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth")?.token
-      },
       method: "GET",
       signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });
@@ -59,9 +50,6 @@ export const UserAPI = {
   register: async (user, cancel = false) => {
     return await api.request({
       url: `/register`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: user,
       signal: cancel ? cancelApiObject[this.register.name].handleRequestCancellation().signal : undefined
@@ -73,9 +61,6 @@ export const UserAPI = {
   update: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-user`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "PATCH",
       data: fields,
       signal: cancel ? cancelApiObject[this.update.name].handleRequestCancellation().signal : undefined
@@ -87,9 +72,6 @@ export const UserAPI = {
   changeUserPw: async (fields, cancel = false) => {
     return await api.request({
       url: `/change-password`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: fields,
       signal: cancel ? cancelApiObject[this.changeUserPw.name].handleRequestCancellation().signal : undefined

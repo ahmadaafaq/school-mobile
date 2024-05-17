@@ -24,10 +24,10 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
         container: {
             justifyContent: 'center',
             alignItems: 'center',
-            width: WINDOW_WIDTH / 5.5,
-            height: WINDOW_HEIGHT / 9.5,
+            width: WINDOW_WIDTH / 5.2,
+            height: WINDOW_HEIGHT / 10,
             marginBottom: mb,
-            padding: 20,
+            padding: 10,
             backgroundColor: bg,
             borderRadius: 20
         },

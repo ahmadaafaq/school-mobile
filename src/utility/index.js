@@ -46,6 +46,20 @@ export const Utility = () => {
         }
     };
 
+    /** Capitalizes the first character of each word in a given string.
+     * @param {string} str - The input string to capitalize.
+     * @returns {string} - The string with the first character of each word capitalized.
+     */
+    const capitalizeAlphabet = (str) => {
+        if (!str) {
+            return '';
+        }
+        // Use a regular expression to match the first character of each word and capitalize it
+        return str.replace(/\b\w/g, function (char) {
+            return char.toUpperCase();
+        });
+    };
+
     /** Creates a school code based on the provided name.
      * @param {string} name - The name used to generate the school code.
      * @returns {string} - The generated school code.
@@ -378,6 +392,7 @@ export const Utility = () => {
     return {
         addClassKeyword,
         appendSuffix,
+        capitalizeAlphabet,
         createSchoolCode,
         createSession,
         customSort,

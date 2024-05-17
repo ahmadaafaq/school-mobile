@@ -28,9 +28,6 @@ export const StudentAPI = {
 
     const { data: response } = await api.request({
       url: `/get-students?page=${page}&size=${size}${queryParam}${searchParam}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth")?.token
-      },
       method: "GET",
       signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });

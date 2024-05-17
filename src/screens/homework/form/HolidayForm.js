@@ -30,15 +30,14 @@ const HolidayForm = () => {
     const theme = useTheme();
 
     const handlePress = (values) => {
-        console.log('Form submitted:', formData);
-        // Perform any action with form values, e.g., submit to server
-        // Reset form after submission
-        // setFormData({
-        //     ...formData,
-        //     ...values
-        // });
+        if (formData.title && formData.description) {
+            setFormData({
+                ...formData,
+                ...values
+            });
+        }
     };
-    console.log('Form not submitted:', formData);
+    console.log('Formdata:', formData);
 
     return (
         <View style={{ margin: 20 }}>

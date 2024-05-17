@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, usePathname } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
@@ -25,26 +25,12 @@ import { setSchoolClasses } from "../../../redux/actions/ClassAction";
 import { setSchoolSections } from "../../../redux/actions/SectionAction";
 import { setSchoolSubjects } from "../../../redux/actions/SubjectAction";
 import { setAllSubjects } from "../../../redux/actions/SubjectAction";
-import { setTeacherHomeworks } from "../../../redux/actions/HomeworkAction";
+import { setTeacherHomeworks, setHomeworkClassData, setHomeworkSectionData, setHomeworkSubjectData } from "../../../redux/actions/HomeworkAction";
 import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
 const HomeworkListing = () => {
-    const [classData, setClassData] = useState([]);
-    const [selectedClassObj, setSelectedClassObj] = useState({
-        selectedClass: {
-            class_id: '',
-            class_name: ''
-        },
-        selectedSection: {
-            section_id: '',
-            section_name: ''
-        },
-        selectedSubject: {
-            id: '',
-            name: ''
-        }
-    });
+    const [classsData, setClasssData] = useState([]);
     const [showClassModal, setShowClassModal] = useState(false);      //for modal visibility
     const [showSectionModal, setShowSectionModal] = useState(false);
     const [showSubjectModal, setShowSubjectModal] = useState(false);
@@ -54,9 +40,11 @@ const HomeworkListing = () => {
     const schoolSubjects = useSelector(state => state.schoolSubjects);
     const allSubjects = useSelector(state => state.allSubjects);
     const teacherHomework = useSelector(state => state.teacherHomework);
+    const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
 
     const dispatch = useDispatch();
     const theme = useTheme();
+    const pathname = usePathname();
     const { getPaginatedData } = useCommon();
     const { fetchAndSetSchoolData, fetchAndSetAll, findMultipleById, setAsyncStorage } = Utility();
 
@@ -86,29 +74,39 @@ const HomeworkListing = () => {
 
     useEffect(() => {
         if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClassData);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData);
         }
     }, []);
 
     useEffect(() => {
-        const getAndSetSections = () => {
-            const classSections = classData?.filter(obj => obj.class_id === selectedClassObj?.selectedClass?.class_id);
-            const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
-            dispatch(setSchoolSections(selectedSections));
-            console.log('getandsetsections called', selectedSections, classSections);
-        };
-        getAndSetSections();
-    }, [selectedClassObj?.selectedClass?.class_id, classData?.length]);
+        if (pathname === 'homeworkListing') {
+            if (Object.values(sectionData) && Object.values(subjectData)) {
+                dispatch(setHomeworkSectionData({}));
+                dispatch(setHomeworkSubjectData({}));
+                console.log(pathname, 'pathname')
+            }
+            const getAndSetSections = () => {
+                const classSections = classsData?.filter(obj => obj.class_id === classData.class_id);
+                const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
+                dispatch(setSchoolSections(selectedSections));
+                console.log('getandsetsections called listing', selectedSections, classSections);
+            };
+            getAndSetSections();
+        }
+    }, [classData?.class_id, classsData?.length]);
 
     useEffect(() => {
+        if (Object.values(sectionData)) {
+            dispatch(setHomeworkSubjectData({}));
+        }
         const getAndSetSubjects = () => {
-            const sectionSubjects = classData?.filter(obj => obj.class_id === selectedClassObj?.selectedClass?.class_id && obj.section_id === selectedClassObj?.selectedSection?.section_id);
+            const sectionSubjects = classsData?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
             const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
             dispatch(setSchoolSubjects(selectedSubjects));
             console.log('getandsetsubjects called', selectedSubjects, sectionSubjects);
         };
         getAndSetSubjects();
-    }, [selectedClassObj?.selectedClass?.class_id, selectedClassObj?.selectedSection?.section_id, allSubjects?.listData?.length, classData.length]);
+    }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, classsData.length]);
 
     const styles = StyleSheet.create({
         container: {
@@ -134,30 +132,24 @@ const HomeworkListing = () => {
                         <CustomPressable
                             onPress={() => setShowClassModal(!showClassModal)}
                             title="Class"
-                            value={selectedClassObj.selectedClass?.class_name}
+                            value={classData.class_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
                         />
                         <CustomPressable
                             onPress={() => setShowSectionModal(!showSectionModal)}
                             title="Section"
-                            value={selectedClassObj.selectedSection?.section_name}
+                            value={sectionData.section_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
                         />
                         <CustomPressable
                             onPress={() => setShowSubjectModal(!showSubjectModal)}
                             title="Subject"
-                            value={selectedClassObj.selectedSubject?.name}
+                            value={subjectData.name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
                         />
                     </View>
                 </View>
-                <ListingComponent class_id={selectedClassObj.selectedClass?.class_id}
-                    class_name={selectedClassObj.selectedClass?.class_name}
-                    section_id={selectedClassObj.selectedSection?.section_id}
-                    section_name={selectedClassObj.selectedSection?.section_name}
-                    subject_id={selectedClassObj.selectedSubject?.id}
-                    subject_name={selectedClassObj.selectedSubject?.name}
-                />
+                <ListingComponent />
             </ScrollView>
 
             {showClassModal && (
@@ -168,12 +160,11 @@ const HomeworkListing = () => {
                         heightNumber={1.6}
                         data={schoolClasses.listData}
                         headerText="Classes"
-                        obj='selectedClass'
                         objId='class_id'
                         objValue='class_name'
                         showModal={showClassModal}
                         setShowModal={setShowClassModal}
-                        setSelectedObj={setSelectedClassObj}
+                        action={setHomeworkClassData}
                     />
                 </View>
             )}
@@ -185,12 +176,11 @@ const HomeworkListing = () => {
                         heightNumber={1.5}
                         data={schoolSections.listData}
                         headerText="Sections"
-                        obj='selectedSection'
                         objId='section_id'
                         objValue='section_name'
                         showModal={showSectionModal}
                         setShowModal={setShowSectionModal}
-                        setSelectedObj={setSelectedClassObj}
+                        action={setHomeworkSectionData}
                     />
                 </View>
             )}
@@ -202,12 +192,11 @@ const HomeworkListing = () => {
                         heightNumber={2}
                         data={schoolSubjects.listData}
                         headerText="Subjects"
-                        obj='selectedSubject'
                         objId='id'
                         objValue='name'
                         showModal={showSubjectModal}
                         setShowModal={setShowSubjectModal}
-                        setSelectedObj={setSelectedClassObj}
+                        action={setHomeworkSubjectData}
                     />
                 </View>
             )}

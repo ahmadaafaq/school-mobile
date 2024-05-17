@@ -8,16 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
-getAsyncStorage('auth')
-    .then(data => {
-        console.log('Retrieved auth data:', data);
-    })
-    .catch(error => {
-        console.log('Error retrieving data:', error);
-    });
 
 export const HomeworkAPI = {
     /** Get homeworks from the database that meets the specified query parameters

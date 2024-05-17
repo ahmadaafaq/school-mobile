@@ -21,13 +21,13 @@ const CustomPressable = ({ onPress, title, value, iconSource }) => {
         icon: {
             height: SIZES.medium,
             width: SIZES.medium,
-            marginTop: SIZES.xSmall,
-            marginLeft: title !== 'Class' ? -5 : null,
+            marginTop: SIZES.small,
             tintColor: theme.colors.brightBlue[300]
         },
         touchableOpacityStyles: {
             height: 70,
-            width: title !== 'Class' ? '34%' : '32%',
+            // width: title !== 'Class' ? '34%' : '32%',
+            width: '50%',
             backgroundColor: theme.colors.whiteSmoke[500],
             borderColor: theme.colors.grayishWhite[700],
             borderRightWidth: title !== 'Subject' ? 1 : 0,
@@ -37,25 +37,28 @@ const CustomPressable = ({ onPress, title, value, iconSource }) => {
         titleTextStyles: {
             color: theme.colors.grayishWhite[700],
             fontFamily: FONT.regular,
+            fontSize: 16,
             marginLeft: 20,
             marginRight: 35
         },
         valueTextStyles: {
             color: theme.colors.grayishWhite[700],
             fontFamily: FONT.regular,
-            fontSize: 12,
-            marginTop: -5,
-            marginLeft: 20
+            fontSize: 13,
+            marginTop: -4
         }
     });
 
     return (
         <TouchableOpacity onPress={onPress} style={styles.touchableOpacityStyles}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', height: value ? '45%' : '90%' }}>
+            <View style={{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around',
+                height: value ? '45%' : '90%'
+            }}>
                 <Text style={styles.titleTextStyles}>{title}</Text>
                 <Image source={iconSource} style={styles.icon} />
             </View>
-            <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 40 }}>
                 <Text style={styles.valueTextStyles}>{value}</Text>
             </View>
         </TouchableOpacity>

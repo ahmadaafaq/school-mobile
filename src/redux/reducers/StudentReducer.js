@@ -18,9 +18,9 @@ const allState = {
     loading: true
 };
 
-export const setStudentsReducer = (state = initialState, action) => {
+export const setSchoolStudentsReducer = (state = initialState, action) => {
     switch (action.type) {
-        case ActionTypes.SET_STUDENTS:
+        case ActionTypes.SET_SCHOOL_STUDENTS:
             return {
                 ...state,
                 listData: action.payload.listData,
