@@ -15,9 +15,23 @@ export const setTeacherHomeworks = (teacherHw) => {
     };
 };
 
-export const setHomeworkClassAndSubjectData = (dataObj) => {
+export const setHomeworkClassData = (dataObj) => {
     return {
-        type: ActionTypes.SET_HOMEWORK_CLASS_SUBJECT_DATA,
+        type: ActionTypes.SET_HOMEWORK_CLASS_DATA,
+        payload: dataObj
+    };
+};
+
+export const setHomeworkSectionData = (dataObj) => {
+    return {
+        type: ActionTypes.SET_HOMEWORK_SECTION_DATA,
+        payload: dataObj
+    };
+};
+
+export const setHomeworkSubjectData = (dataObj) => {
+    return {
+        type: ActionTypes.SET_HOMEWORK_SUBJECT_DATA,
         payload: dataObj
     };
 };

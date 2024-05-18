@@ -7,96 +7,95 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { usePathname } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
 import CustomPressable from '../../common/CustomPressable';
-import HolidayForm from './HolidayForm';
+import LoadingAnimationModal from "../../common/LoadingAnimationModal";
+import ListingComponent from './ListingComponent';
 
-import { SIZES } from '../../../assets/constants';
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
 import { setSchoolSections } from "../../../redux/actions/SectionAction";
-import { setSchoolSubjects } from "../../../redux/actions/SubjectAction";
-import { setAllSubjects } from "../../../redux/actions/SubjectAction";
-import { setHomeworkClassData, setHomeworkSectionData, setHomeworkSubjectData } from "../../../redux/actions/HomeworkAction";
+import { setSchoolStudents } from "../../../redux/actions/StudentAction";
+import { setHomeworkClassData, setHomeworkSectionData } from "../../../redux/actions/HomeworkAction";
+import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
-const HomeworkForm = () => {
-    const [classsData, setClasssData] = useState([]);
+const StudentListing = () => {
+    const [dbClassObj, setDbClassObj] = useState([]);
     const [showClassModal, setShowClassModal] = useState(false);      //for modal visibility
     const [showSectionModal, setShowSectionModal] = useState(false);
-    const [showSubjectModal, setShowSubjectModal] = useState(false);
-
     const schoolClasses = useSelector(state => state.schoolClasses);
     const schoolSections = useSelector(state => state.schoolSections);
-    const schoolSubjects = useSelector(state => state.schoolSubjects);
-    const allSubjects = useSelector(state => state.allSubjects);
-    const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
+    const schoolStudents = useSelector(state => state.schoolStudents);
+    const { classData, sectionData } = useSelector(state => state.teacherHomework);
 
     const dispatch = useDispatch();
     const theme = useTheme();
-    const pathname = usePathname();
-    const { fetchAndSetSchoolData, fetchAndSetAll, findMultipleById } = Utility();
+    const { getPaginatedData } = useCommon();
+    const { fetchAndSetSchoolData, setAsyncStorage } = Utility();
 
-    useEffect(() => {
-        if (!allSubjects?.listData?.length) {
-            fetchAndSetAll(dispatch, setAllSubjects, API.SubjectAPI);
-        }
+    // writing this function separately because an effect function must no return anything besides a function, used for cleanup, 
+    // you are returning promise, getting this error when calling directly
+    const setMenuInAsyncStorage = useCallback(() => {
+        setAsyncStorage('menu', { selected: 'Student' });
     }, []);
 
+    useFocusEffect(
+        useCallback(() => {
+            setMenuInAsyncStorage();
+        }, [])
+    );
+
     useEffect(() => {
-        if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData);
+        if (!schoolStudents?.listData?.length) {
+            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI);
+        }
+    }, [schoolStudents?.listData?.length]);
+
+    useEffect(() => {
+        if (!schoolClasses?.listData?.length || !schoolSections?.listData?.length) {
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj);
         }
     }, []);
 
     useEffect(() => {
         const getAndSetSections = () => {
-            const classSections = classsData?.filter(obj => obj.class_id === classData.class_id);
+            const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
             dispatch(setSchoolSections(selectedSections));
-            console.log('getandsetsections called form', selectedSections, classSections);
+            console.log('getandsetsections called listing', selectedSections, classSections);
         };
         getAndSetSections();
-    }, [classData?.class_id, classsData?.length]);
-
-    useEffect(() => {
-        const getAndSetSubjects = () => {
-            const sectionSubjects = classsData?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
-            const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
-            dispatch(setSchoolSubjects(selectedSubjects));
-            console.log('getandsetsubjects called form', selectedSubjects, sectionSubjects);
-        };
-        getAndSetSubjects();
-    }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, classsData.length]);
+    }, [dbClassObj?.length, classData?.class_id]);
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
+            paddingVertical: 2,
             backgroundColor: theme.colors.grayishWhite[500]
         },
-        icon: {
-            height: SIZES.medium,
-            width: SIZES.medium,
-            marginTop: SIZES.xSmall,
-            tintColor: theme.colors.brightBlue[300]
+        boxContainer: {
+            flexDirection: 'row',
+            marginVertical: 10
         }
     });
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={theme.colors.magicMint[500]} />
-            <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}
-                style={{ flexGrow: 1 }}
-            >
+            <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]} style={{ flexGrow: 1 }}>
                 <View>
-                    <View style={{ flexDirection: 'row', shadowColor: theme.colors.brightBlue[500], marginBottom: 20 }}>
+                    <View style={{
+                        flexDirection: 'row', justifyContent: 'center',
+                        shadowColor: theme.colors.brightBlue[500], marginBottom: 20
+                    }}>
                         <CustomPressable
                             onPress={() => setShowClassModal(!showClassModal)}
                             title="Class"
@@ -109,15 +108,9 @@ const HomeworkForm = () => {
                             value={sectionData.section_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
                         />
-                        <CustomPressable
-                            onPress={() => setShowSubjectModal(!showSubjectModal)}
-                            title="Subject"
-                            value={subjectData.name}
-                            iconSource={require('../../../assets/icons/down-arrow-lite.png')}
-                        />
                     </View>
                 </View>
-                <HolidayForm />
+                <ListingComponent />
             </ScrollView>
 
             {showClassModal && (
@@ -125,7 +118,7 @@ const HomeworkForm = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.7}
+                        heightNumber={1.6}
                         data={schoolClasses.listData}
                         headerText="Classes"
                         objId='class_id'
@@ -136,13 +129,12 @@ const HomeworkForm = () => {
                     />
                 </View>
             )}
-
             {showSectionModal && (
                 <View style={{
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.6}
+                        heightNumber={1.5}
                         data={schoolSections.listData}
                         headerText="Sections"
                         objId='section_id'
@@ -154,24 +146,9 @@ const HomeworkForm = () => {
                 </View>
             )}
 
-            {showSubjectModal && (
-                <View style={{
-                    width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
-                }}>
-                    <CustomModal
-                        heightNumber={2.1}
-                        data={schoolSubjects.listData}
-                        headerText="Subjects"
-                        objId='id'
-                        objValue='name'
-                        showModal={showSubjectModal}
-                        setShowModal={setShowSubjectModal}
-                        action={setHomeworkSubjectData}
-                    />
-                </View>
-            )}
+            {schoolStudents?.loading ? <LoadingAnimationModal /> : null}
         </SafeAreaView>
-    );
+    )
 };
 
-export default HomeworkForm;
+export default StudentListing;

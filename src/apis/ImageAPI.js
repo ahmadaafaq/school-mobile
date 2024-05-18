@@ -29,14 +29,14 @@ export const ImageAPI = {
 
     /** Store image name in the database
      */
-    createImage: async (image_src, cancel = false) => {
+    createImage: async (image_data, cancel = false) => {
         return await api.request({
             url: `/create-image`,
             headers: {
                 "x-access-token": getAsyncStorage("auth").token
             },
             method: "POST",
-            data: image_src,
+            data: image_data,
             signal: cancel ? cancelApiObject[this.createImage.name].handleRequestCancellation().signal : undefined
         });
     },
@@ -72,6 +72,7 @@ export const ImageAPI = {
     /** Upload image to the folder created by nodejs
      */
     uploadImage: async (data, cancel = false) => {
+        console.log(">>>>",data);
         return await api.request({
             url: `/upload-image`,
             headers: {
@@ -81,6 +82,20 @@ export const ImageAPI = {
             method: "POST",
             data: data,
             signal: cancel ? cancelApiObject[this.uploadImage.name].handleRequestCancellation().signal : undefined
+        });
+    },
+
+    uploadMobileImage: async (data, cancel = false) => {
+        console.log(">>>>",data);
+        return await api.request({
+            url: `/upload-mobile-image`,
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "x-access-token": getAsyncStorage("auth").token
+            },
+            method: "POST",
+            data: data,
+            signal: cancel ? cancelApiObject[this.uploadMobileImage.name].handleRequestCancellation().signal : undefined
         });
     }
 };

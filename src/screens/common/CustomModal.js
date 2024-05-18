@@ -13,11 +13,13 @@ import { Dimensions, View, Text, TouchableOpacity, StyleSheet, Animated, Easing 
 import { Ionicons } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from '../../assets/constants';
+import { useDispatch, useSelector } from 'react-redux';
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const CustomModal = ({ data, heightNumber, headerText, obj, objId, objValue, showModal, setShowModal, setSelectedObj = null }) => {
-
+const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModal, setShowModal, action = null }) => {
+    const dispatch = useDispatch();
+    const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
     const translateY = useMemo(() => new Animated.Value(150), []);
 
     const animatedStyle = {
@@ -52,14 +54,14 @@ const CustomModal = ({ data, heightNumber, headerText, obj, objId, objValue, sho
 
     const handlePress = (item) => {
         setShowModal(!showModal);
-        setSelectedObj(prevState => ({
-            ...prevState,
-            [obj]: {
+        if (action) {
+            dispatch(action({
                 [objId]: item[objId],
                 [objValue]: item[objValue]
-            }
-        }));
+            }));
+        }
     };
+    console.log(classData, sectionData, subjectData, 'homeweork data')
 
     const styles = StyleSheet.create({
         container: {
@@ -94,10 +96,6 @@ const CustomModal = ({ data, heightNumber, headerText, obj, objId, objValue, sho
             marginBottom: 20,
             fontWeight: '700'
         },
-        subContainerContent: {
-            // flexDirection: 'column',
-            // justifyContent: 'space-between'
-        },
         textStyle: {
             color: COLORS.black[600],
             fontFamily: FONT.medium,
@@ -125,7 +123,7 @@ const CustomModal = ({ data, heightNumber, headerText, obj, objId, objValue, sho
                 {data.map((item, index) => {
                     return (
                         <TouchableOpacity onPress={() => handlePress(item)}
-                            style={styles.subContainerContent} key={index}>
+                            key={index}>
                             <Text style={styles.textStyle}>{item[objValue]} </Text>
                         </TouchableOpacity>
                     )
@@ -139,13 +137,11 @@ CustomModal.propTypes = {
     data: PropTypes.array,
     heightNumber: PropTypes.number,
     headerText: PropTypes.string,
-    obj: PropTypes.string,
     objId: PropTypes.string,
     objValue: PropTypes.string,
     showModal: PropTypes.bool,
     setShowModal: PropTypes.func,
-    selectedObj: PropTypes.object,
-    setSelectedObj: PropTypes.func
+    action: PropTypes.func
 };
 
 export default CustomModal;

@@ -10,7 +10,7 @@
 import PropTypes from 'prop-types';
 
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { HelperText, useTheme, TextInput, Divider } from 'react-native-paper';
+import { useTheme, TextInput } from 'react-native-paper';
 
 import { ALIGNMENT, SIZES } from '../../theme/theme';
 
@@ -44,7 +44,7 @@ const CustomInputBox = ({
     return (
         <SafeAreaView style={styles.inputContainer}>
             <TextInput
-                style={{ flex: 1, height: name !== "description" ? 50 : 150, color: theme.colors.white[500] }}
+                style={{ flex: 1, color: theme.colors.white[500] }}
                 name={name}
                 multiline={name === 'description'}
                 placeholder={placeholder}
