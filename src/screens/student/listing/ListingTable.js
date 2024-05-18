@@ -13,7 +13,9 @@ import { Alert, SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableOpaci
 import { Camera } from 'expo-camera';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { FONT, SIZES } from "../../../assets/constants";
+import API from "../../../apis";
+import { COLORS, FONT, SIZES } from "../../../assets/constants";
+import { Utility } from "../../../utility";
 
 export const WINDOW_WIDTH = Dimensions.get('window').width;
 
@@ -23,8 +25,9 @@ export const ListingTable = ({ item, index, theme }) => {
     // const [hasPermission, setHasPermission] = useState(null);
     const [cameraVisible, setCameraVisible] = useState(false);
     const [capturedImage, setCapturedImage] = useState(null);
-    const [previewVisible, setPreviewVisible] = useState(false)
+    const [previewVisible, setPreviewVisible] = useState(false);
     const cameraRef = useRef(null);
+    const { formatImageName } = Utility();
 
     const handleOpenCamera = async () => {
         const { status } = await Camera.requestCameraPermissionsAsync();
@@ -46,34 +49,50 @@ export const ListingTable = ({ item, index, theme }) => {
         }
     };
 
+    const uploadImg = () => {
+        let nameArray = capturedImage.uri.split("/");
+        let name = nameArray[nameArray.length - 1];
+        console.log('name', name);
+
+        let formattedName = formatImageName(name);
+        const formBody = new FormData();
+        formBody.append('image', {
+            uri: capturedImage.uri,
+            name: formattedName,
+            type: "image/jpeg",
+        });
+
+        console.log('capturedImage', formBody._parts[0]);
+
+        API.ImageAPI.uploadMobileImage({ image: formBody, imageName: formattedName });
+        // API.ImageAPI.createImage({
+        //     image_src: formattedName,
+        //     parent_id: item.id,
+        //     parent: 'student',
+        //     type: 'normal'
+        // });
+    }
+
     const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            height: WINDOW_HEIGHT / 5.5,
-            width: WINDOW_WIDTH - 25,
-            borderWidth: 2,
-            borderColor: 'red',
-            paddingHorizontal: 10,
-            margin: 15,
-        },
         plusBox: {
-            height: WINDOW_HEIGHT / 8,
+            height: WINDOW_HEIGHT / 4,
             width: WINDOW_WIDTH - 250,
-            borderRadius: 10,
-            backgroundColor: '#e0e0e0',
+            borderRadius: 5,
+            backgroundColor: '#d4ebf2',
             justifyContent: 'center',
             alignItems: 'center',
-            borderWidth: 2
+            borderWidth: 1,
+            margin: 7
+
         },
         plusButton: {
             width: 40,
             height: 40,
             borderRadius: 30,
-            backgroundColor: '#007AFF',
+            backgroundColor: 'grey',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+
         },
         camera: {
             flex: 1,
@@ -81,9 +100,9 @@ export const ListingTable = ({ item, index, theme }) => {
         cameraButtonContainer: {
             flex: 1,
             width: '90%',
-            height: 400,
+            height: 500,
             backgroundColor: 'transparent',
-            flexDirection: 'row',
+            // flexDirection: 'row',
             margin: 20,
         },
         titleText: {
@@ -93,7 +112,7 @@ export const ListingTable = ({ item, index, theme }) => {
             paddingTop: SIZES.small,
             paddingLeft: SIZES.xSmall,
             letterSpacing: 0.22,
-            fontWeight: '400',
+            fontWeight: 'bold',
             textTransform: 'capitalize'
         },
         detailBtn: {
@@ -142,9 +161,22 @@ export const ListingTable = ({ item, index, theme }) => {
             </View>
         )
     }
+    // console.log('hellllllooooooooooooo',item);
 
     return (
-        <>
+        <SafeAreaView style={{
+            display: "flex",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            // height: WINDOW_HEIGHT / 5.5,
+            width: WINDOW_WIDTH - 25,
+            borderWidth: 2,
+            borderColor: 'grey',
+            paddingHorizontal: 10,
+            backgroundColor: COLORS.indigo[200],
+            borderRadius: 5,
+            margin: 10,
+        }}>
             {cameraVisible ? (
                 <Camera ref={cameraRef} style={styles.camera} type={Camera.Constants.Type.back} >
                     <View style={styles.cameraButtonContainer}>
@@ -167,50 +199,53 @@ export const ListingTable = ({ item, index, theme }) => {
                                         borderRadius: 50,
                                         backgroundColor: '#fff',
                                     }}
-                                    onPress={() => clickPhoto()} />
+                                    onPress={clickPhoto} />
                             </View>
                         </View>
                     </View>
                 </Camera >
             ) : (
-                <SafeAreaView style={styles.container}>
+                <>
                     <View style={{ display: 'flex', flexDirection: 'column' }}>
                         <View style={styles.plusBox}>
                             {previewVisible && capturedImage ? (
                                 <CameraPreview photo={capturedImage} />
                             ) : (
                                 <TouchableOpacity style={styles.plusButton} onPress={handleOpenCamera}>
-                                    <MaterialIcons name="add" size={28} color="fuchsia" />
+                                    <MaterialIcons name="add" size={28} color="white" />
                                 </TouchableOpacity>
                             )}
                         </View>
                         {previewVisible && capturedImage &&
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', margin: 10 }}>
                                 <TouchableOpacity onPress={() => {
                                     setCapturedImage(null);
                                     setPreviewVisible(false);
                                     handleOpenCamera();
                                 }}>
-                                    <Text>
+                                    <Text style={{ borderWidth: 1, padding: 10, borderRadius: 20, backgroundColor: "white" }}>
                                         Retake
                                     </Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <Text>
+                                <TouchableOpacity onPress={uploadImg}>
+                                    <Text style={{ borderWidth: 1, padding: 10, borderRadius: 20, backgroundColor: "#15f4ee" }}>
                                         Upload
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         }
                     </View>
-                    <View style={{ borderWidth: 1, width: '50%' }}>
+                    <View style={{ borderWidth: 1, width: '50%', margin: 7, backgroundColor: "white", borderRadius: 5, }}>
                         <Text style={styles.titleText}>{item.firstname} {item.lastname}</Text>
-                        <Text style={styles.titleText}> Class {item.class}</Text>
+                        <Text style={styles.titleText}> Class: {item.class} </Text>
+                        <Text style={styles.titleText}> Father Name: {item.father_name}</Text>
+                        <Text style={styles.titleText}> Gender: {item.gender}</Text>
+                        <Text style={styles.titleText}> blood Group: {item.blood_group}</Text>
                         {/* <Text style={styles.subText}>Due date</Text> */}
                     </View>
-                </SafeAreaView>
+                </>
             )}
-        </>
+        </SafeAreaView>
     );
 };
 
