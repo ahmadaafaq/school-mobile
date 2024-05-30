@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const ClassAPI = {
     /** Get classes from the database that meets the specified query parameters
@@ -20,11 +17,8 @@ export const ClassAPI = {
         const searchParam = search ? `&search=${search}` : '';
         const { data: response } = await api.request({
             url: `/get-classes?page=${page}&size=${size}${queryParam}${searchParam}`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth")?.token
-            },
             method: "GET",
-            signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });
         return response;
     },
@@ -34,12 +28,9 @@ export const ClassAPI = {
     createClass: async (classs, cancel = false) => {
         return await api.request({
             url: `/create-class`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "POST",
             data: classs,
-            signal: cancel ? cancelApiObject[this.createClass.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.createClass.name].handleRequestCancellation().signal : undefined
         });
     },
 
@@ -48,12 +39,9 @@ export const ClassAPI = {
     updateClass: async (fields, cancel = false) => {
         return await api.request({
             url: `/update-class`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "PATCH",
             data: fields,
-            signal: cancel ? cancelApiObject[this.updateClass.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.updateClass.name].handleRequestCancellation().signal : undefined
         });
     },
 
@@ -62,11 +50,8 @@ export const ClassAPI = {
     getClassSectionList: async (cancel = false) => {
         const { data: response } = await api.request({
             url: `/get-class-section-list`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "GET",
-            signal: cancel ? cancelApiObject[this.getClassSectionList.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.getClassSectionList.name].handleRequestCancellation().signal : undefined
         });
         return response;
     }

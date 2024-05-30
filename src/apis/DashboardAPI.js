@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const DashboardAPI = {
     /** Get the user from the specific table
@@ -19,9 +16,6 @@ export const DashboardAPI = {
         const { data: response } = await api.request({
             url: `/get-dashboard-count/${table}`,
             method: "GET",
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             signal: cancel ? cancelApiObject[this.getDashboardCount.name].handleRequestCancellation().signal : undefined
         });
         return response;

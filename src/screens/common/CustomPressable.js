@@ -10,7 +10,7 @@
 import PropTypes from 'prop-types';
 
 import { StyleSheet, TouchableOpacity, View, Text, Image } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { useTheme, MD3Colors } from 'react-native-paper';
 
 import { FONT, SIZES } from '../../assets/constants';
 
@@ -35,8 +35,8 @@ const CustomPressable = ({ onPress, title, value, iconSource }) => {
             shadowColor: theme.colors.brightBlue[700]
         },
         titleTextStyles: {
-            color: theme.colors.grayishWhite[700],
-            fontFamily: FONT.regular,
+            color: MD3Colors.tertiary50,
+            fontFamily: FONT.medium,
             fontSize: 16,
             marginLeft: 20,
             marginRight: 35

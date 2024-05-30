@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
@@ -35,11 +35,11 @@ const StudentListing = () => {
     const schoolSections = useSelector(state => state.schoolSections);
     const schoolStudents = useSelector(state => state.schoolStudents);
     const { classData, sectionData } = useSelector(state => state.teacherHomework);
-
     const dispatch = useDispatch();
     const theme = useTheme();
     const { getPaginatedData } = useCommon();
     const { fetchAndSetSchoolData, setAsyncStorage } = Utility();
+    const params = useLocalSearchParams();
 
     // writing this function separately because an effect function must no return anything besides a function, used for cleanup, 
     // you are returning promise, getting this error when calling directly
@@ -54,10 +54,16 @@ const StudentListing = () => {
     );
 
     useEffect(() => {
-        if (!schoolStudents?.listData?.length) {
+
+        if (classData.class_id && sectionData.section_id) {
+            console.log('fetch CLASS students');
+            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI, { class_id: classData.class_id, section: sectionData.section_id, school_id: params.school_id });
+        } else {
+            console.log('fetch ALL students')
             getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI);
         }
-    }, [schoolStudents?.listData?.length]);
+
+    }, [classData.class_id, sectionData.section_id]);
 
     useEffect(() => {
         if (!schoolClasses?.listData?.length || !schoolSections?.listData?.length) {
@@ -70,10 +76,11 @@ const StudentListing = () => {
             const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
             dispatch(setSchoolSections(selectedSections));
-            console.log('getandsetsections called listing', selectedSections, classSections);
+            // console.log('getandsetsections called listing', selectedSections, classSections);
         };
         getAndSetSections();
     }, [dbClassObj?.length, classData?.class_id]);
+    console.log(schoolStudents, 'schoolsgtudentys')
 
     const styles = StyleSheet.create({
         container: {
@@ -118,7 +125,7 @@ const StudentListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.6}
+                        heightNumber={2}
                         data={schoolClasses.listData}
                         headerText="Classes"
                         objId='class_id'

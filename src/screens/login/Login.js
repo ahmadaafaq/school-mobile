@@ -6,7 +6,7 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dimensions, Image, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput, KeyboardAvoidingView } from 'react-native';
@@ -36,6 +36,7 @@ const LoginScreen = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const toastInfo = useSelector(state => state.toastInfo);
+    console.log('toastInfo', toastInfo)
 
     const dispatch = useDispatch();
     const inputRef = useRef(null);
@@ -46,6 +47,17 @@ const LoginScreen = () => {
     const handleFormDataChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
     };
+
+    useEffect(() => {
+        async function getAuthInfo() {
+            const authInfo = await getAsyncStorage("auth");
+            console.log('authInfooo', authInfo);
+            if (authInfo.token) {
+                router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
+            }
+        }
+        getAuthInfo();
+    }, []);
 
     const handleSubmit = () => {
         if (!formData.school_code) {
@@ -67,13 +79,15 @@ const LoginScreen = () => {
                         inputRef.current.focus();
                     }
                     else {
+                        console.log('coming in else');
                         const authInfo = {
                             id: response.data.id,
                             token: response.data.token,
                             role: response.data.role,
                             designation: response.data.designation,
                             username: response.data.username,
-                            school: response.data.school_name
+                            school: response.data.school_name,
+                            school_id: response.data.school_id
                         };
                         const navigatedPath = await getAsyncStorage("navigatedPath");
                         setAsyncStorage("auth", authInfo);
@@ -85,7 +99,8 @@ const LoginScreen = () => {
                             router.push(`/${navigatedPath}`);
                             remAsyncStorage("navigatedPath");       //removing path after navigating user
                         } else {
-                            router.push('/(tabs)/(homeTabDrawer)/home');
+                            console.log('Logged in now Route')
+                            router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
                         }
                     }
                 })
@@ -157,7 +172,7 @@ const LoginScreen = () => {
                         actionText={toastInfo.actionText}
                         actionTextColor={toastInfo.actionTextColor}
                         backgroundColor={toastInfo.backgroundColor}
-                        textColor={toastInfo.textColor}
+                        textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
                     />
                 </View>
                 {/* <Text style={{ color: theme.colors.spanishPink[500], fontSize: 25 }}> mode: {theme} </Text> */}

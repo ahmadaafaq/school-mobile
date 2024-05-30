@@ -31,13 +31,6 @@ const ListingItem = ({ item, index, theme }) => {
 
     const handlePress = (item) => {
         console.log("listing item", item);
-
-        // router.push({
-        //     pathname: '/salonDetail',
-        //     params: {
-        //         code: item.salon_code
-        //     }
-        // });
     };
 
     const styles = StyleSheet.create({

@@ -19,7 +19,6 @@ const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModal, setShowModal, action = null }) => {
     const dispatch = useDispatch();
-    const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
     const translateY = useMemo(() => new Animated.Value(150), []);
 
     const animatedStyle = {
@@ -61,7 +60,6 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
             }));
         }
     };
-    console.log(classData, sectionData, subjectData, 'homeweork data')
 
     const styles = StyleSheet.create({
         container: {
@@ -102,6 +100,7 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
             fontWeight: '600',
             fontSize: 13,
             letterSpacing: 0.5,
+            lineHeight: 45,
             paddingLeft: 25,
             marginBottom: 10
         }

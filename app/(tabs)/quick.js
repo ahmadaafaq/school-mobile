@@ -10,26 +10,26 @@
 import { View, StyleSheet, Text } from 'react-native';
 import { Link } from 'expo-router';
 
-const QuickPage = () => {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}> This is the Tab Layout ProductPage </Text>
-            <Link href="/" style={styles.text}> Click here to go to main HomeScreen</Link>
-        </View>
-    )
-};
+// const QuickPage = () => {
+//     return (
+//         <View style={styles.container}>
+//             <Text style={styles.text}> This is the Tab Layout ProductPage </Text>
+//             <Link href="/" style={styles.text}> Click here to go to main HomeScreen</Link>
+//         </View>
+//     )
+// };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "space-around",
-        backgroundColor: "lavender"
-    },
-    text: {
-        fontSize: 20,
-        color: "maroon"
-    }
-});
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         alignItems: "center",
+//         justifyContent: "space-around",
+//         backgroundColor: "lavender"
+//     },
+//     text: {
+//         fontSize: 20,
+//         color: "maroon"
+//     }
+// });
 
-export default QuickPage;
+// export default QuickPage;

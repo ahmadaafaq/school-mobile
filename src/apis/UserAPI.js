@@ -13,6 +13,7 @@ export const UserAPI = {
   /** Login user after verification
    */
   login: async (loginInfo, cancel = false) => {
+    console.log('loginInfo', loginInfo);
     const { data: response } = await api.request({
       url: `/login`,
       method: "POST",

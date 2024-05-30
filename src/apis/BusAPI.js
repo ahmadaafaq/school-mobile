@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const BusAPI = {
     /** Get buses from the database that meets the specified query parameters
@@ -20,9 +17,6 @@ export const BusAPI = {
         const searchParam = search ? `&search=${search}` : '';
         const { data: response } = await api.request({
             url: `/get-buses?page=${page}&size=${size}${queryParam}${searchParam}`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth")?.token
-            },
             method: "GET",
             signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });
@@ -34,9 +28,6 @@ export const BusAPI = {
     createBus: async (bus, cancel = false) => {
         return await api.request({
             url: `/create-bus`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "POST",
             data: bus,
             signal: cancel ? cancelApiObject[this.createBus.name].handleRequestCancellation().signal : undefined
@@ -48,9 +39,6 @@ export const BusAPI = {
     updateBus: async (fields, cancel = false) => {
         return await api.request({
             url: `/update-bus`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "PATCH",
             data: fields,
             signal: cancel ? cancelApiObject[this.updateBus.name].handleRequestCancellation().signal : undefined

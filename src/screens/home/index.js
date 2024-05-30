@@ -7,57 +7,46 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import API from '../../apis';
 import Box from '../common/BoxComponent';
 import LoadingAnimationModal from "../common/LoadingAnimationModal";
 import TopSection from './TopSection';
-// import ElevatedListing from './ElevatedListing';
-// import Search from '../common/Search';
 
 import { setTeachers } from '../../redux/actions/TeacherAction';
 import { useCommon } from "../../hooks/common";
 import { Utility } from '../../utility';
 
 const HomePage = () => {
-    const dispatch = useDispatch();
-    const [schoolName, setSchoolName] = useState('');
-    const { listData, loading } = useSelector(state => state.someTeachers);
     const theme = useTheme();
     const router = useRouter();
     const { getPaginatedData } = useCommon();
-    const { capitalizeAlphabet, getAsyncStorage } = Utility();
+    const { capitalizeAlphabet } = Utility();
+    const params = useLocalSearchParams();
+    const { listData, loading } = useSelector(state => state.someTeachers);
+    console.log('params danger', params);
 
     // const handleHomeworkPress = () => {
     //     router.push('/(homework)/homeworkListing');
     // }
 
     const handleStudentPress = () => {
-        router.push('/(student)/studentListing');
+        router.push({ pathname: '/(student)/studentListing', params: params });
     };
 
     useEffect(() => {
-        if (!listData?.rows?.length) {
-            getPaginatedData(0, 1, setTeachers, API.TeacherAPI);
+        if (!listData?.rows?.length && params.id) {
+            getPaginatedData(0, 1, setTeachers, API.TeacherAPI, { key: "parent_id", value: params.id });
         }
-    }, [listData?.rows?.length]);
+    }, [getPaginatedData, listData?.rows?.length, params.id]);
 
-    useEffect(() => {
-        const getSelectedMenu = async () => {
-            getAsyncStorage('auth')
-                .then(({ school: school }) => {
-                    setSchoolName(school);
-                });
-        };
-        getSelectedMenu();
-    }, []);
-    console.log(listData?.rows?.[0]?.teacherName, 'teacherName')
+    console.log('router', useLocalSearchParams());
 
     const styles = StyleSheet.create({
         container: {
@@ -97,10 +86,14 @@ const HomePage = () => {
                 <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1 }}>
                     {/* <Search /> */}
 
-                    <TopSection schoolName={schoolName}
-                        title={capitalizeAlphabet(listData?.rows?.[0]?.teacherName)}
-                        content={12} bg={theme.colors.blue[600]}
-                        imageSource={''} rollno={200087} teacherName="savita devi" />
+                    <TopSection schoolName={params.school}
+                        title={capitalizeAlphabet(params.username)}
+                        classes={listData?.rows?.[0]?.classnames}
+                        subjects={listData?.rows?.[0]?.subjects}
+                        bg={theme.colors.blue[600]}
+                        imageSource={''}
+                        rollno={200087}
+                    />
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
                         <Box title='Students' bg={theme.colors.grayishGreen[500]} mb={10} iconName="people" handlePress={handleStudentPress} />

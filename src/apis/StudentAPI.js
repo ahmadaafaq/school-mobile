@@ -8,13 +8,10 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const StudentAPI = {
   /** Get students from the database that meets the specified query parameters
-   */
+  */
   getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
     // Send the data that is used in where condition
     let queryParam = '';
@@ -25,9 +22,10 @@ export const StudentAPI = {
     }
     // Send the data that is used in listing page search
     const searchParam = search ? `&search=${search}` : '';
+    console.log('queryParam=>', queryParam);
 
     const { data: response } = await api.request({
-      url: `/get-students?page=${page}&size=${size}${queryParam}${searchParam}`,
+      url: `/get-students-mobile?page=${page}&size=${size}${queryParam}${searchParam}`,
       method: "GET",
       signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });
@@ -39,9 +37,6 @@ export const StudentAPI = {
   createStudent: async (student, cancel = false) => {
     return await api.request({
       url: `/create-student`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: student,
       signal: cancel ? cancelApiObject[this.createStudent.name].handleRequestCancellation().signal : undefined
@@ -53,9 +48,6 @@ export const StudentAPI = {
   updateStudent: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-student`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "PATCH",
       data: fields,
       signal: cancel ? cancelApiObject[this.updateStudent.name].handleRequestCancellation().signal : undefined
@@ -67,9 +59,6 @@ export const StudentAPI = {
   getClassOfStudent: async (student_id, cancel = false) => {
     const { data: response } = await api.request({
       url: `/get-class-of-student/${student_id}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "GET",
       signal: cancel ? cancelApiObject[this.getSchoolClasses.name].handleRequestCancellation().signal : undefined
     });

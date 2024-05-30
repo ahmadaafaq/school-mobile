@@ -1,0 +1,35 @@
+{
+    "build": {
+      "preview": {
+        "android": {
+          "buildType": "apk"
+        },
+        "env": {
+          "BUCKET_NAME": "theskolar",
+          "REGION":"ap-south-1",
+          "ACCESS_KEY_ID":"AKIAYS2NU3DQ2WEADGHU",
+          "SECRET_KEY_ID":"w/mlxrhd5Lgt60nDgrksYOo7PMAE0csJkWc93QFb",
+          "S3_PATHNAME":"https://theskolar.s3.ap-south-1.amazonaws.com/",
+          "BASE_URL":"https://free.theskolar.com/api/v1"
+        }
+      },
+      "preview2": {
+        "android": {
+          "gradleCommand": ":app:assembleRelease"
+        }
+      },
+      "preview3": {
+        "developmentClient": true
+      },
+      "production": {
+        "env": {
+          "BUCKET_NAME": "theskolar",
+          "REGION":"ap-south-1",
+          "ACCESS_KEY_ID":"AKIAYS2NU3DQ2WEADGHU",
+          "SECRET_KEY_ID":"w/mlxrhd5Lgt60nDgrksYOo7PMAE0csJkWc93QFb",
+          "S3_PATHNAME":"https://theskolar.s3.ap-south-1.amazonaws.com/",
+          "BASE_URL":"https://free.theskolar.com/api/v1"
+        }
+      }
+    }
+  }

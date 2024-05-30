@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const HolidayAPI = {
   /** Get Holidays from the database that meets the specified query parameters
@@ -20,9 +17,6 @@ export const HolidayAPI = {
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
       url: `/get-holidays?page=${page}&size=${size}${queryParam}${searchParam}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth")?.token
-      },
       method: "GET",
       signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });
@@ -34,9 +28,6 @@ export const HolidayAPI = {
   createHoliday: async (holiday, cancel = false) => {
     return await api.request({
       url: `/create-holiday`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: holiday,
       signal: cancel ? cancelApiObject[this.createHoliday.name].handleRequestCancellation().signal : undefined
@@ -48,9 +39,6 @@ export const HolidayAPI = {
   updateHoliday: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-holiday`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "PATCH",
       data: fields,
       signal: cancel ? cancelApiObject[this.updateHoliday.name].handleRequestCancellation().signal : undefined

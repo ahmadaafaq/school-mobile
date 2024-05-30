@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const MarksheetAPI = {
     /** Get marksheet from the database that meets the specified query parameters
@@ -25,11 +22,8 @@ export const MarksheetAPI = {
         const searchParam = search ? `&search=${search}` : '';
         const { data: response } = await api.request({
             url: `/get-marksheet?page=${page}&size=${size}${queryParam}${searchParam}`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth")?.token
-            },
             method: "GET",
-            signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });
         return response;
     },
@@ -39,12 +33,9 @@ export const MarksheetAPI = {
     createMarksheet: async (marksheet, cancel = false) => {
         return await api.request({
             url: `/create-marksheet`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "POST",
             data: marksheet,
-            signal: cancel ? cancelApiObject[this.createMarksheet.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.createMarksheet.name].handleRequestCancellation().signal : undefined
         });
     },
 
@@ -53,12 +44,9 @@ export const MarksheetAPI = {
     updateMarksheet: async (fields, cancel = false) => {
         return await api.request({
             url: `/update-marksheet`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "PATCH",
             data: fields,
-            signal: cancel ? cancelApiObject[this.updateMarksheet.name].handleRequestCancellation().signal : undefined,
+            signal: cancel ? cancelApiObject[this.updateMarksheet.name].handleRequestCancellation().signal : undefined
         });
     }
 };

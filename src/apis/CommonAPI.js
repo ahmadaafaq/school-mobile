@@ -20,11 +20,6 @@ export const CommonAPI = {
             method: method,
             signal: cancel ? cancelApiObject[this.commonConfig.name].handleRequestCancellation().signal : undefined,
         }
-        if (header) {
-            commonConfig.headers = {
-                "x-access-token": getAsyncStorage("auth")?.token
-            }
-        }
         return commonConfig;
     },
 
@@ -115,7 +110,23 @@ export const CommonAPI = {
             ...commonConfig
         });
         return response;
-    }
+    },
+
+    // to be documented
+    createOrUpdate: async (fields, table, condition, cancel = false) => {
+        console.log("create or update API", fields, table, condition);
+        const commonConfig = CommonAPI.commonConfig("POST", true, cancel);
+        const { data: response } = await api.request({
+            url: '/create-or-update',
+            data: {
+                ...fields,
+                table: table,
+                condition: condition
+            },
+            ...commonConfig
+        });
+        return response;
+    },
 };
 
 // defining the cancel API object for CommonAPI

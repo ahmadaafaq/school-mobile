@@ -7,6 +7,10 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
+import { BUCKET_NAME, REGION, ACCESS_KEY_ID, SECRET_KEY_ID } from '@env';
+import "react-native-get-random-values";
+import "react-native-url-polyfill/auto";
 
 import API from "../apis";
 import { displayToast } from "../redux/actions/ToastAction";
@@ -151,7 +155,7 @@ export const Utility = () => {
             });
     };
 
-    /**Fetches school data (classes and optionally sections) from API and dispatches actions to update the Redux store.
+    /** Fetches school data (classes and optionally sections) from API and dispatches actions to update the Redux store.
      * @param {function} dispatch - The Redux dispatch function.
      * @param {function} setClassesAction - The Redux action to set classes in the store.
      * @param {function} [setSectionsAction] - The optional Redux action to set sections in the store.
@@ -352,7 +356,6 @@ export const Utility = () => {
         }
     };
 
-
     /** Displays a toast alert, sets its color and message, and navigates to a specified path (optional) after a delay.
      * @param {function} dispatch - The Redux dispatch function.
      * @param {boolean} display - Whether to display the toast alert.
@@ -371,6 +374,37 @@ export const Utility = () => {
                 navigateTo(path);
             }
         }, 2000);
+    };
+
+    //to be commented
+    const uploadFileToS3 = async (image, folder) => {
+        console.log("Starting upload process", folder);
+
+        const s3Client = new S3Client({
+            region: REGION,
+            credentials: {
+                accessKeyId: ACCESS_KEY_ID,
+                secretAccessKey: SECRET_KEY_ID,
+            }
+        });
+
+        // Files Parameters
+        const params = {
+            Bucket: BUCKET_NAME,
+            Key: folder,
+            Body: image
+        };
+
+        // Uploading file to S3
+        try {
+            const command = new PutObjectCommand(params);
+            const data = await s3Client.send(command);
+            alert("File uploaded successfully.", data);
+            return data.$metadata;
+        } catch (error) {
+            console.error("Error uploading file: ", error);
+            alert("Error uploading file.");
+        }
     };
 
     /** Verifies a token using an asynchronous API call.
@@ -412,6 +446,7 @@ export const Utility = () => {
         remAsyncStorage,
         setAsyncStorage,
         toastAndNavigate,
+        uploadFileToS3,
         verifyToken
     };
 };

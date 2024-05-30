@@ -6,22 +6,22 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import { FlatList, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { useTheme } from 'react-native-paper';
+import { useSelector } from "react-redux";
+import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
 
 import { ListingTable, WINDOW_WIDTH } from './ListingTable';
 
 import { FONT, SIZES } from "../../../assets/constants";
-import { setMenuItem } from "../../../redux/actions/MenuItemAction";
 
-import { Utility } from "../../../utility";
 
 const ListingComponent = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const theme = useTheme();
+    const flatListRef = useRef(null);
     const { listData } = useSelector(state => state.schoolStudents);
+    console.log(listData, 'student listdata')
 
     const flatListOptimizationProps = {
         initialNumToRender: 0,
@@ -39,22 +39,22 @@ const ListingComponent = () => {
             []
         )
     };
-    const { getAsyncStorage } = Utility();
+    // const { getAsyncStorage } = Utility();
 
-    useEffect(() => {
-        const getSelectedMenu = async () => {
-            const selectedMenu = await getAsyncStorage('menu');
-            console.log('inside useEffect homework listing', selectedMenu);
-            dispatch(setMenuItem(selectedMenu?.selected));
-        };
-        getSelectedMenu();
-    }, []);
+    // useEffect(() => {
+    //     const getSelectedMenu = async () => {
+    //         const selectedMenu = await getAsyncStorage('menu');
+    //         console.log('inside useEffect homework listing', selectedMenu);
+    //         dispatch(setMenuItem(selectedMenu?.selected));
+    //     };
+    //     getSelectedMenu();
+    // }, []);
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
         },
         touchableOpacityStyles: {
             alignItems: 'center',
@@ -84,18 +84,17 @@ const ListingComponent = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headerText}>
-                {listData?.count} Students Found
-            </Text>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
+            <Chip icon="school" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
+                <Text style={{color: MD2Colors.black}}>{listData?.count || 0} Students Found</Text>
+            </Chip>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} ref={flatListRef}>
                 <FlatList
                     data={listData?.rows}
-                    renderItem={({ item, index }) => <ListingTable item={item} index={index} theme={theme} />}
+                    renderItem={({ item, index }) => <ListingTable item={item} index={index} theme={theme} flatListRef={flatListRef} />}
                     pagingEnabled={true}
                     keyExtractor={(item) => item.id.toString()}
                     {...flatListOptimizationProps}
                 />
-
             </ScrollView>
         </SafeAreaView>
     );

@@ -89,7 +89,7 @@ const HomeworkListing = () => {
                 const classSections = classsData?.filter(obj => obj.class_id === classData.class_id);
                 const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
                 dispatch(setSchoolSections(selectedSections));
-                console.log('getandsetsections called listing', selectedSections, classSections);
+                // console.log('getandsetsections called listing', selectedSections, classSections);
             };
             getAndSetSections();
         }

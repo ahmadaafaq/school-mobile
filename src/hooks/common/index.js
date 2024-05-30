@@ -21,13 +21,15 @@ export const useCommon = () => {
      */
     const getPaginatedData = useCallback(async (page = 0, size, action, api, condition = false, search = false) => {
         const authInfo = await getAsyncStorage("auth");
-
+        console.log('condition', condition);
         api.getAll(condition, page, size, search, authInfo)
             .then(res => {
-                console.log('getall response', res.data.rows)
+                console.log('getall response', res?.data?.rows)
                 if (res.status === 'Success') {
                     dispatch(action({ listData: res.data, loading: false }));
                 } else if (res.status === 'Error') {
+                    dispatch(action({ listData: [], loading: false }));
+                } else {
                     dispatch(action({ listData: [], loading: false }));
                 }
             })
