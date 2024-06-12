@@ -23,14 +23,17 @@ import ListingComponent from './ListingComponent';
 import { SIZES } from '../../../assets/constants';
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
 import { setSchoolSections } from "../../../redux/actions/SectionAction";
-import { setSchoolSubjects } from "../../../redux/actions/SubjectAction";
-import { setAllSubjects } from "../../../redux/actions/SubjectAction";
-import { setTeacherHomeworks, setHomeworkClassData, setHomeworkSectionData, setHomeworkSubjectData } from "../../../redux/actions/HomeworkAction";
+// import { setSchoolStudents } from "../../../redux/actions/StudentAction";
+import { setAllSubjects, setSchoolSubjects } from "../../../redux/actions/SubjectAction";
+import {
+    setTeacherHomeworks, setHomeworkClassData,
+    setHomeworkSectionData, setHomeworkSubjectData
+} from "../../../redux/actions/HomeworkAction";
 import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
 const HomeworkListing = () => {
-    const [classsData, setClasssData] = useState([]);
+    const [dbClassObj, setDbClassObj] = useState([]);
     const [showClassModal, setShowClassModal] = useState(false);      //for modal visibility
     const [showSectionModal, setShowSectionModal] = useState(false);
     const [showSubjectModal, setShowSubjectModal] = useState(false);
@@ -60,6 +63,15 @@ const HomeworkListing = () => {
         }, [])
     );
 
+    // to fetch students based on selected class & section from dropdown
+    useEffect(() => {
+        if (classData.class_id && sectionData.section_id) {
+            console.log('classData and Sectiondata')
+            getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id });
+        }
+        console.log('outside if classData and Sectiondata', classData, sectionData)
+    }, [classData.class_id, sectionData.section_id]);
+
     useEffect(() => {
         if (!teacherHomework?.listData?.length) {
             getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI);
@@ -74,7 +86,7 @@ const HomeworkListing = () => {
 
     useEffect(() => {
         if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
         }
     }, []);
 
@@ -86,27 +98,27 @@ const HomeworkListing = () => {
                 console.log(pathname, 'pathname')
             }
             const getAndSetSections = () => {
-                const classSections = classsData?.filter(obj => obj.class_id === classData.class_id);
+                const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
                 const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
                 dispatch(setSchoolSections(selectedSections));
                 // console.log('getandsetsections called listing', selectedSections, classSections);
             };
             getAndSetSections();
         }
-    }, [classData?.class_id, classsData?.length]);
+    }, [classData?.class_id, dbClassObj?.length]);
 
     useEffect(() => {
         if (Object.values(sectionData)) {
             dispatch(setHomeworkSubjectData({}));
         }
         const getAndSetSubjects = () => {
-            const sectionSubjects = classsData?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
+            const sectionSubjects = dbClassObj?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
             const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
             dispatch(setSchoolSubjects(selectedSubjects));
             console.log('getandsetsubjects called', selectedSubjects, sectionSubjects);
         };
         getAndSetSubjects();
-    }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, classsData.length]);
+    }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, dbClassObj.length]);
 
     const styles = StyleSheet.create({
         container: {
@@ -134,18 +146,21 @@ const HomeworkListing = () => {
                             title="Class"
                             value={classData.class_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                         <CustomPressable
                             onPress={() => setShowSectionModal(!showSectionModal)}
                             title="Section"
                             value={sectionData.section_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                         <CustomPressable
                             onPress={() => setShowSubjectModal(!showSubjectModal)}
                             title="Subject"
                             value={subjectData.name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                     </View>
                 </View>
@@ -157,7 +172,7 @@ const HomeworkListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.6}
+                        heightNumber={schoolClasses.listData.length / 2.2}
                         data={schoolClasses.listData}
                         headerText="Classes"
                         objId='class_id'
@@ -173,7 +188,7 @@ const HomeworkListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.5}
+                        heightNumber={schoolSections.listData.length / 1.2}
                         data={schoolSections.listData}
                         headerText="Sections"
                         objId='section_id'

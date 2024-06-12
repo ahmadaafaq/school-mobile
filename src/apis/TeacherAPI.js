@@ -14,12 +14,11 @@ export const TeacherAPI = {
    */
   getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
     const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
-    console.log('queryParam', queryParam)
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
       url: `/get-teachers?page=${page}&size=${size}${queryParam}${searchParam}`,
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined,
     });
     return response;
   },
@@ -31,7 +30,7 @@ export const TeacherAPI = {
       url: `/create-teacher`,
       method: "POST",
       data: teacher,
-      signal: cancel ? cancelApiObject[this.createTeacher.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.createTeacher.name].handleRequestCancellation().signal : undefined,
     });
   },
 
@@ -42,18 +41,7 @@ export const TeacherAPI = {
       url: `/update-teacher`,
       method: "PATCH",
       data: fields,
-      signal: cancel ? cancelApiObject[this.updateTeacher.name].handleRequestCancellation().signal : undefined
-    });
-  },
-
-  /** Insert data into teacher_class_subject mapping table in the database
-   */
-  insertIntoMappingTable: async (data, cancel = false) => {
-    return await api.request({
-      url: `/create-teacher-class-mapping`,
-      method: "POST",
-      data: data,
-      signal: cancel ? cancelApiObject[this.insertIntoMappingTable.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.updateTeacher.name].handleRequestCancellation().signal : undefined,
     });
   },
 
@@ -63,20 +51,9 @@ export const TeacherAPI = {
     const { data: response } = await api.request({
       url: `/get-teacher-detail/${teacher_id}`,
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getTeacherDetail.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.getTeacherDetail.name].handleRequestCancellation().signal : undefined,
     });
     return response;
-  },
-
-  /** delete values from teacher_class_subject mapping table on every update
-   */
-  deleteFromMappingTable: async (fields, cancel = false) => {
-    return await api.request({
-      url: `/delete-from-teacher-mapping`,
-      method: "DELETE",
-      data: fields,
-      signal: cancel ? cancelApiObject[this.deleteFromMappingTable.name].handleRequestCancellation().signal : undefined
-    });
   }
 };
 

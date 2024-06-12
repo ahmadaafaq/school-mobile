@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const PaymentAPI = {
   /** Get Payments from the database that meets the specified query parameters
@@ -20,9 +17,6 @@ export const PaymentAPI = {
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
       url: `/get-payments?page=${page}&size=${size}${queryParam}${searchParam}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth")?.token
-      },
       method: "GET",
       signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });
@@ -34,9 +28,6 @@ export const PaymentAPI = {
   createPayment: async (payment, cancel = false) => {
     return await api.request({
       url: `/create-payment`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: payment,
       signal: cancel ? cancelApiObject[this.createPayment.name].handleRequestCancellation().signal : undefined
@@ -48,9 +39,6 @@ export const PaymentAPI = {
   updatePayment: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-payment`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "PATCH",
       data: fields,
       signal: cancel ? cancelApiObject[this.updatePayment.name].handleRequestCancellation().signal : undefined

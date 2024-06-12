@@ -101,23 +101,46 @@ const RootLayout = () => {
                         options={{
                             headerTitle: "Homework",
                             headerTitleStyle: {
-                                color: COLORS.white[100] // Set the color for the header title
+                                color: COLORS.white[100]
                             },
                             headerStyle: {
-                                backgroundColor: COLORS.indigo[400], // Set the background color for the header
+                                backgroundColor: COLORS.indigo[400]
                             }
                         }}
                     />
-                    {/* test screen */}
                     <Stack.Screen
                         name='(student)'
                         options={{
                             headerTitle: "Students",
                             headerTitleStyle: {
-                                color: COLORS.white[100] // Set the color for the header title
+                                color: COLORS.white[100]
                             },
                             headerStyle: {
-                                backgroundColor: COLORS.indigo[400], // Set the background color for the header
+                                backgroundColor: COLORS.indigo[400]
+                            }
+                        }}
+                    />
+                    <Stack.Screen
+                        name='(noticeBoard)'
+                        options={{
+                            headerTitle: "Notice Board",
+                            headerTitleStyle: {
+                                color: COLORS.white[100]
+                            },
+                            headerStyle: {
+                                backgroundColor: COLORS.indigo[400]
+                            }
+                        }}
+                    />
+                    <Stack.Screen
+                        name='(timeTable)'
+                        options={{
+                            headerTitle: "Time Table",
+                            headerTitleStyle: {
+                                color: COLORS.white[100]
+                            },
+                            headerStyle: {
+                                backgroundColor: COLORS.indigo[400]
                             }
                         }}
                     />

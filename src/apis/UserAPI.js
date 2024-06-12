@@ -46,17 +46,6 @@ export const UserAPI = {
     return response;
   },
 
-  /** Register user in the database
-   */
-  register: async (user, cancel = false) => {
-    return await api.request({
-      url: `/register`,
-      method: "POST",
-      data: user,
-      signal: cancel ? cancelApiObject[this.register.name].handleRequestCancellation().signal : undefined
-    });
-  },
-
   /** Update user in the database
    */
   update: async (fields, cancel = false) => {

@@ -8,24 +8,18 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useCallback, useEffect } from 'react';
-import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from 'expo-router';
-import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
+import { useCallback } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import { useSelector } from "react-redux";
+import { useTheme } from 'react-native-paper';
 
 import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
 import { FONT, SIZES } from "../../../assets/constants";
-import { setMenuItem } from "../../../redux/actions/MenuItemAction";
-
-import { Utility } from "../../../utility";
 
 const ListingComponent = () => {
-    const dispatch = useDispatch();
-    const router = useRouter();
     const theme = useTheme();
-    const { listData } = useSelector(state => state.teacherHomework);
+    const { listData } = useSelector(state => state.allNotices);
 
     const flatListOptimizationProps = {
         initialNumToRender: 0,
@@ -43,42 +37,12 @@ const ListingComponent = () => {
             []
         )
     };
-    const { getAsyncStorage } = Utility();
-
-    const handlePress = () => {
-        router.push('/(homework)/homeworkForm');
-    };
-
-    useEffect(() => {
-        const getSelectedMenu = async () => {
-            const selectedMenu = await getAsyncStorage('menu');
-            console.log('inside useEffect homework listing', selectedMenu);
-            dispatch(setMenuItem(selectedMenu?.selected));
-        };
-        getSelectedMenu();
-    }, []);
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             alignItems: "center",
             justifyContent: "center"
-        },
-        touchableOpacityStyles: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '50%',
-            height: 50,
-            borderRadius: 18,
-            marginBottom: 15,
-            backgroundColor: theme.colors.brightBlue[500]
-        },
-        touchableOpacityText: {
-            color: theme.colors.white[500],
-            fontFamily: FONT.regular,
-            fontSize: 15,
-            letterSpacing: 0.12,
-            fontWeight: '400'
         },
         headerText: {
             color: theme.colors.brightBlue[500],
@@ -92,14 +56,9 @@ const ListingComponent = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => handlePress()}
-                style={styles.touchableOpacityStyles}
-            >
-                <Text style={styles.touchableOpacityText}> Create New Homework </Text>
-            </TouchableOpacity>
-            <Chip icon="information" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
-                <Text style={{ color: MD2Colors.black }}>{listData?.count || 0} Homeworks Found</Text>
-            </Chip>
+            {/* <Chip icon="information" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
+                <Text style={{ color: MD2Colors.black }}>{listData?.count || 0} Notices Found</Text>
+            </Chip> */}
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
                 <FlatList
                     data={listData?.rows}

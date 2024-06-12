@@ -27,7 +27,7 @@ import LoginBg from "../../assets/images/login-bg2.png";
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const initialFormData = {
     school_code: "",
-    email: "",
+    contact_no: "",
     password: ""
 };
 
@@ -36,7 +36,6 @@ const LoginScreen = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const toastInfo = useSelector(state => state.toastInfo);
-    console.log('toastInfo', toastInfo)
 
     const dispatch = useDispatch();
     const inputRef = useRef(null);
@@ -49,10 +48,9 @@ const LoginScreen = () => {
     };
 
     useEffect(() => {
-        async function getAuthInfo() {
+        const getAuthInfo = async () => {
             const authInfo = await getAsyncStorage("auth");
-            console.log('authInfooo', authInfo);
-            if (authInfo.token) {
+            if (authInfo?.token) {
                 router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
             }
         }
@@ -63,7 +61,7 @@ const LoginScreen = () => {
         if (!formData.school_code) {
             toastAndNavigate(dispatch, true, 'School Code must be specified', theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
         }
-        if (formData.school_code && (formData.email && formData.password)) {
+        if (formData.school_code && (formData.contact_no && formData.password)) {
             setLoading(true);
             console.log('inside login m')
             API.UserAPI.login(formData)
@@ -79,7 +77,7 @@ const LoginScreen = () => {
                         inputRef.current.focus();
                     }
                     else {
-                        console.log('coming in else');
+                        console.log('coming in else, means no error');
                         const authInfo = {
                             id: response.data.id,
                             token: response.data.token,
@@ -89,8 +87,8 @@ const LoginScreen = () => {
                             school: response.data.school_name,
                             school_id: response.data.school_id
                         };
-                        const navigatedPath = await getAsyncStorage("navigatedPath");
                         setAsyncStorage("auth", authInfo);
+                        const navigatedPath = await getAsyncStorage("navigatedPath");
                         response.data?.school_info ? setAsyncStorage("schoolInfo", response.data.school_info) : null;
                         if (navigatedPath) {
                             const splittedPath = navigatedPath.split('/');
@@ -99,7 +97,6 @@ const LoginScreen = () => {
                             router.push(`/${navigatedPath}`);
                             remAsyncStorage("navigatedPath");       //removing path after navigating user
                         } else {
-                            console.log('Logged in now Route')
                             router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
                         }
                     }
@@ -195,11 +192,11 @@ const LoginScreen = () => {
                     />
                     <TextInput
                         style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
-                        placeholder="Username*"
+                        placeholder="Contact*"
                         placeholderTextColor={theme.colors.white[700]}
-                        keyboardType="email-address"
-                        value={formData.email}
-                        onChangeText={(value) => handleFormDataChange("email", value)}
+                        keyboardType="numeric"
+                        value={formData.contact_no}
+                        onChangeText={(value) => handleFormDataChange("contact_no", value)}
                     />
                 </View>
                 <View style={styles.inputContainer}>

@@ -16,9 +16,11 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import API from '../../apis';
 import Box from '../common/BoxComponent';
+import ElevatedListing from './ElevatedListing';
 import LoadingAnimationModal from "../common/LoadingAnimationModal";
 import TopSection from './TopSection';
 
+import { setHolidays } from '../../redux/actions/HolidayAction';
 import { setTeachers } from '../../redux/actions/TeacherAction';
 import { useCommon } from "../../hooks/common";
 import { Utility } from '../../utility';
@@ -30,23 +32,37 @@ const HomePage = () => {
     const { capitalizeAlphabet } = Utility();
     const params = useLocalSearchParams();
     const { listData, loading } = useSelector(state => state.someTeachers);
-    console.log('params danger', params);
+    const allHolidays = useSelector(state => state.allHolidays);
 
-    // const handleHomeworkPress = () => {
-    //     router.push('/(homework)/homeworkListing');
-    // }
+    const handleHomeworkPress = () => {
+        router.push('/(homework)/homeworkListing');
+    };
+
+    const handleNoticeBoardPress = () => {
+        router.push('/(noticeBoard)/noticeBoardListing');
+    };
 
     const handleStudentPress = () => {
         router.push({ pathname: '/(student)/studentListing', params: params });
     };
 
+    const handleTimeTablePress = () => {
+        router.push('/(timeTable)/timeTableListing');
+    };
+
+    useEffect(() => {
+        if (!allHolidays?.listData?.rows?.length) {
+            console.log('inside holiday get paginated data in home screen')
+            getPaginatedData(0, 10, setHolidays, API.HolidayAPI);
+        }
+    }, [getPaginatedData, allHolidays?.listData?.rows?.length]);
+
     useEffect(() => {
         if (!listData?.rows?.length && params.id) {
+            console.log('inside teacher get paginated data in home screen')
             getPaginatedData(0, 1, setTeachers, API.TeacherAPI, { key: "parent_id", value: params.id });
         }
     }, [getPaginatedData, listData?.rows?.length, params.id]);
-
-    console.log('router', useLocalSearchParams());
 
     const styles = StyleSheet.create({
         container: {
@@ -72,13 +88,13 @@ const HomePage = () => {
             transform: [
                 { rotateZ: '-170deg' },
                 { rotateX: '80deg' }
-            ],
+            ]
         }
     });
 
     return (
         <ImageBackground
-            source={require('../../assets/images/listBG.jpg')} // Replace with the path to your image
+            source={require('../../assets/images/listBG.jpg')}
             style={styles.background}
         >
             <SafeAreaView style={styles.container}>
@@ -96,22 +112,21 @@ const HomePage = () => {
                     />
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
-                        <Box title='Students' bg={theme.colors.grayishGreen[500]} mb={10} iconName="people" handlePress={handleStudentPress} />
-                        {/* <Box title='Homework' bg={theme.colors.grayishGreen[500]} mb={10} iconName="menu-book" handlePress={handleHomeworkPress} /> 
-                         <Box title='Attendence' bg={theme.colors.grayishRed[500]} mb={10} iconName="check-circle" />
-                        <Box title='Examination' bg={theme.colors.grayishRed[500]} mb={10} iconName="receipt-long" /> */}
+                        <Box title='Students' bg={theme.colors.blue[500]} mb={10} iconName="users" handlePress={handleStudentPress} />
+                        <Box title='Homework' bg={theme.colors.grayishRed[500]} mb={10} iconName="book" handlePress={handleHomeworkPress} />
+                        <Box title='Notice Board' bg={theme.colors.grayishYellow[500]} mb={10} iconName="comment-alt" handlePress={handleNoticeBoardPress} />
+                    </View>
+                    <View style={styles.boxContainer}>
+                        <Box title='Time Table' bg={theme.colors.grayishGreen[500]} mb={10} iconName="th-list" handlePress={handleTimeTablePress} />
                     </View>
                     {/* <View style={styles.boxContainer}>
+                        <Box title='Examination' bg={theme.colors.grayishRed[500]} mb={10} iconName="receipt-long" />
                         <Box title='Results' bg={theme.colors.grayishYellow[500]} mb={10} iconName="fact-check" />
                         <Box title='Time-Table' bg={theme.colors.blue[500]} mb={10} iconName="insert-invitation" />
                         <Box title='Fees' bg={theme.colors.blue[500]} mb={10} iconName="payment" />
-                    </View>
-                    <View style={styles.boxContainer}>
-                        <Box title='Bus' bg={theme.colors.grayishYellow[500]} mb={10} iconName="directions-bus" />
-                    </View> */}
+                    </View>*/}
 
-
-                    {/* <ElevatedListing /> */}
+                    <ElevatedListing data={allHolidays?.listData?.rows} />
                 </ScrollView>
 
                 {loading ? <LoadingAnimationModal /> : null}

@@ -60,6 +60,7 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
             }));
         }
     };
+    console.log(heightNumber)
 
     const styles = StyleSheet.create({
         container: {
@@ -100,7 +101,7 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
             fontWeight: '600',
             fontSize: 13,
             letterSpacing: 0.5,
-            lineHeight: 45,
+            lineHeight: 20,
             paddingLeft: 25,
             marginBottom: 10
         }
@@ -121,8 +122,7 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
                 <Text style={styles.headerText}>{headerText}</Text>
                 {data.map((item, index) => {
                     return (
-                        <TouchableOpacity onPress={() => handlePress(item)}
-                            key={index}>
+                        <TouchableOpacity onPress={() => handlePress(item)} key={index}>
                             <Text style={styles.textStyle}>{item[objValue]} </Text>
                         </TouchableOpacity>
                     )

@@ -14,7 +14,7 @@ import { useTheme, MD3Colors } from 'react-native-paper';
 
 import { FONT, SIZES } from '../../assets/constants';
 
-const CustomPressable = ({ onPress, title, value, iconSource }) => {
+const CustomPressable = ({ onPress, title, value, iconSource, width = '50%' }) => {
     const theme = useTheme();
 
     const styles = StyleSheet.create({
@@ -26,8 +26,7 @@ const CustomPressable = ({ onPress, title, value, iconSource }) => {
         },
         touchableOpacityStyles: {
             height: 70,
-            // width: title !== 'Class' ? '34%' : '32%',
-            width: '50%',
+            width: width,
             backgroundColor: theme.colors.whiteSmoke[500],
             borderColor: theme.colors.grayishWhite[700],
             borderRightWidth: title !== 'Subject' ? 1 : 0,
@@ -69,7 +68,8 @@ CustomPressable.propTypes = {
     onPress: PropTypes.func,
     title: PropTypes.string,
     value: PropTypes.string,
-    iconSource: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    iconSource: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.string
 };
 
 export default CustomPressable;

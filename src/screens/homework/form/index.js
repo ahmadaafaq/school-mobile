@@ -52,7 +52,7 @@ const HomeworkForm = () => {
 
     useEffect(() => {
         if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData, API.SchoolAPI);
         }
     }, []);
 

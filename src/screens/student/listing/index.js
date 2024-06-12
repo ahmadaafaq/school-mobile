@@ -35,11 +35,12 @@ const StudentListing = () => {
     const schoolSections = useSelector(state => state.schoolSections);
     const schoolStudents = useSelector(state => state.schoolStudents);
     const { classData, sectionData } = useSelector(state => state.teacherHomework);
+
     const dispatch = useDispatch();
     const theme = useTheme();
+    const params = useLocalSearchParams();
     const { getPaginatedData } = useCommon();
     const { fetchAndSetSchoolData, setAsyncStorage } = Utility();
-    const params = useLocalSearchParams();
 
     // writing this function separately because an effect function must no return anything besides a function, used for cleanup, 
     // you are returning promise, getting this error when calling directly
@@ -54,7 +55,6 @@ const StudentListing = () => {
     );
 
     useEffect(() => {
-
         if (classData.class_id && sectionData.section_id) {
             console.log('fetch CLASS students');
             getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI, { class_id: classData.class_id, section: sectionData.section_id, school_id: params.school_id });
@@ -62,12 +62,11 @@ const StudentListing = () => {
             console.log('fetch ALL students')
             getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI);
         }
-
     }, [classData.class_id, sectionData.section_id]);
 
     useEffect(() => {
         if (!schoolClasses?.listData?.length || !schoolSections?.listData?.length) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
         }
     }, []);
 
@@ -80,7 +79,6 @@ const StudentListing = () => {
         };
         getAndSetSections();
     }, [dbClassObj?.length, classData?.class_id]);
-    console.log(schoolStudents, 'schoolsgtudentys')
 
     const styles = StyleSheet.create({
         container: {
@@ -125,7 +123,7 @@ const StudentListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={2}
+                        heightNumber={schoolClasses.listData.length / 2.2}
                         data={schoolClasses.listData}
                         headerText="Classes"
                         objId='class_id'
@@ -141,7 +139,7 @@ const StudentListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.5}
+                        heightNumber={schoolSections.listData.length / 1.2 || 1.5}
                         data={schoolSections.listData}
                         headerText="Sections"
                         objId='section_id'

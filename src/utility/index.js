@@ -12,7 +12,7 @@ import { BUCKET_NAME, REGION, ACCESS_KEY_ID, SECRET_KEY_ID } from '@env';
 import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
 
-import API from "../apis";
+// import API from "../apis";
 import { displayToast } from "../redux/actions/ToastAction";
 
 export const Utility = () => {
@@ -62,21 +62,6 @@ export const Utility = () => {
         return str.replace(/\b\w/g, function (char) {
             return char.toUpperCase();
         });
-    };
-
-    /** Creates a school code based on the provided name.
-     * @param {string} name - The name used to generate the school code.
-     * @returns {string} - The generated school code.
-     */
-    const createSchoolCode = (name) => {
-        let school = name.toLowerCase().split(" ");
-        let code = '';
-
-        for (let name of school) {
-            if (name !== 'school')
-                code += name.charAt(0).toUpperCase();
-        }
-        return `${code}S${Math.floor(Math.random() * 1000)}`;
     };
 
     /** Creates an array of academic sessions based on the current year.
@@ -161,8 +146,8 @@ export const Utility = () => {
      * @param {function} [setSectionsAction] - The optional Redux action to set sections in the store.
      * @param {function} [setClassData] - The optional local state to set the data fetched from API call.
      */
-    const fetchAndSetSchoolData = (dispatch, setClassesAction = false, setSectionsAction = false, setClassData = false) => {
-        API.SchoolAPI.getSchoolClasses()
+    const fetchAndSetSchoolData = (dispatch, setClassesAction = false, setSectionsAction = false, setClassData = false, api = null) => {
+        api.getSchoolClasses()
             .then(classData => {
                 console.log(classData, 'classData')
                 if (classData.status === 'Success') {
@@ -269,24 +254,6 @@ export const Utility = () => {
         return arrayId.toString();
     };
 
-    /** Retrieves user role and priority information by making an asynchronous API call.
-     * @returns {Promise<Object|null>} - A promise that resolves to an object containing user role and priority information,
-     *                                   or null if there is an error during the API call.
-     */
-    const getRoleAndPriorityById = async () => {
-        return API.UserRoleAPI.getRoleById({ id: getRole() })
-            .then(res => {
-                if (res.status === 'Success') {
-                    return res.data;
-                } else if (res.status === 'Error') {
-                    console.log('Error Getting User Role And Priority')
-                }
-            })
-            .catch(err => {
-                console.error('Error fetching user role and priority:', err);
-            })
-    };
-
     /** Gets the value associated with a key from local storage.
      * @param {string} key - The key for which to retrieve the value from local storage.
      * @returns {any|null} - The value associated with the key, or null if the key is not found.
@@ -387,14 +354,12 @@ export const Utility = () => {
                 secretAccessKey: SECRET_KEY_ID,
             }
         });
-
         // Files Parameters
         const params = {
             Bucket: BUCKET_NAME,
             Key: folder,
             Body: image
         };
-
         // Uploading file to S3
         try {
             const command = new PutObjectCommand(params);
@@ -407,27 +372,10 @@ export const Utility = () => {
         }
     };
 
-    /** Verifies a token using an asynchronous API call.
-     * @returns {Promise<boolean|string>} - A promise that resolves to a boolean indicating whether the token is verified,
-     *                                       or a string containing an error message if verification fails.
-     */
-    const verifyToken = async () => {
-        return API.CommonAPI.verifyToken()
-            .then(verified => {
-                if (verified) {
-                    return verified.data === "Verified";
-                }
-            })
-            .catch(err => {
-                return err;
-            });
-    };
-
     return {
         addClassKeyword,
         appendSuffix,
         capitalizeAlphabet,
-        createSchoolCode,
         createSession,
         customSort,
         createUniqueDataArray,
@@ -440,13 +388,11 @@ export const Utility = () => {
         getNameAndType,
         getAsyncStorage,
         getRole,
-        getRoleAndPriorityById,
         getIdsFromObject,
         isObjEmpty,
         remAsyncStorage,
         setAsyncStorage,
         toastAndNavigate,
-        uploadFileToS3,
-        verifyToken
+        uploadFileToS3
     };
 };

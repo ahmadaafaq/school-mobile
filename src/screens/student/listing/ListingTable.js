@@ -16,7 +16,7 @@ import { S3_PATHNAME } from '@env';
 import { ActivityIndicator, FAB, IconButton, MD2Colors, MD3Colors } from 'react-native-paper';
 
 import API from "../../../apis";
-import { COLORS, FONT, SIZES } from "../../../assets/constants";
+import { FONT, SIZES } from "../../../assets/constants";
 import { Utility } from "../../../utility";
 import { useLocalSearchParams } from 'expo-router';
 
@@ -316,11 +316,11 @@ export const ListingTable = ({ item, flatListRef, index, theme }) => {
                             }
                         </View>
                         <View style={{
-                            width: '50%', borderRadius: 5, 
+                            width: '50%', borderRadius: 5,
                         }}>
                             <Text style={styles.titleText}>Name:</Text><Text style={styles.titleLabelText}>{item?.studentName}</Text>
                             <Text style={styles.titleText}> Class:</Text><Text style={styles.titleLabelText}>{item?.className}</Text>
-                            <Text style={styles.titleText}> Father's Name:</Text><Text style={styles.titleLabelText}>{item?.father_name}</Text>
+                            <Text style={styles.titleText}> Father&#39;s Name:</Text><Text style={styles.titleLabelText}>{item?.father_name}</Text>
                             <Text style={styles.titleText}> Gender: </Text><Text style={styles.titleLabelText}>{item?.gender}</Text>
                             <Text style={styles.titleText}> blood Group:</Text><Text style={styles.titleLabelText}>{item?.blood_group}</Text>
                         </View>

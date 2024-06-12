@@ -8,7 +8,7 @@
 
 import PropTypes from 'prop-types';
 
-import { View, Text, StyleSheet, Dimensions, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MD2Colors } from 'react-native-paper';
 
@@ -28,10 +28,6 @@ const ListingItem = ({ item, index, theme }) => {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true
-    };
-
-    const handlePress = (item) => {
-        console.log("listing item", item);
     };
 
     const styles = StyleSheet.create({
@@ -89,38 +85,18 @@ const ListingItem = ({ item, index, theme }) => {
 
     return (
         <SafeAreaView style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            // height: WINDOW_HEIGHT / 5.5,
             width: WINDOW_WIDTH - 25,
             borderRadius: 5,
             margin: 10,
-            paddingVertical: 10,
-            backgroundColor: MD2Colors.blue200,
+            padding: 10,
+            backgroundColor: MD2Colors.lightBlue200,
         }}>
             <View style={{ borderWidth: 0 }}>
-                <Text style={styles.titleText}>{item.title}</Text>
-                <Text style={styles.titleText}>{item.subject_id}</Text>
-                <Text style={styles.subText}>Due date</Text>
-                <Text style={styles.titleText}>{date.toLocaleString('en-US', formatOptions)}</Text>
-            </View>
-            <View style={{
-                width: 100,
-            }}>
-                <TouchableOpacity onPress={() => handlePress(item)}
-                    style={styles.detailBtn}
-                >
-                    <Text style={styles.detailText}> Details </Text>
-                    <FontAwesome5 name="chevron-right" size={16} style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handlePress(item)}
-                    style={[styles.detailBtn, {
-                        backgroundColor: theme.colors.red[400]
-                    }]}
-                >
-                    <Text style={styles.detailText}> Edit </Text>
-                    <FontAwesome5 name="chevron-right" size={16} style={styles.icon} />
-                </TouchableOpacity>
+                <Text style={[styles.titleText, {
+                    fontSize: SIZES.large
+                }]}>{item.title}</Text>
+                <Text style={styles.titleText}>{item.description}</Text>
+                <Text style={styles.subText}>{date.toLocaleString('en-US', formatOptions)}</Text>
             </View>
         </SafeAreaView>
     );

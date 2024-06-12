@@ -9,9 +9,9 @@
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
 
-export const HomeworkAPI = {
-    /** Get homeworks from the database that meets the specified query parameters
-     */
+export const NoticeBoardAPI = {
+  /** Get NoticeBoard Details from the database that meets the specified query parameters
+   */
     getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
         // Send the data that is used in where condition
         let queryParam = '';
@@ -22,38 +22,15 @@ export const HomeworkAPI = {
         }
         // Send the data that is used in listing page search
         const searchParam = search ? `&search=${search}` : '';
-        console.log('queryParam=>', queryParam);
 
         const { data: response } = await api.request({
-            url: `/get-homeworks?page=${page}&size=${size}${queryParam}${searchParam}`,
+            url: `/get-noticeboards?page=${page}&size=${size}${queryParam}${searchParam}`,
             method: "GET",
             signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });
         return response;
-    },
-
-    /** Create homework in the database
-     */
-    createHomework: async (homework, cancel = false) => {
-        return await api.request({
-            url: `/create-homework`,
-            method: "POST",
-            data: homework,
-            signal: cancel ? cancelApiObject[this.createHomework.name].handleRequestCancellation().signal : undefined
-        });
-    },
-
-    /** Update homework in the database
-     */
-    updateHomework: async (fields, cancel = false) => {
-        return await api.request({
-            url: `/update-homework`,
-            method: "PATCH",
-            data: fields,
-            signal: cancel ? cancelApiObject[this.updateHomework.name].handleRequestCancellation().signal : undefined
-        });
     }
 };
 
-// defining the cancel API object for HomeworkAPI
-const cancelApiObject = defineCancelApiObject(HomeworkAPI);
+// defining the cancel API object for NoticeBoardAPI
+const cancelApiObject = defineCancelApiObject(NoticeBoardAPI);

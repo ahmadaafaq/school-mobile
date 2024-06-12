@@ -45,12 +45,11 @@ api.interceptors.request.use(async req => {
     const authToken = await getAsyncStorage("auth");
     
     if (schoolInfo) {
-      req.headers['School_info'] = JSON.stringify(schoolInfo);
+      req.headers['School'] = JSON.stringify(schoolInfo);
     }
     if (authToken) {
       req.headers["x-access-token"] = authToken?.token;
     }
-    console.log(req.headers, 'req.headers')
   } catch (error) {
     console.log("Error retrieving data from AsyncStorage in interceptor:", error);
   }

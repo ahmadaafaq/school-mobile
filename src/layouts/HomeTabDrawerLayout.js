@@ -40,7 +40,7 @@ const DrawerLayout = () => {
                     drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />
                 }}
             />
-            <Drawer.Screen
+            {/* <Drawer.Screen
                 name='teacherListing'
                 options={{
                     title: "",
@@ -50,7 +50,7 @@ const DrawerLayout = () => {
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.large },
                     drawerStyle: { fontSize: 12, backgroundColor: theme.colors.whiteSnow[500] }
                 }}
-            />
+            /> */}
             <Drawer.Screen
                 name='(student)'
                 options={{

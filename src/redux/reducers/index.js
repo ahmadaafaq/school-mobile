@@ -10,6 +10,8 @@ import { combineReducers } from "redux";
 
 import { displayToastReducer } from "./ToastReducer";
 import { menuItemReducer } from "./MenuItemReducer";
+import { setHolidaysReducer } from "./HolidayReducer";
+import { setNoticeBoardsReducer } from "./NoticeBoardReducer";
 import { setSchoolClassesReducer } from "./ClassReducer";
 import { setSchoolSectionsReducer } from "./SectionReducer";
 import { setSchoolSubjectsReducer } from "./SubjectReducer";
@@ -19,18 +21,22 @@ import { setSchoolStudentsReducer } from "./StudentReducer";
 import { setAllTeachersReducer } from "./TeacherReducer";
 import { setTeachersReducer } from "./TeacherReducer";
 import { setTeacherHomeworksReducer } from "./HomeworkReducer";
+import { setTimeTablesReducer } from "./TimeTableReducer";
 
 const reducers = combineReducers({
-    schoolStudents: setSchoolStudentsReducer,
+    allHolidays: setHolidaysReducer,
+    allNotices: setNoticeBoardsReducer,
     allStudents: setAllStudentsReducer,
+    allSubjects: setAllSubjectsReducer,
     allTeachers: setAllTeachersReducer,
-    someTeachers: setTeachersReducer,
-    teacherHomework: setTeacherHomeworksReducer,
+    allTimeTables: setTimeTablesReducer,
     menuItem: menuItemReducer,
     schoolClasses: setSchoolClassesReducer,
     schoolSections: setSchoolSectionsReducer,
     schoolSubjects: setSchoolSubjectsReducer,
-    allSubjects: setAllSubjectsReducer,
+    schoolStudents: setSchoolStudentsReducer,
+    someTeachers: setTeachersReducer,
+    teacherHomework: setTeacherHomeworksReducer,
     toastInfo: displayToastReducer
 });
 

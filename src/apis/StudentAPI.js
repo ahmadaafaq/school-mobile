@@ -60,7 +60,7 @@ export const StudentAPI = {
     const { data: response } = await api.request({
       url: `/get-class-of-student/${student_id}`,
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getSchoolClasses.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.getClassOfStudent.name].handleRequestCancellation().signal : undefined
     });
     return response;
   }

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/react-in-jsx-scope */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,26 +8,21 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useCallback, useRef } from 'react';
-import { FlatList, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import { useCallback } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, ScrollView, Text } from "react-native";
 import { useSelector } from "react-redux";
 import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
 
-import { ListingTable, WINDOW_WIDTH } from './ListingTable';
+import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
 import { FONT, SIZES } from "../../../assets/constants";
 
-
 const ListingComponent = () => {
-    // const dispatch = useDispatch();
     const theme = useTheme();
-    const flatListRef = useRef(null);
-    const { listData } = useSelector(state => state.schoolStudents);
+    const { listData } = useSelector(state => state.allTimeTables);
 
     const flatListOptimizationProps = {
-        initialNumToRender: 0,
         maxToRenderPerBatch: 1,
-        removeClippedSubviews: true,
         scrollEventThrottle: 16,
         windowSize: 2,
         keyExtractor: useCallback(e => e.id, []),
@@ -38,38 +35,13 @@ const ListingComponent = () => {
             []
         )
     };
-    // const { getAsyncStorage } = Utility();
-
-    // useEffect(() => {
-    //     const getSelectedMenu = async () => {
-    //         const selectedMenu = await getAsyncStorage('menu');
-    //         console.log('inside useEffect homework listing', selectedMenu);
-    //         dispatch(setMenuItem(selectedMenu?.selected));
-    //     };
-    //     getSelectedMenu();
-    // }, []);
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
-        },
-        touchableOpacityStyles: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '50%',
-            height: 50,
-            borderRadius: 18,
-            marginBottom: 15,
-            backgroundColor: theme.colors.brightBlue[500]
-        },
-        touchableOpacityText: {
-            color: theme.colors.white[500],
-            fontFamily: FONT.regular,
-            fontSize: 15,
-            letterSpacing: 0.12,
-            fontWeight: '400'
+            paddingVertical: 10
         },
         headerText: {
             color: theme.colors.brightBlue[500],
@@ -83,13 +55,13 @@ const ListingComponent = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Chip icon="school" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
-                <Text style={{color: MD2Colors.black}}>{listData?.count || 0} Students Found</Text>
+            <Chip icon="information" style={{ color: theme.colors.brightBlue[500], backgroundColor: MD2Colors.green200, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
+                <Text style={{ color: theme.colors.brightBlue[500] }}>Present Day</Text>
             </Chip>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} ref={flatListRef}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
                 <FlatList
                     data={listData?.rows}
-                    renderItem={({ item, index }) => <ListingTable item={item} index={index} theme={theme} flatListRef={flatListRef} />}
+                    renderItem={({ item, index }) => <ListingItem item={item} index={index} theme={theme} />}
                     pagingEnabled={true}
                     keyExtractor={(item) => item.id.toString()}
                     {...flatListOptimizationProps}
