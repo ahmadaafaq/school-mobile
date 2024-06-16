@@ -7,6 +7,8 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
+import PropTypes from 'prop-types';
+
 import { useCallback } from 'react';
 import { Dimensions, View, Text, FlatList, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
@@ -38,27 +40,31 @@ const ElevatedListing = ({ data }) => {
     const styles = StyleSheet.create({
         listContainer: {
             flex: 1,
-            marginTop: 20,
+            marginVertical: 20,
             marginHorizontal: 25,
             paddingVertical: 10,
             backgroundColor: theme.colors.indigo[100],
-            borderRadius: 20,
-            // borderWidth: 1
+            borderRadius: 20
         },
         nameText: {
             color: theme.colors.yaleBlue[500],
             fontSize: SIZES.mediumLarge,
             fontFamily: FONT.bold,
-            paddingBottom: SIZES.xSmall,
+            paddingVertical: 6,
             paddingLeft: 8,
             letterSpacing: 0.12,
             fontWeight: '700',
             textTransform: 'capitalize'
         },
+        lineContainer: {
+            flexDirection: ALIGNMENT.rowDirection,
+            alignItems: ALIGNMENT.centered,
+            margin: SIZES.smallMedium,
+            marginTop: 4
+        },
         listItemContainer: {
             height: 56,
             width: WINDOW_WIDTH / 1.25,
-            // borderWidth: 1,
             marginBottom: 14,
             marginLeft: 12,
             borderColor: COLORS.white[700],
@@ -77,11 +83,10 @@ const ElevatedListing = ({ data }) => {
         subContainer: {
             width: '73%',
             justifyContent: 'space-around',
-            marginLeft: 15,
-            // borderWidth: 1
+            marginLeft: 15
         },
         serviceName: {
-            color: theme.colors.black[500],
+            color: theme.colors.indigo[400],
             fontFamily: FONT.bold,
             fontSize: 14,
             letterSpacing: 0.015,
@@ -91,6 +96,11 @@ const ElevatedListing = ({ data }) => {
 
     return (
         <SafeAreaView style={styles.listContainer}>
+            <Text style={styles.nameText}> Holidays </Text>
+            <View style={styles.lineContainer}>
+                <View style={{ flex: 1, height: 0.5, elevation: 0.5, backgroundColor: theme.colors.indigo[400] }}></View>
+            </View>
+
             <ScrollView horizontal={true} style={{ width: "100%" }}>
                 <FlatList
                     data={data}
@@ -106,12 +116,8 @@ const ElevatedListing = ({ data }) => {
 
                                 <View style={styles.subContainer}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                        <Text style={[styles.serviceName,
-                                        { color: theme.colors.grayishWhite[700] }
-                                        ]}> {item.title} </Text>
-                                        <Text style={[styles.serviceName,
-                                        { color: theme.colors.grayishWhite[700] }
-                                        ]}> {item.startDate} </Text>
+                                        <Text style={styles.serviceName}> {item.title} </Text>
+                                        <Text style={styles.serviceName}> {item.startDate} </Text>
                                     </View>
                                 </View>
                             </View>
@@ -119,8 +125,12 @@ const ElevatedListing = ({ data }) => {
                     }}
                 />
             </ScrollView>
-        </SafeAreaView>
+        </SafeAreaView >
     );
+};
+
+ElevatedListing.propTypes = {
+    data: PropTypes.array,
 };
 
 export default ElevatedListing;

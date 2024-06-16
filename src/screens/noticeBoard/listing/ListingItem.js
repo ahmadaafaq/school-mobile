@@ -9,9 +9,7 @@
 import PropTypes from 'prop-types';
 
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
 import { MD2Colors } from 'react-native-paper';
-
 import { FONT, SIZES } from "../../../assets/constants";
 
 export const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -38,21 +36,21 @@ const ListingItem = ({ item, index, theme }) => {
             borderWidth: 2,
             borderRadius: 8,
             borderColor: theme.colors.soapBlue[500],
-            paddingHorizontal: 10,
+            paddingHorizontal: 10
         },
         titleText: {
-            color: theme.colors.powderBlue[700],
+            color: theme.colors.white[400],
             fontFamily: FONT.regular,
             fontSize: SIZES.medium,
             paddingTop: SIZES.small,
             paddingLeft: SIZES.xSmall,
             letterSpacing: 0.22,
-            fontWeight: '400',
+            fontWeight: '500',
             textTransform: 'capitalize'
         },
         subText: {
-            color: theme.colors.white[700],
-            fontSize: SIZES.small,
+            color: theme.colors.white[500],
+            fontSize: SIZES.smallMedium,
             paddingLeft: SIZES.small,
             paddingTop: SIZES.xSmall,
             letterSpacing: 0.12,
@@ -70,17 +68,7 @@ const ListingItem = ({ item, index, theme }) => {
             backgroundColor: theme.colors.green[500],
             marginBottom: 10,
             zIndex: 1
-        },
-        detailText: {
-            color: theme.colors.white[500],
-            fontFamily: FONT.regular,
-            fontSize: 15,
-            letterSpacing: 0.12,
-            fontWeight: '400'
-        },
-        icon: {
-            color: theme.colors.white[500]
-        },
+        }
     });
 
     return (
@@ -89,7 +77,8 @@ const ListingItem = ({ item, index, theme }) => {
             borderRadius: 5,
             margin: 10,
             padding: 10,
-            backgroundColor: MD2Colors.lightBlue200,
+            paddingBottom: 15,
+            backgroundColor: theme.colors.grayishYellow[500],
         }}>
             <View style={{ borderWidth: 0 }}>
                 <Text style={[styles.titleText, {

@@ -8,11 +8,11 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { BUCKET_NAME, REGION, ACCESS_KEY_ID, SECRET_KEY_ID } from '@env';
+import { BUCKET_NAME, REGION, ACCESS_KEY_ID, S3_PATHNAME, SECRET_KEY_ID } from '@env';
+import * as ImageManipulator from 'expo-image-manipulator';
 import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
 
-// import API from "../apis";
 import { displayToast } from "../redux/actions/ToastAction";
 
 export const Utility = () => {
@@ -372,6 +372,47 @@ export const Utility = () => {
         }
     };
 
+    const uploadImg = async (setUploading, capturedImage, folderName, api, schoolName, item) => {
+        setUploading(true);
+        let nameArray = capturedImage.split("/");
+        let name = nameArray[nameArray.length - 1];
+        let formattedName = formatImageName(name);
+        const manipResult = await ImageManipulator.manipulateAsync(
+            capturedImage,
+            [{ resize: { width: 400, height: 400 } }],
+            { compress: 0.3, format: ImageManipulator.SaveFormat.JPEG }
+        );
+        const file = {
+            uri: manipResult.uri,
+            name: formattedName,
+            type: "image/jpeg",
+        };
+        const folder = `mobile/${schoolName.toLowerCase().replace(/ /g, '-')}/${folderName}/${file.name}`;
+        const res = await uploadFileToS3(file, folder);
+        if (res.httpStatusCode === 200) {
+            setUploading(false);
+            const imagePayload = {
+                image_src: S3_PATHNAME + folder,
+                school_id: item.school_id,
+                parent_id: item.id,
+                parent: `${folderName}`,
+                type: 'normal'
+            };
+
+            try {
+                const createImageResponse = await api.createOrUpdate(imagePayload, 'image', {
+                    parent_id: item.id,
+                    school_id: item.school_id,
+                    parent: `${folderName}`,
+                    type: 'normal'
+                });
+                console.log("Create Image API response:", createImageResponse);
+            } catch (error) {
+                console.error("Error calling createImage API:", error);
+            }
+        }
+    };
+
     return {
         addClassKeyword,
         appendSuffix,
@@ -393,6 +434,7 @@ export const Utility = () => {
         remAsyncStorage,
         setAsyncStorage,
         toastAndNavigate,
-        uploadFileToS3
+        uploadFileToS3,
+        uploadImg
     };
 };

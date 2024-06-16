@@ -47,30 +47,7 @@ const ListingItem = ({ item, index, theme }) => {
             paddingTop: SIZES.xSmall,
             letterSpacing: 0.12,
             textTransform: 'capitalize'
-        },
-        detailBtn: {
-            top: 10,
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            // alignSelf: 'flex-end',
-            width: '80%',
-            height: 40,
-            borderRadius: 4,
-            backgroundColor: theme.colors.green[500],
-            marginBottom: 10,
-            zIndex: 1
-        },
-        detailText: {
-            color: theme.colors.white[500],
-            fontFamily: FONT.regular,
-            fontSize: 15,
-            letterSpacing: 0.12,
-            fontWeight: '400'
-        },
-        icon: {
-            color: theme.colors.white[500]
-        },
+        }
     });
 
     return (
@@ -79,12 +56,18 @@ const ListingItem = ({ item, index, theme }) => {
             borderRadius: 5,
             margin: 10,
             padding: 10,
-            backgroundColor: MD2Colors.lightBlue200,
+            backgroundColor: theme.colors.grayishGreen[500],
         }}>
             <View style={{ borderWidth: 0 }}>
                 <Text style={[styles.titleText, {
                     fontSize: SIZES.large
                 }]}>{item.period}</Text>
+                <Text style={[styles.titleText, {
+                    fontSize: SIZES.large
+                }]}>{item.subject}</Text>
+                <Text style={[styles.titleText, {
+                    fontSize: SIZES.large
+                }]}>{item.className}</Text>
                 {/* <Text style={styles.titleText}>{item.description}</Text> */}
                 <Text style={styles.subText}>{item.duration}</Text>
             </View>

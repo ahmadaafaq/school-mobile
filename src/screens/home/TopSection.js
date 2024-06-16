@@ -7,21 +7,27 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { Dimensions, StyleSheet, Image, View, TouchableOpacity } from 'react-native';
-import { Button, Card, Text, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
+import { Dimensions, StyleSheet, View, TouchableOpacity, ImageBackground } from 'react-native';
+import { Card, PaperProvider, IconButton, Text, useTheme } from 'react-native-paper';
+
 import { SIZES, FONT } from "../../assets/constants";
-import { Utility } from '../../utility';
-import { useRouter } from 'expo-router';
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const TopSection = ({ schoolName, title, bg, imageSource, rollno, classes, subjects }) => {
+const TopSection = ({
+    schoolName,
+    title,
+    classes,
+    subjects,
+    bg,
+    image,
+    setVisible
+}) => {
+
     const theme = useTheme();
-    const { setAsyncStorage } = Utility();
-    const router = useRouter();
 
     const styles = StyleSheet.create({
         container: {
@@ -29,7 +35,7 @@ const TopSection = ({ schoolName, title, bg, imageSource, rollno, classes, subje
             justifyContent: "space-between",
             alignItems: "center",
             width: WINDOW_WIDTH,
-            height: WINDOW_HEIGHT / 4.5,
+            height: WINDOW_HEIGHT / 4.4,
             padding: 10,
             backgroundColor: bg,
             borderRadius: 0,
@@ -47,14 +53,10 @@ const TopSection = ({ schoolName, title, bg, imageSource, rollno, classes, subje
         contentStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.medium,
-            fontSize: SIZES.smallMedium,
-            marginBottom: 4
+            fontSize: SIZES.smallMedium
         },
-        btnStyle: {
-            color: theme.colors.whiteSmoke[300],
-            fontFamily: FONT.Image,
-            fontSize: SIZES.large,
-            marginBottom: 6
+        TouchableOpacityStyle: {
+
         },
         imageStyle: {
             width: 80,
@@ -69,10 +71,6 @@ const TopSection = ({ schoolName, title, bg, imageSource, rollno, classes, subje
             overflow: 'hidden',
             marginLeft: 50
         },
-        textStyle: {
-            position: 'absolute',
-            left: 20
-        },
         headStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.bold,
@@ -84,39 +82,79 @@ const TopSection = ({ schoolName, title, bg, imageSource, rollno, classes, subje
     });
 
     return (
-        <Card
-            mode=''
-            style={styles.container}
-        >
-            <View>
-                <Text style={styles.headStyle}>{schoolName}</Text>
-                <View style={{ width: WINDOW_WIDTH - 60, height: 1, backgroundColor: theme.colors.whiteSmoke[500], margin: 20, marginTop: 5 }}></View>
-            </View>
-            <View>
-                <View style={styles.textStyle}>
-                    <Text style={styles.titleStyle}>{title}</Text>
-                    <View style={{ flex: 1, height: 2, backgroundColor: theme.colors.whiteSmoke[500], marginBottom: 10 }}></View>
-                    <Text style={styles.contentStyle}>{classes}</Text>
-                    <Text style={styles.contentStyle}>{subjects}</Text>
+        <PaperProvider>
+            <Card
+                mode=''
+                style={styles.container}
+            >
+                <View>
+                    <Text style={styles.headStyle}>{schoolName}</Text>
+                    <View style={{
+                        width: WINDOW_WIDTH - 60, height: 1, backgroundColor: theme.colors.whiteSmoke[500],
+                        margin: 20, marginTop: 5, marginBottom: 10
+                    }}></View>
                 </View>
-            </View>
-            <Button color="error" variant="contained" onPress={() => {
-                setAsyncStorage('auth', null)
-                router.push("/");
+
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: WINDOW_WIDTH - 30,
+                    height: 120,
+                    marginLeft: 6
                 }}>
-                <Text style={styles.btnStyle}>Logout</Text>
-            </Button>
-        </Card >
+                    <View style={{
+                        flexGrow: 0.4,
+                        width: '25%',
+                        height: 100,
+                        marginLeft: 10,
+                        borderRadius: 8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: theme.colors.blue[300]
+                    }}>
+                        {!image ? (
+                            <TouchableOpacity onPress={() => setVisible(true)}>
+                                <IconButton
+                                    icon="plus-circle"
+                                    // iconColor={MD3Colors.error30}
+                                    size={50}
+                                />
+                            </TouchableOpacity>
+                        ) : (
+                            <ImageBackground
+                                source={{ uri: image }}
+                                style={{
+                                    flex: 1,
+                                    objectFit: "contain",
+                                    width: "100%",
+                                }}
+                            />
+                        )}
+                    </View>
+                    <View style={{
+                        flexGrow: 0.5,
+                        width: '50%'
+                    }}>
+                        <Text style={styles.titleStyle}>{title}</Text>
+                        <Text style={styles.contentStyle}>Classes  : {classes} </Text>
+                        <Text style={styles.contentStyle}>Subjects : {subjects}</Text>
+                    </View>
+                </View>
+            </Card>
+
+        </PaperProvider>
     );
 };
 
 TopSection.propTypes = {
+    schoolName: PropTypes.string,
     title: PropTypes.string,
-    content: PropTypes.number,
-    growth: PropTypes.string,
+    classes: PropTypes.string,
+    subjects: PropTypes.string,
     bg: PropTypes.string,
-    mr: PropTypes.number,
-    ml: PropTypes.number
+    image: PropTypes.string,
+    setVisible: PropTypes.func
 };
 
 export default TopSection;

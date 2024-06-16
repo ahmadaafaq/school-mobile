@@ -38,16 +38,6 @@ const ListingComponent = () => {
             []
         )
     };
-    // const { getAsyncStorage } = Utility();
-
-    // useEffect(() => {
-    //     const getSelectedMenu = async () => {
-    //         const selectedMenu = await getAsyncStorage('menu');
-    //         console.log('inside useEffect homework listing', selectedMenu);
-    //         dispatch(setMenuItem(selectedMenu?.selected));
-    //     };
-    //     getSelectedMenu();
-    // }, []);
 
     const styles = StyleSheet.create({
         container: {

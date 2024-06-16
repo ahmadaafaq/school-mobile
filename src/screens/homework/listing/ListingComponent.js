@@ -71,7 +71,7 @@ const ListingComponent = () => {
             height: 50,
             borderRadius: 18,
             marginBottom: 15,
-            backgroundColor: theme.colors.brightBlue[500]
+            backgroundColor: theme.colors.grayishRed[500]
         },
         touchableOpacityText: {
             color: theme.colors.white[500],

@@ -9,12 +9,22 @@
 
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useTheme } from 'react-native-paper';
 
 import { SIZES } from "../assets/constants";
+import { Utility } from '../utility';
 
 const DrawerLayout = () => {
+    const router = useRouter();
     const theme = useTheme();
+
+    const { setAsyncStorage } = Utility();
+
+    const handleLogoutPress = () => {
+        setAsyncStorage('auth', null)
+        router.push("/");
+    };
 
     return (
         <Drawer
@@ -30,14 +40,23 @@ const DrawerLayout = () => {
                 name="home"
                 options={{
                     drawerLabel: 'Dashboard',
-                    headerTitle: "School CRM",
+                    headerTitle: "The Skolar",
                     headerTitleAlign: 'center',
                     headerShadowVisible: false,
                     headerTintColor: theme.colors.yaleBlue[100], // topbar text color
                     headerStyle: { backgroundColor: theme.colors.blue[600], borderBottomWidth: 0 }, //topbar background color
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.xmLarge },
                     drawerStyle: { fontSize: 12, backgroundColor: theme.colors.blue[100] }, // drawer background color
-                    drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />
+                    drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />,
+                    headerRight: () => (
+                        <Ionicons
+                            name="log-out-outline"
+                            size={24}
+                            color={theme.colors.yaleBlue[100]}
+                            style={{ paddingRight: 10 }}
+                            onPress={handleLogoutPress}
+                        />
+                    )
                 }}
             />
             {/* <Drawer.Screen

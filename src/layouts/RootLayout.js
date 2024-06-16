@@ -100,23 +100,17 @@ const RootLayout = () => {
                         name='(homework)'
                         options={{
                             headerTitle: "Homework",
-                            headerTitleStyle: {
-                                color: COLORS.white[100]
-                            },
-                            headerStyle: {
-                                backgroundColor: COLORS.indigo[400]
-                            }
+                            headerTitleStyle: { color: COLORS.white[100] },
+                            headerStyle: { backgroundColor: paperTheme.colors.grayishRed[500] }
                         }}
                     />
                     <Stack.Screen
                         name='(student)'
                         options={{
                             headerTitle: "Students",
-                            headerTitleStyle: {
-                                color: COLORS.white[100]
-                            },
+                            headerTitleStyle: { color: COLORS.white[100] },
                             headerStyle: {
-                                backgroundColor: COLORS.indigo[400]
+                                backgroundColor: paperTheme.colors.blue[500]
                             }
                         }}
                     />
@@ -124,11 +118,9 @@ const RootLayout = () => {
                         name='(noticeBoard)'
                         options={{
                             headerTitle: "Notice Board",
-                            headerTitleStyle: {
-                                color: COLORS.white[100]
-                            },
+                            headerTitleStyle: { color: COLORS.white[100] },
                             headerStyle: {
-                                backgroundColor: COLORS.indigo[400]
+                                backgroundColor: paperTheme.colors.grayishYellow[500]
                             }
                         }}
                     />
@@ -136,11 +128,9 @@ const RootLayout = () => {
                         name='(timeTable)'
                         options={{
                             headerTitle: "Time Table",
-                            headerTitleStyle: {
-                                color: COLORS.white[100]
-                            },
+                            headerTitleStyle: { color: COLORS.white[100] },
                             headerStyle: {
-                                backgroundColor: COLORS.indigo[400]
+                                backgroundColor: paperTheme.colors.grayishGreen[500]
                             }
                         }}
                     />
