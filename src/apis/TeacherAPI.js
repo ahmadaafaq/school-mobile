@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const TeacherAPI = {
   /** Get teachers from the database that meets the specified query parameters
@@ -20,11 +17,8 @@ export const TeacherAPI = {
     const searchParam = search ? `&search=${search}` : '';
     const { data: response } = await api.request({
       url: `/get-teachers?page=${page}&size=${size}${queryParam}${searchParam}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth")?.token
-      },
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined,
     });
     return response;
   },
@@ -34,12 +28,9 @@ export const TeacherAPI = {
   createTeacher: async (teacher, cancel = false) => {
     return await api.request({
       url: `/create-teacher`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: teacher,
-      signal: cancel ? cancelApiObject[this.createTeacher.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.createTeacher.name].handleRequestCancellation().signal : undefined,
     });
   },
 
@@ -48,26 +39,9 @@ export const TeacherAPI = {
   updateTeacher: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-teacher`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "PATCH",
       data: fields,
-      signal: cancel ? cancelApiObject[this.updateTeacher.name].handleRequestCancellation().signal : undefined
-    });
-  },
-
-  /** Insert data into teacher_class_subject mapping table in the database
-   */
-  insertIntoMappingTable: async (data, cancel = false) => {
-    return await api.request({
-      url: `/create-teacher-class-mapping`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
-      method: "POST",
-      data: data,
-      signal: cancel ? cancelApiObject[this.insertIntoMappingTable.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.updateTeacher.name].handleRequestCancellation().signal : undefined,
     });
   },
 
@@ -76,27 +50,10 @@ export const TeacherAPI = {
   getTeacherDetail: async (teacher_id, cancel = false) => {
     const { data: response } = await api.request({
       url: `/get-teacher-detail/${teacher_id}`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "GET",
-      signal: cancel ? cancelApiObject[this.getTeacherDetail.name].handleRequestCancellation().signal : undefined
+      signal: cancel ? cancelApiObject[this.getTeacherDetail.name].handleRequestCancellation().signal : undefined,
     });
     return response;
-  },
-
-  /** delete values from teacher_class_subject mapping table on every update
-   */
-  deleteFromMappingTable: async (fields, cancel = false) => {
-    return await api.request({
-      url: `/delete-from-teacher-mapping`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
-      method: "DELETE",
-      data: fields,
-      signal: cancel ? cancelApiObject[this.deleteFromMappingTable.name].handleRequestCancellation().signal : undefined
-    });
   }
 };
 

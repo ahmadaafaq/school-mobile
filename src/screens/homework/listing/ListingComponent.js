@@ -12,7 +12,7 @@ import { useCallback, useEffect } from 'react';
 import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from 'expo-router';
-import { useTheme } from 'react-native-paper';
+import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
 
 import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
@@ -71,7 +71,7 @@ const ListingComponent = () => {
             height: 50,
             borderRadius: 18,
             marginBottom: 15,
-            backgroundColor: theme.colors.brightBlue[500]
+            backgroundColor: theme.colors.grayishRed[500]
         },
         touchableOpacityText: {
             color: theme.colors.white[500],
@@ -97,9 +97,9 @@ const ListingComponent = () => {
             >
                 <Text style={styles.touchableOpacityText}> Create New Homework </Text>
             </TouchableOpacity>
-            <Text style={styles.headerText}>
-                {listData?.count} Homeworks Found
-            </Text>
+            <Chip icon="information" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
+                <Text style={{ color: MD2Colors.black }}>{listData?.count || 0} Homeworks Found</Text>
+            </Chip>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
                 <FlatList
                     data={listData?.rows}
@@ -108,7 +108,6 @@ const ListingComponent = () => {
                     keyExtractor={(item) => item.id.toString()}
                     {...flatListOptimizationProps}
                 />
-
             </ScrollView>
         </SafeAreaView>
     );

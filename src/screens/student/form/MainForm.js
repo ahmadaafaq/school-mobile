@@ -233,23 +233,6 @@ const MainForm = () => {
                 setReset={setReset}
                 updatedValues={updatedValues?.addressData}
             />
-            {/* <ImagePicker
-                key="image"
-                onChange={data => handleFormChange(data, 'parent')}
-                refId={imageFormRef}
-                reset={reset}
-                setReset={setReset}
-                setDirty={setDirty}
-                preview={preview}
-                setPreview={setPreview}
-                // updatedValues={updatedValues?.imageData.filter(img => img.type === "normal")}
-                deletedImage={deletedImage}
-                setDeletedImage={setDeletedImage}
-                imageType="Guardian"
-            // azurePath={`${ENV.VITE_SAS_URL}/${ENV.VITE_PARENT_SALON}`}
-            // ENV={ENV}
-            /> */}
-
             <View style={{ display: "flex", justifyContent: "end", margin: "20px" }}>
                 {   //hide reset button on student update  type="reset" color="warning" variant="contained"
                     title === "Update" ? null :

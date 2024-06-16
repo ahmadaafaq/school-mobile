@@ -6,7 +6,7 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dimensions, Image, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput, KeyboardAvoidingView } from 'react-native';
@@ -27,7 +27,7 @@ import LoginBg from "../../assets/images/login-bg2.png";
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const initialFormData = {
     school_code: "",
-    email: "",
+    contact_no: "",
     password: ""
 };
 
@@ -47,11 +47,21 @@ const LoginScreen = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    useEffect(() => {
+        const getAuthInfo = async () => {
+            const authInfo = await getAsyncStorage("auth");
+            if (authInfo?.token) {
+                router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
+            }
+        }
+        getAuthInfo();
+    }, []);
+
     const handleSubmit = () => {
         if (!formData.school_code) {
             toastAndNavigate(dispatch, true, 'School Code must be specified', theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
         }
-        if (formData.school_code && (formData.email && formData.password)) {
+        if (formData.school_code && (formData.contact_no && formData.password)) {
             setLoading(true);
             console.log('inside login m')
             API.UserAPI.login(formData)
@@ -67,16 +77,18 @@ const LoginScreen = () => {
                         inputRef.current.focus();
                     }
                     else {
+                        console.log('coming in else, means no error');
                         const authInfo = {
                             id: response.data.id,
                             token: response.data.token,
                             role: response.data.role,
                             designation: response.data.designation,
                             username: response.data.username,
-                            school: response.data.school_name
+                            school: response.data.school_name,
+                            school_id: response.data.school_id
                         };
-                        const navigatedPath = await getAsyncStorage("navigatedPath");
                         setAsyncStorage("auth", authInfo);
+                        const navigatedPath = await getAsyncStorage("navigatedPath");
                         response.data?.school_info ? setAsyncStorage("schoolInfo", response.data.school_info) : null;
                         if (navigatedPath) {
                             const splittedPath = navigatedPath.split('/');
@@ -85,7 +97,7 @@ const LoginScreen = () => {
                             router.push(`/${navigatedPath}`);
                             remAsyncStorage("navigatedPath");       //removing path after navigating user
                         } else {
-                            router.push('/(tabs)/(homeTabDrawer)/home');
+                            router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
                         }
                     }
                 })
@@ -157,7 +169,7 @@ const LoginScreen = () => {
                         actionText={toastInfo.actionText}
                         actionTextColor={toastInfo.actionTextColor}
                         backgroundColor={toastInfo.backgroundColor}
-                        textColor={toastInfo.textColor}
+                        textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
                     />
                 </View>
                 {/* <Text style={{ color: theme.colors.spanishPink[500], fontSize: 25 }}> mode: {theme} </Text> */}
@@ -180,11 +192,11 @@ const LoginScreen = () => {
                     />
                     <TextInput
                         style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
-                        placeholder="Username*"
+                        placeholder="Contact*"
                         placeholderTextColor={theme.colors.white[700]}
-                        keyboardType="email-address"
-                        value={formData.email}
-                        onChangeText={(value) => handleFormDataChange("email", value)}
+                        keyboardType="numeric"
+                        value={formData.contact_no}
+                        onChangeText={(value) => handleFormDataChange("contact_no", value)}
                     />
                 </View>
                 <View style={styles.inputContainer}>

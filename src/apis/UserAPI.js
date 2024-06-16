@@ -13,6 +13,7 @@ export const UserAPI = {
   /** Login user after verification
    */
   login: async (loginInfo, cancel = false) => {
+    console.log('loginInfo', loginInfo);
     const { data: response } = await api.request({
       url: `/login`,
       method: "POST",
@@ -43,17 +44,6 @@ export const UserAPI = {
       signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
     });
     return response;
-  },
-
-  /** Register user in the database
-   */
-  register: async (user, cancel = false) => {
-    return await api.request({
-      url: `/register`,
-      method: "POST",
-      data: user,
-      signal: cancel ? cancelApiObject[this.register.name].handleRequestCancellation().signal : undefined
-    });
   },
 
   /** Update user in the database

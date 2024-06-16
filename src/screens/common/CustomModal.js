@@ -13,13 +13,13 @@ import { Dimensions, View, Text, TouchableOpacity, StyleSheet, Animated, Easing 
 import { Ionicons } from '@expo/vector-icons';
 
 import { COLORS, FONT, SIZES } from '../../assets/constants';
-import { useDispatch, useSelector } from 'react-redux';
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModal, setShowModal, action = null }) => {
-    const dispatch = useDispatch();
-    const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
+const CustomModal = ({
+    children, heightNumber, headerText,
+    showModal, setShowModal = null
+}) => {
     const translateY = useMemo(() => new Animated.Value(150), []);
 
     const animatedStyle = {
@@ -52,16 +52,7 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
         }
     }, [showModal, showContainer, hideContainer]);
 
-    const handlePress = (item) => {
-        setShowModal(!showModal);
-        if (action) {
-            dispatch(action({
-                [objId]: item[objId],
-                [objValue]: item[objValue]
-            }));
-        }
-    };
-    console.log(classData, sectionData, subjectData, 'homeweork data')
+    console.log(heightNumber)
 
     const styles = StyleSheet.create({
         container: {
@@ -102,6 +93,7 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
             fontWeight: '600',
             fontSize: 13,
             letterSpacing: 0.5,
+            lineHeight: 20,
             paddingLeft: 25,
             marginBottom: 10
         }
@@ -119,29 +111,19 @@ const CustomModal = ({ data, heightNumber, headerText, objId, objValue, showModa
             </TouchableOpacity>
 
             <View style={styles.subContainer2}>
-                <Text style={styles.headerText}>{headerText}</Text>
-                {data.map((item, index) => {
-                    return (
-                        <TouchableOpacity onPress={() => handlePress(item)}
-                            key={index}>
-                            <Text style={styles.textStyle}>{item[objValue]} </Text>
-                        </TouchableOpacity>
-                    )
-                })}
+                <Text style={styles.headerText}>{headerText ? headerText : ''}</Text>
+                {children}
             </View>
         </Animated.View>
     );
 };
 
 CustomModal.propTypes = {
-    data: PropTypes.array,
+    children: PropTypes.any,
     heightNumber: PropTypes.number,
     headerText: PropTypes.string,
-    objId: PropTypes.string,
-    objValue: PropTypes.string,
     showModal: PropTypes.bool,
     setShowModal: PropTypes.func,
-    action: PropTypes.func
 };
 
 export default CustomModal;

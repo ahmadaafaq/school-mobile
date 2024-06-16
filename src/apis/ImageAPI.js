@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const ImageAPI = {
     /** Get image from the database based on parent and parent_id
@@ -19,9 +16,6 @@ export const ImageAPI = {
         const { data: response } = await api.request({
             url: `/get-image/${parent}/${parent_id}`,
             method: "GET",
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             signal: cancel ? cancelApiObject[this.getImage.name].handleRequestCancellation().signal : undefined
         });
         return response;
@@ -32,9 +26,6 @@ export const ImageAPI = {
     createImage: async (image_data, cancel = false) => {
         return await api.request({
             url: `/create-image`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "POST",
             data: image_data,
             signal: cancel ? cancelApiObject[this.createImage.name].handleRequestCancellation().signal : undefined
@@ -46,9 +37,6 @@ export const ImageAPI = {
     updateImage: async (fields, cancel = false) => {
         return await api.request({
             url: `/update-image`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "PATCH",
             data: fields,
             signal: cancel ? cancelApiObject[this.updateImage.name].handleRequestCancellation().signal : undefined
@@ -60,9 +48,6 @@ export const ImageAPI = {
     deleteImage: async (fields, cancel = false) => {
         return await api.request({
             url: `/delete-image`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "DELETE",
             data: fields,
             signal: cancel ? cancelApiObject[this.deleteImage.name].handleRequestCancellation().signal : undefined
@@ -72,12 +57,11 @@ export const ImageAPI = {
     /** Upload image to the folder created by nodejs
      */
     uploadImage: async (data, cancel = false) => {
-        console.log(">>>>",data);
+        console.log(">>>>", data);
         return await api.request({
             url: `/upload-image`,
             headers: {
                 "Content-Type": "multipart/form-data",
-                "x-access-token": getAsyncStorage("auth").token
             },
             method: "POST",
             data: data,
@@ -86,12 +70,11 @@ export const ImageAPI = {
     },
 
     uploadMobileImage: async (data, cancel = false) => {
-        console.log(">>>>",data);
+        console.log(">>>>", data);
         return await api.request({
             url: `/upload-mobile-image`,
             headers: {
                 "Content-Type": "multipart/form-data",
-                "x-access-token": getAsyncStorage("auth").token
             },
             method: "POST",
             data: data,

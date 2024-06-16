@@ -52,7 +52,7 @@ const HomeworkForm = () => {
 
     useEffect(() => {
         if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData, API.SchoolAPI);
         }
     }, []);
 
@@ -61,7 +61,7 @@ const HomeworkForm = () => {
             const classSections = classsData?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
             dispatch(setSchoolSections(selectedSections));
-            console.log('getandsetsections called form', selectedSections, classSections);
+            // console.log('getandsetsections called form', selectedSections, classSections);
         };
         getAndSetSections();
     }, [classData?.class_id, classsData?.length]);

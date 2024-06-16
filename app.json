@@ -16,6 +16,17 @@
     ],
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9bb4c503-d9f5-45dc-afe4-78c1ae396434"
+      }
+    },
+    "android": {
+      "package": "com.aafaqahmad.schoolcrmmobile"
+    }
   }
 }

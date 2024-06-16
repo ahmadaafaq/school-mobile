@@ -100,24 +100,37 @@ const RootLayout = () => {
                         name='(homework)'
                         options={{
                             headerTitle: "Homework",
-                            headerTitleStyle: {
-                                color: COLORS.white[100] // Set the color for the header title
-                            },
-                            headerStyle: {
-                                backgroundColor: COLORS.indigo[400], // Set the background color for the header
-                            }
+                            headerTitleStyle: { color: COLORS.white[100] },
+                            headerStyle: { backgroundColor: paperTheme.colors.grayishRed[500] }
                         }}
                     />
-                    {/* test screen */}
                     <Stack.Screen
                         name='(student)'
                         options={{
                             headerTitle: "Students",
-                            headerTitleStyle: {
-                                color: COLORS.white[100] // Set the color for the header title
-                            },
+                            headerTitleStyle: { color: COLORS.white[100] },
                             headerStyle: {
-                                backgroundColor: COLORS.indigo[400], // Set the background color for the header
+                                backgroundColor: paperTheme.colors.blue[500]
+                            }
+                        }}
+                    />
+                    <Stack.Screen
+                        name='(noticeBoard)'
+                        options={{
+                            headerTitle: "Notice Board",
+                            headerTitleStyle: { color: COLORS.white[100] },
+                            headerStyle: {
+                                backgroundColor: paperTheme.colors.grayishYellow[500]
+                            }
+                        }}
+                    />
+                    <Stack.Screen
+                        name='(timeTable)'
+                        options={{
+                            headerTitle: "Time Table",
+                            headerTitleStyle: { color: COLORS.white[100] },
+                            headerStyle: {
+                                backgroundColor: paperTheme.colors.grayishGreen[500]
                             }
                         }}
                     />

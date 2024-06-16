@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const AddressAPI = {
   /** Get the address from the database based on parent information
@@ -19,9 +16,6 @@ export const AddressAPI = {
     const { data: response } = await api.request({
       url: `/get-address/${parent}/${parent_id}`,
       method: "GET",
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       signal: cancel ? cancelApiObject[this.getAddress.name].handleRequestCancellation().signal : undefined
     });
     return response;
@@ -32,9 +26,6 @@ export const AddressAPI = {
   createAddress: async (address, cancel = false) => {
     return await api.request({
       url: `/create-address`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "POST",
       data: address,
       signal: cancel ? cancelApiObject[this.createAddress.name].handleRequestCancellation().signal : undefined
@@ -46,9 +37,6 @@ export const AddressAPI = {
   updateAddress: async (fields, cancel = false) => {
     return await api.request({
       url: `/update-address`,
-      headers: {
-        "x-access-token": getAsyncStorage("auth").token
-      },
       method: "PATCH",
       data: fields,
       signal: cancel ? cancelApiObject[this.updateAddress.name].handleRequestCancellation().signal : undefined

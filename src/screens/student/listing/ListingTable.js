@@ -6,79 +6,63 @@
  * restrictions set forth in your license agreement with School CRM.
  */
 
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { useEffect, useRef, useState } from 'react';
-import { Alert, SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from "react-native";
-import { Camera } from 'expo-camera';
-import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from "react-native";
+import { ActivityIndicator, IconButton, MD2Colors, MD3Colors } from 'react-native-paper';
+import * as ImagePicker from "expo-image-picker";
 
 import API from "../../../apis";
-import { COLORS, FONT, SIZES } from "../../../assets/constants";
+import { FONT, SIZES } from "../../../assets/constants";
 import { Utility } from "../../../utility";
+import { useLocalSearchParams } from 'expo-router';
 
 export const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
-export const ListingTable = ({ item, index, theme }) => {
-    // const [hasPermission, setHasPermission] = useState(null);
-    const [cameraVisible, setCameraVisible] = useState(false);
+export const ListingTable = ({ item, theme }) => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [previewVisible, setPreviewVisible] = useState(false);
-    const cameraRef = useRef(null);
-    const { formatImageName } = Utility();
+    const [uploading, setUploading] = useState(false);
 
-    const handleOpenCamera = async () => {
-        const { status } = await Camera.requestCameraPermissionsAsync();
-        if (status === 'granted') {
-            setCameraVisible(true);
-        } else {
-            Alert.alert('Permission Denied', 'Camera permission is required to use this feature.');
-        }
-    };
+    const { uploadImg } = Utility();
+    const params = useLocalSearchParams();
 
-    const clickPhoto = async () => {
-        console.log('click photo');
-        if (cameraRef.current) {
-            let photo = await cameraRef.current.takePictureAsync();
-            setCameraVisible(false);
-            setCapturedImage(photo);
+    useEffect(() => {
+        if (item.image_src)
             setPreviewVisible(true);
-            console.log(photo.uri, 'photo url')
+    }, [item.image_src]);
+
+    // Function to capture an image using the device's camera 
+    const pickImageCamera = async () => {
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("You've refused to allow this app to access your photos!");
+            return;
+        }
+
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            base64: true,
+            allowsMultipleSelection: false,
+        });
+        if (!result.canceled) {
+            setCapturedImage(result.assets[0].uri);
+            setPreviewVisible(true);
         }
     };
-
-    const uploadImg = () => {
-        let nameArray = capturedImage.uri.split("/");
-        let name = nameArray[nameArray.length - 1];
-        console.log('name', name);
-
-        let formattedName = formatImageName(name);
-        const formBody = new FormData();
-        formBody.append('image', {
-            uri: capturedImage.uri,
-            name: formattedName,
-            type: "image/jpeg",
-        });
-
-        console.log('capturedImage', formBody._parts[0]);
-
-        API.ImageAPI.uploadMobileImage({ image: formBody, imageName: formattedName });
-        // API.ImageAPI.createImage({
-        //     image_src: formattedName,
-        //     parent_id: item.id,
-        //     parent: 'student',
-        //     type: 'normal'
-        // });
-    }
+    console.log(capturedImage, 'captured image')
 
     const styles = StyleSheet.create({
         plusBox: {
             height: WINDOW_HEIGHT / 4,
             width: WINDOW_WIDTH - 250,
             borderRadius: 5,
-            backgroundColor: '#d4ebf2',
+            backgroundColor: MD3Colors.secondary20,
             justifyContent: 'center',
             alignItems: 'center',
             borderWidth: 1,
@@ -92,10 +76,13 @@ export const ListingTable = ({ item, index, theme }) => {
             backgroundColor: 'grey',
             justifyContent: 'center',
             alignItems: 'center',
-
         },
         camera: {
             flex: 1,
+            position: 'relative',
+            zIndex: 5,
+            height: WINDOW_HEIGHT / 1.2,
+            width: WINDOW_WIDTH
         },
         cameraButtonContainer: {
             flex: 1,
@@ -104,6 +91,15 @@ export const ListingTable = ({ item, index, theme }) => {
             backgroundColor: 'transparent',
             // flexDirection: 'row',
             margin: 20,
+        },
+        titleLabelText: {
+            color: theme.colors.black[600],
+            fontFamily: FONT.regular,
+            fontSize: SIZES.medium,
+            paddingTop: SIZES.small,
+            paddingLeft: SIZES.xSmall,
+            letterSpacing: 0.22,
+            textTransform: 'capitalize'
         },
         titleText: {
             color: theme.colors.blue[700],
@@ -136,13 +132,21 @@ export const ListingTable = ({ item, index, theme }) => {
             letterSpacing: 0.12,
             fontWeight: '400'
         },
+        fab: {
+            height: 60,
+            backgroundColor: "white",
+            position: 'absolute',
+            margin: 16,
+            right: 0,
+            bottom: 0,
+            top: 20,
+        },
         icon: {
             color: theme.colors.white[500]
         },
     });
 
     const CameraPreview = ({ photo }) => {
-        console.log('sdsfds', photo)
         return (
             <View
                 style={{
@@ -153,7 +157,7 @@ export const ListingTable = ({ item, index, theme }) => {
                 }}
             >
                 <ImageBackground
-                    source={{ uri: photo && photo.uri }}
+                    source={{ uri: photo && photo }}
                     style={{
                         flex: 1
                     }}
@@ -161,7 +165,7 @@ export const ListingTable = ({ item, index, theme }) => {
             </View>
         )
     }
-    // console.log('hellllllooooooooooooo',item);
+    // console.log('hellllllooooooooooooo', previewVisible, loading, params);
 
     return (
         <SafeAreaView style={{
@@ -170,81 +174,68 @@ export const ListingTable = ({ item, index, theme }) => {
             justifyContent: 'space-between',
             // height: WINDOW_HEIGHT / 5.5,
             width: WINDOW_WIDTH - 25,
-            borderWidth: 2,
+            // borderWidth: 1,
             borderColor: 'grey',
-            paddingHorizontal: 10,
-            backgroundColor: COLORS.indigo[200],
             borderRadius: 5,
             margin: 10,
+            paddingTop: 10,
+            paddingBottom: 10,
+            paddingLeft: 10,
+            backgroundColor: MD2Colors.blue400,
         }}>
-            {cameraVisible ? (
-                <Camera ref={cameraRef} style={styles.camera} type={Camera.Constants.Type.back} >
-                    <View style={styles.cameraButtonContainer}>
-                        <View style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            flex: 1,
-                            width: '100%',
-                            justifyContent: 'space-between',
-                        }}>
-                            <View style={{
-                                alignSelf: 'center',
-                                flex: 1,
-                                alignItems: 'center',
-                            }}>
-                                <TouchableOpacity
-                                    style={{
-                                        width: 70,
-                                        height: 70,
-                                        borderRadius: 50,
-                                        backgroundColor: '#fff',
-                                    }}
-                                    onPress={clickPhoto} />
-                            </View>
-                        </View>
-                    </View>
-                </Camera >
-            ) : (
-                <>
-                    <View style={{ display: 'flex', flexDirection: 'column' }}>
-                        <View style={styles.plusBox}>
-                            {previewVisible && capturedImage ? (
-                                <CameraPreview photo={capturedImage} />
-                            ) : (
-                                <TouchableOpacity style={styles.plusButton} onPress={handleOpenCamera}>
-                                    <MaterialIcons name="add" size={28} color="white" />
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                        {previewVisible && capturedImage &&
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', margin: 10 }}>
+            <View style={{ display: 'flex', flexDirection: 'column', justifyContent: "center" }}>
+                <View style={styles.plusBox}>
+                    {(previewVisible && capturedImage) || item.image_src ? (
+                        <CameraPreview photo={capturedImage || item?.image_src} />
+                    ) : (
+                        <TouchableOpacity style={styles.plusButton} onPress={pickImageCamera}>
+                            <IconButton
+                                icon="plus-circle"
+                                iconColor={MD3Colors.error30}
+                                size={50}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
+                {previewVisible &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', margin: 10 }}>
+                        {!uploading ? (
+                            <>
                                 <TouchableOpacity onPress={() => {
                                     setCapturedImage(null);
                                     setPreviewVisible(false);
-                                    handleOpenCamera();
+                                    pickImageCamera();
                                 }}>
-                                    <Text style={{ borderWidth: 1, padding: 10, borderRadius: 20, backgroundColor: "white" }}>
-                                        Retake
-                                    </Text>
+                                    <IconButton
+                                        icon="camera"
+                                        iconColor={MD3Colors.error30}
+                                        size={30}
+                                    />
+                                    <Text style={{ marginLeft: 10 }}>Retake</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={uploadImg}>
-                                    <Text style={{ borderWidth: 1, padding: 10, borderRadius: 20, backgroundColor: "#15f4ee" }}>
-                                        Upload
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        }
-                    </View>
-                    <View style={{ borderWidth: 1, width: '50%', margin: 7, backgroundColor: "white", borderRadius: 5, }}>
-                        <Text style={styles.titleText}>{item.firstname} {item.lastname}</Text>
-                        <Text style={styles.titleText}> Class: {item.class} </Text>
-                        <Text style={styles.titleText}> Father Name: {item.father_name}</Text>
-                        <Text style={styles.titleText}> Gender: {item.gender}</Text>
-                        <Text style={styles.titleText}> blood Group: {item.blood_group}</Text>
-                        {/* <Text style={styles.subText}>Due date</Text> */}
-                    </View>
-                </>
-            )}
+                                {capturedImage &&
+                                    <TouchableOpacity onPress={() => uploadImg(setUploading, capturedImage, 'student', API.CommonAPI, params?.school, item)}>
+                                        <IconButton
+                                            icon="upload"
+                                            iconColor={MD3Colors.error30}
+                                            size={30}
+                                        />
+                                        <Text style={{ marginLeft: 10 }}>Upload</Text>
+                                    </TouchableOpacity>}
+                            </>) : (
+                            <ActivityIndicator size={'small'} animating={true} color={MD3Colors.primary100} />
+                        )}
+                    </View>}
+            </View>
+            <View style={{
+                width: '50%', borderRadius: 5,
+            }}>
+                <Text style={styles.titleText}>Name:</Text><Text style={styles.titleLabelText}>{item?.studentName}</Text>
+                <Text style={styles.titleText}> Class:</Text><Text style={styles.titleLabelText}>{item?.className}</Text>
+                <Text style={styles.titleText}> Father&#39;s Name:</Text><Text style={styles.titleLabelText}>{item?.father_name}</Text>
+                <Text style={styles.titleText}> Gender: </Text><Text style={styles.titleLabelText}>{item?.gender}</Text>
+                <Text style={styles.titleText}> blood Group:</Text><Text style={styles.titleLabelText}>{item?.blood_group}</Text>
+            </View>
         </SafeAreaView>
     );
 };
@@ -252,7 +243,9 @@ export const ListingTable = ({ item, index, theme }) => {
 ListingTable.propTypes = {
     item: PropTypes.object,
     index: PropTypes.number,
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    photo: PropTypes.object,
+    flatListRef: PropTypes.object
 };
 
 export default ListingTable;

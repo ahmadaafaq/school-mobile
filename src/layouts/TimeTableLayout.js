@@ -9,15 +9,15 @@
 
 import { Stack } from 'expo-router';
 
-const SalonLayout = () => {
+const TimeTableLayout = () => {
     return (
         <Stack>
             <Stack.Screen
-                name="index"
-                options={{ headerTitle: "School", headerShown: false }}
+                name="timeTableListing"
+                options={{ headerTitle: "Time Table", headerShown: false }}
             />
         </Stack>
     );
 };
 
-export default SalonLayout;
+export default TimeTableLayout;

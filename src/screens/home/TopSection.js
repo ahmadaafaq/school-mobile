@@ -7,24 +7,35 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { Dimensions, StyleSheet, Image, View } from 'react-native';
-import { Card, Text, useTheme } from 'react-native-paper';
 import PropTypes from 'prop-types';
+
+import { Dimensions, StyleSheet, View, TouchableOpacity, ImageBackground } from 'react-native';
+import { Card, PaperProvider, IconButton, Text, useTheme } from 'react-native-paper';
 
 import { SIZES, FONT } from "../../assets/constants";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const TopSection = ({ schoolName, title, content, bg, imageSource, rollno, teacherName }) => {
+const TopSection = ({
+    schoolName,
+    title,
+    classes,
+    subjects,
+    bg,
+    image,
+    setVisible
+}) => {
+
     const theme = useTheme();
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
+            alignItems: "center",
             width: WINDOW_WIDTH,
-            height: WINDOW_HEIGHT / 4.5,
+            height: WINDOW_HEIGHT / 4.4,
             padding: 10,
             backgroundColor: bg,
             borderRadius: 0,
@@ -42,8 +53,10 @@ const TopSection = ({ schoolName, title, content, bg, imageSource, rollno, teach
         contentStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.medium,
-            fontSize: SIZES.smallMedium,
-            marginBottom: 4
+            fontSize: SIZES.smallMedium
+        },
+        TouchableOpacityStyle: {
+
         },
         imageStyle: {
             width: 80,
@@ -58,10 +71,6 @@ const TopSection = ({ schoolName, title, content, bg, imageSource, rollno, teach
             overflow: 'hidden',
             marginLeft: 50
         },
-        textStyle: {
-            position: 'absolute',
-            left: 150
-        },
         headStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.bold,
@@ -73,36 +82,79 @@ const TopSection = ({ schoolName, title, content, bg, imageSource, rollno, teach
     });
 
     return (
-        <Card
-            mode=''
-            style={styles.container}
-        >
-            <View>
-                <Text style={styles.headStyle}>{schoolName}</Text>
-                <View style={{ width: WINDOW_WIDTH - 60, height: 1, backgroundColor: theme.colors.whiteSmoke[500], margin: 20, marginTop: 5 }}></View>
-            </View>
-            <View>
-                <View style={styles.viewStyle}>
-                    <Image alt="No Photo Given" style={styles.imageStyle} />
+        <PaperProvider>
+            <Card
+                mode=''
+                style={styles.container}
+            >
+                <View>
+                    <Text style={styles.headStyle}>{schoolName}</Text>
+                    <View style={{
+                        width: WINDOW_WIDTH - 60, height: 1, backgroundColor: theme.colors.whiteSmoke[500],
+                        margin: 20, marginTop: 5, marginBottom: 10
+                    }}></View>
                 </View>
-                <View style={styles.textStyle}>
-                    <Text style={styles.titleStyle}>{title}</Text>
-                    <View style={{ flex: 1, height: 2, backgroundColor: theme.colors.whiteSmoke[500], marginBottom: 10 }}></View>
-                    <Text style={styles.contentStyle}>Class {content}  |  Roll No : {rollno}</Text>
-                    <Text style={styles.contentStyle}>Class Teacher - {teacherName}</Text>
+
+                <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: WINDOW_WIDTH - 30,
+                    height: 120,
+                    marginLeft: 6
+                }}>
+                    <View style={{
+                        flexGrow: 0.4,
+                        width: '25%',
+                        height: 100,
+                        marginLeft: 10,
+                        borderRadius: 8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: theme.colors.blue[300]
+                    }}>
+                        {!image ? (
+                            <TouchableOpacity onPress={() => setVisible(true)}>
+                                <IconButton
+                                    icon="plus-circle"
+                                    // iconColor={MD3Colors.error30}
+                                    size={50}
+                                />
+                            </TouchableOpacity>
+                        ) : (
+                            <ImageBackground
+                                source={{ uri: image }}
+                                style={{
+                                    flex: 1,
+                                    objectFit: "contain",
+                                    width: "100%",
+                                }}
+                            />
+                        )}
+                    </View>
+                    <View style={{
+                        flexGrow: 0.5,
+                        width: '50%'
+                    }}>
+                        <Text style={styles.titleStyle}>{title}</Text>
+                        <Text style={styles.contentStyle}>Classes  : {classes} </Text>
+                        <Text style={styles.contentStyle}>Subjects : {subjects}</Text>
+                    </View>
                 </View>
-            </View>
-        </Card >
+            </Card>
+
+        </PaperProvider>
     );
 };
 
 TopSection.propTypes = {
+    schoolName: PropTypes.string,
     title: PropTypes.string,
-    content: PropTypes.number,
-    growth: PropTypes.string,
+    classes: PropTypes.string,
+    subjects: PropTypes.string,
     bg: PropTypes.string,
-    mr: PropTypes.number,
-    ml: PropTypes.number
+    image: PropTypes.string,
+    setVisible: PropTypes.func
 };
 
 export default TopSection;

@@ -1,0 +1,100 @@
+/**
+ * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
+ *
+ * This software is the confidential information of School CRM Inc., and is licensed as
+ * restricted rights software. The use,reproduction, or disclosure of this software is subject to
+ * restrictions set forth in your license agreement with School CRM.
+ */
+
+import PropTypes from 'prop-types';
+
+import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
+import { MD2Colors } from 'react-native-paper';
+import { FONT, SIZES } from "../../../assets/constants";
+
+export const WINDOW_WIDTH = Dimensions.get('window').width;
+
+const WINDOW_HEIGHT = Dimensions.get('window').height;
+
+const ListingItem = ({ item, index, theme }) => {
+    const date = new Date(2024, 3, 1, 8, 0);
+    const formatOptions = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        weekday: 'long',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    };
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            height: WINDOW_HEIGHT / 5.5,
+            width: WINDOW_WIDTH - 25,
+            borderWidth: 2,
+            borderRadius: 8,
+            borderColor: theme.colors.soapBlue[500],
+            paddingHorizontal: 10
+        },
+        titleText: {
+            color: theme.colors.white[400],
+            fontFamily: FONT.regular,
+            fontSize: SIZES.medium,
+            paddingTop: SIZES.small,
+            paddingLeft: SIZES.xSmall,
+            letterSpacing: 0.22,
+            fontWeight: '500',
+            textTransform: 'capitalize'
+        },
+        subText: {
+            color: theme.colors.white[500],
+            fontSize: SIZES.smallMedium,
+            paddingLeft: SIZES.small,
+            paddingTop: SIZES.xSmall,
+            letterSpacing: 0.12,
+            textTransform: 'capitalize'
+        },
+        detailBtn: {
+            top: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            // alignSelf: 'flex-end',
+            width: '80%',
+            height: 40,
+            borderRadius: 4,
+            backgroundColor: theme.colors.green[500],
+            marginBottom: 10,
+            zIndex: 1
+        }
+    });
+
+    return (
+        <SafeAreaView style={{
+            width: WINDOW_WIDTH - 25,
+            borderRadius: 5,
+            margin: 10,
+            padding: 10,
+            paddingBottom: 15,
+            backgroundColor: theme.colors.grayishYellow[500],
+        }}>
+            <View style={{ borderWidth: 0 }}>
+                <Text style={[styles.titleText, {
+                    fontSize: SIZES.large
+                }]}>{item.title}</Text>
+                <Text style={styles.titleText}>{item.description}</Text>
+                <Text style={styles.subText}>{date.toLocaleString('en-US', formatOptions)}</Text>
+            </View>
+        </SafeAreaView>
+    );
+};
+
+ListingItem.propTypes = {
+    item: PropTypes.object,
+    index: PropTypes.number,
+    theme: PropTypes.object
+};
+
+export default ListingItem;

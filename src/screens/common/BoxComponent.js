@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 
 import { Dimensions, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
-import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 import { FONT } from "../../assets/constants";
 
@@ -53,7 +53,7 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
                 mode=''
                 style={styles.container}
             >
-                <View><MaterialIcons name={iconName} size={35} color={theme.colors.whiteSmoke[100]} /></View>
+                <View><FontAwesome5 name={iconName} size={35} color={theme.colors.whiteSmoke[100]} /></View>
             </Card>
             <View><Text style={styles.titleStyle}>{title}</Text></View>
         </TouchableOpacity>

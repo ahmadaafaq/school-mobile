@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect, usePathname } from 'expo-router';
@@ -23,14 +23,17 @@ import ListingComponent from './ListingComponent';
 import { SIZES } from '../../../assets/constants';
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
 import { setSchoolSections } from "../../../redux/actions/SectionAction";
-import { setSchoolSubjects } from "../../../redux/actions/SubjectAction";
-import { setAllSubjects } from "../../../redux/actions/SubjectAction";
-import { setTeacherHomeworks, setHomeworkClassData, setHomeworkSectionData, setHomeworkSubjectData } from "../../../redux/actions/HomeworkAction";
+// import { setSchoolStudents } from "../../../redux/actions/StudentAction";
+import { setAllSubjects, setSchoolSubjects } from "../../../redux/actions/SubjectAction";
+import {
+    setTeacherHomeworks, setHomeworkClassData,
+    setHomeworkSectionData, setHomeworkSubjectData
+} from "../../../redux/actions/HomeworkAction";
 import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
 const HomeworkListing = () => {
-    const [classsData, setClasssData] = useState([]);
+    const [dbClassObj, setDbClassObj] = useState([]);
     const [showClassModal, setShowClassModal] = useState(false);      //for modal visibility
     const [showSectionModal, setShowSectionModal] = useState(false);
     const [showSubjectModal, setShowSubjectModal] = useState(false);
@@ -60,6 +63,15 @@ const HomeworkListing = () => {
         }, [])
     );
 
+    // to fetch students based on selected class & section from dropdown
+    useEffect(() => {
+        if (classData.class_id && sectionData.section_id) {
+            console.log('classData and Sectiondata')
+            getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id });
+        }
+        console.log('outside if classData and Sectiondata', classData, sectionData)
+    }, [classData.class_id, sectionData.section_id]);
+
     useEffect(() => {
         if (!teacherHomework?.listData?.length) {
             getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI);
@@ -74,7 +86,7 @@ const HomeworkListing = () => {
 
     useEffect(() => {
         if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setClasssData);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
         }
     }, []);
 
@@ -86,27 +98,44 @@ const HomeworkListing = () => {
                 console.log(pathname, 'pathname')
             }
             const getAndSetSections = () => {
-                const classSections = classsData?.filter(obj => obj.class_id === classData.class_id);
+                const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
                 const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
                 dispatch(setSchoolSections(selectedSections));
-                console.log('getandsetsections called listing', selectedSections, classSections);
+                // console.log('getandsetsections called listing', selectedSections, classSections);
             };
             getAndSetSections();
         }
-    }, [classData?.class_id, classsData?.length]);
+    }, [classData?.class_id, dbClassObj?.length]);
 
     useEffect(() => {
         if (Object.values(sectionData)) {
             dispatch(setHomeworkSubjectData({}));
         }
         const getAndSetSubjects = () => {
-            const sectionSubjects = classsData?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
+            const sectionSubjects = dbClassObj?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
             const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
             dispatch(setSchoolSubjects(selectedSubjects));
             console.log('getandsetsubjects called', selectedSubjects, sectionSubjects);
         };
         getAndSetSubjects();
-    }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, classsData.length]);
+    }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, dbClassObj.length]);
+
+    //this function is used for modals
+    const handlePress = (item, objValue, action, objId) => {
+        if (objValue === "class_name") {
+            setShowClassModal(!showClassModal);
+        } else if (objValue === 'section_name') {
+            setShowSectionModal(!showSectionModal);
+        } else if (objValue === 'name') {
+            setShowSubjectModal(!showSubjectModal);
+        }
+        if (action) {
+            dispatch(action({
+                [objId]: item[objId],
+                [objValue]: item[objValue]
+            }));
+        }
+    };
 
     const styles = StyleSheet.create({
         container: {
@@ -134,18 +163,21 @@ const HomeworkListing = () => {
                             title="Class"
                             value={classData.class_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                         <CustomPressable
                             onPress={() => setShowSectionModal(!showSectionModal)}
                             title="Section"
                             value={sectionData.section_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                         <CustomPressable
                             onPress={() => setShowSubjectModal(!showSubjectModal)}
                             title="Subject"
                             value={subjectData.name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                     </View>
                 </View>
@@ -157,15 +189,18 @@ const HomeworkListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.6}
-                        data={schoolClasses.listData}
+                        heightNumber={schoolClasses.listData.length / 2.2}
                         headerText="Classes"
-                        objId='class_id'
-                        objValue='class_name'
                         showModal={showClassModal}
                         setShowModal={setShowClassModal}
-                        action={setHomeworkClassData}
-                    />
+                    >
+                        {schoolClasses.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "class_name", setHomeworkClassData, "class_id")} key={index}>
+                                <Text style={styles.textStyle}>{item["class_name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
             {showSectionModal && (
@@ -173,15 +208,18 @@ const HomeworkListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.5}
-                        data={schoolSections.listData}
+                        heightNumber={schoolSections.listData.length / 1.2}
                         headerText="Sections"
-                        objId='section_id'
-                        objValue='section_name'
                         showModal={showSectionModal}
                         setShowModal={setShowSectionModal}
-                        action={setHomeworkSectionData}
-                    />
+                    >
+                        {schoolSections.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "section_name", setHomeworkSectionData, "section_id")} key={index}>
+                                <Text style={styles.textStyle}>{item["section_name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
             {showSubjectModal && (
@@ -190,14 +228,17 @@ const HomeworkListing = () => {
                 }}>
                     <CustomModal
                         heightNumber={2}
-                        data={schoolSubjects.listData}
                         headerText="Subjects"
-                        objId='id'
-                        objValue='name'
                         showModal={showSubjectModal}
                         setShowModal={setShowSubjectModal}
-                        action={setHomeworkSubjectData}
-                    />
+                    >
+                        {schoolSubjects.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "name", setHomeworkSubjectData, "id")} key={index}>
+                                <Text style={styles.textStyle}>{item["name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
             {teacherHomework?.loading ? <LoadingAnimationModal /> : null}

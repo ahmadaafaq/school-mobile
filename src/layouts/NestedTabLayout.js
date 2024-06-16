@@ -30,21 +30,6 @@ export default () => {
                 }}
             />
             {/* <Tabs.Screen
-                name="salon"
-                options={{
-                    tabBarLabel: 'Salons',
-                    tabBarStyle: { backgroundColor: COLORS.whiteSnow, paddingBottom: 8, paddingTop: 2, fontSize: 12 },
-                    headerTitle: "Over 10, 000 Salons",
-                    headerTitleAlign: 'center',
-                    headerTintColor: COLORS.moonstoneBlue,
-                    headerShadowVisible: false,
-                    headerStyle: { backgroundColor: COLORS.whiteSnow, borderBottomWidth: 0 },
-                    headerTitleStyle: { fontWeight: '400', fontSize: SIZES.mediumLarge, fontFamily: FONT.medium },
-                    tabBarIcon: ({ color }) => <FontAwesome5 name="cut" size={18} color={color}
-                        style={{ fontFamily: 'FontAwesome5Free-Reguler' }} />
-                }}
-            /> */}
-            <Tabs.Screen
                 name="quick"
                 options={{
                     headerTitle: "Quick Links",
@@ -53,7 +38,7 @@ export default () => {
                     tabBarStyle: { backgroundColor: theme.colors.whiteSnow[500], paddingBottom: 8, paddingTop: 2, fontSize: 12 },
                     tabBarIcon: ({ color }) => <FontAwesome5 name="layer-group" size={18} color={color} />
                 }}
-            />
+            /> */}
         </Tabs>
     );
 };

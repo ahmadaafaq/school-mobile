@@ -9,10 +9,10 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
@@ -38,6 +38,7 @@ const StudentListing = () => {
 
     const dispatch = useDispatch();
     const theme = useTheme();
+    const params = useLocalSearchParams();
     const { getPaginatedData } = useCommon();
     const { fetchAndSetSchoolData, setAsyncStorage } = Utility();
 
@@ -54,14 +55,18 @@ const StudentListing = () => {
     );
 
     useEffect(() => {
-        if (!schoolStudents?.listData?.length) {
+        if (classData.class_id && sectionData.section_id) {
+            console.log('fetch CLASS students');
+            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI, { class_id: classData.class_id, section: sectionData.section_id, school_id: params.school_id });
+        } else {
+            console.log('fetch ALL students')
             getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI);
         }
-    }, [schoolStudents?.listData?.length]);
+    }, [classData.class_id, sectionData.section_id]);
 
     useEffect(() => {
         if (!schoolClasses?.listData?.length || !schoolSections?.listData?.length) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj);
+            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
         }
     }, []);
 
@@ -70,10 +75,25 @@ const StudentListing = () => {
             const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
             dispatch(setSchoolSections(selectedSections));
-            console.log('getandsetsections called listing', selectedSections, classSections);
+            // console.log('getandsetsections called listing', selectedSections, classSections);
         };
         getAndSetSections();
     }, [dbClassObj?.length, classData?.class_id]);
+
+    //this function is used for modals
+    const handlePress = (item, objValue, action, objId) => {
+        if (objValue === "class_name") {
+            setShowClassModal(!showClassModal);
+        } else if (objValue === 'section_name') {
+            setShowSectionModal(!showSectionModal);
+        }
+        if (action) {
+            dispatch(action({
+                [objId]: item[objId],
+                [objValue]: item[objValue]
+            }));
+        }
+    };
 
     const styles = StyleSheet.create({
         container: {
@@ -118,15 +138,18 @@ const StudentListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.6}
-                        data={schoolClasses.listData}
+                        heightNumber={schoolClasses.listData.length / 2.2}
                         headerText="Classes"
-                        objId='class_id'
-                        objValue='class_name'
                         showModal={showClassModal}
                         setShowModal={setShowClassModal}
-                        action={setHomeworkClassData}
-                    />
+                    >
+                        {schoolClasses.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "class_name", setHomeworkClassData, "class_id")} key={index}>
+                                <Text style={styles.textStyle}>{item["class_name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
             {showSectionModal && (
@@ -134,15 +157,18 @@ const StudentListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.5}
-                        data={schoolSections.listData}
+                        heightNumber={schoolSections.listData.length / 1.2 || 1.5}
                         headerText="Sections"
-                        objId='section_id'
-                        objValue='section_name'
                         showModal={showSectionModal}
                         setShowModal={setShowSectionModal}
-                        action={setHomeworkSectionData}
-                    />
+                    >
+                        {schoolSections.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "section_name", setHomeworkSectionData, "section_id")} key={index}>
+                                <Text style={styles.textStyle}>{item["section_name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
 

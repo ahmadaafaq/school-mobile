@@ -8,9 +8,6 @@
 
 import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
-import { Utility } from "../utility";
-
-const { getAsyncStorage } = Utility();
 
 export const SubjectAPI = {
     /** Get subjects from the database that meets the specified query parameters
@@ -20,9 +17,6 @@ export const SubjectAPI = {
         const searchParam = search ? `&search=${search}` : '';
         const { data: response } = await api.request({
             url: `/get-subjects?page=${page}&size=${size}${queryParam}${searchParam}`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth")?.token
-            },
             method: "GET",
             signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });
@@ -34,9 +28,6 @@ export const SubjectAPI = {
     createSubject: async (subject, cancel = false) => {
         return await api.request({
             url: `/create-subject`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "POST",
             data: subject,
             signal: cancel ? cancelApiObject[this.createSubject.name].handleRequestCancellation().signal : undefined
@@ -48,9 +39,6 @@ export const SubjectAPI = {
     updateSubject: async (fields, cancel = false) => {
         return await api.request({
             url: `/update-subject`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth").token
-            },
             method: "PATCH",
             data: fields,
             signal: cancel ? cancelApiObject[this.updateSubject.name].handleRequestCancellation().signal : undefined
@@ -63,9 +51,6 @@ export const SubjectAPI = {
 
         const { data: response } = await api.request({
             url: `/get-subjects-by-class/${classId}`,
-            headers: {
-                "x-access-token": getAsyncStorage("auth")?.token
-            },
             method: "GET",
             signal: cancel ? cancelApiObject[this.getSubjectsByClass.name].handleRequestCancellation().signal : undefined
         });

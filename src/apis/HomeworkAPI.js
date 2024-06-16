@@ -22,6 +22,7 @@ export const HomeworkAPI = {
         }
         // Send the data that is used in listing page search
         const searchParam = search ? `&search=${search}` : '';
+        console.log('queryParam=>', queryParam);
 
         const { data: response } = await api.request({
             url: `/get-homeworks?page=${page}&size=${size}${queryParam}${searchParam}`,
