@@ -48,6 +48,7 @@ const DrawerLayout = () => {
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.xmLarge },
                     drawerStyle: { fontSize: 12, backgroundColor: theme.colors.blue[100] }, // drawer background color
                     drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />,
+                    headerLeft: () => { },  // to hide drawer icon(3 lines on Left)
                     headerRight: () => (
                         <Ionicons
                             name="log-out-outline"

@@ -97,6 +97,16 @@ const RootLayout = () => {
                         }}
                     />
                     <Stack.Screen
+                        name='(attendance)'
+                        options={{
+                            headerTitle: "Attendance",
+                            headerTitleStyle: { color: COLORS.white[100] },
+                            headerStyle: {
+                                backgroundColor: paperTheme.colors.blue[500]
+                            }
+                        }}
+                    />
+                    <Stack.Screen
                         name='(homework)'
                         options={{
                             headerTitle: "Homework",

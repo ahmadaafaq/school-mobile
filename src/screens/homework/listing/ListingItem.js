@@ -8,6 +8,8 @@
 
 import PropTypes from 'prop-types';
 
+import { useEffect, useState } from 'react';
+
 import { View, Text, StyleSheet, Dimensions, SafeAreaView, TouchableOpacity } from "react-native";
 
 import { FONT, SIZES } from "../../../assets/constants";
@@ -17,16 +19,25 @@ export const WINDOW_WIDTH = Dimensions.get('window').width;
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 const ListingItem = ({ item, index, theme }) => {
-    const date = new Date(2024, 3, 1, 8, 0);
-    const formatOptions = {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        weekday: 'long',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-    };
+    const [formattedDate, setFormattedDate] = useState(null);
+
+    useEffect(() => {
+        if (item?.created_at) {
+            const dateStr = item.created_at;
+            const dateObj = new Date(dateStr.replace(' ', 'T'));
+            const formatOptions = {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                weekday: 'long',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            };
+            const formatted = dateObj.toLocaleString('en-US', formatOptions);
+            setFormattedDate(formatted);
+        }
+    }, [item]);
 
     const styles = StyleSheet.create({
         container: {
@@ -100,7 +111,7 @@ const ListingItem = ({ item, index, theme }) => {
                 <Text style={styles.titleText}>{item.title}</Text>
                 <Text style={styles.titleText}>{item.subjectName}</Text>
                 <Text style={styles.subText}>Due date</Text>
-                <Text style={styles.titleText}>{date.toLocaleString('en-US', formatOptions)}</Text>
+                <Text style={styles.titleText}>{formattedDate}</Text>
             </View>
             <View style={{
                 width: 100,

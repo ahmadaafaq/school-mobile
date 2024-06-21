@@ -9,15 +9,13 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { StatusBar } from 'expo-status-bar';
-import { usePathname } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
 import CustomPressable from '../../common/CustomPressable';
-import HolidayForm from './HolidayForm';
+import FormComponent from './HolidayForm';
 
 import { SIZES } from '../../../assets/constants';
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
@@ -41,7 +39,6 @@ const HomeworkForm = () => {
 
     const dispatch = useDispatch();
     const theme = useTheme();
-    const pathname = usePathname();
     const { fetchAndSetSchoolData, fetchAndSetAll, findMultipleById } = Utility();
 
     useEffect(() => {
@@ -76,6 +73,23 @@ const HomeworkForm = () => {
         getAndSetSubjects();
     }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, classsData.length]);
 
+    //this function is used for modals
+    const handlePress = (item, objValue, action, objId) => {
+        if (objValue === "class_name") {
+            setShowClassModal(!showClassModal);
+        } else if (objValue === 'section_name') {
+            setShowSectionModal(!showSectionModal);
+        } else if (objValue === 'name') {
+            setShowSubjectModal(!showSubjectModal);
+        }
+        if (action) {
+            dispatch(action({
+                [objId]: item[objId],
+                [objValue]: item[objValue]
+            }));
+        }
+    };
+
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -91,7 +105,6 @@ const HomeworkForm = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={theme.colors.magicMint[500]} />
             <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}
                 style={{ flexGrow: 1 }}
             >
@@ -102,22 +115,25 @@ const HomeworkForm = () => {
                             title="Class"
                             value={classData.class_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                         <CustomPressable
                             onPress={() => setShowSectionModal(!showSectionModal)}
                             title="Section"
                             value={sectionData.section_name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                         <CustomPressable
                             onPress={() => setShowSubjectModal(!showSubjectModal)}
                             title="Subject"
                             value={subjectData.name}
                             iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                            width='33%'
                         />
                     </View>
                 </View>
-                <HolidayForm />
+                <FormComponent />
             </ScrollView>
 
             {showClassModal && (
@@ -125,49 +141,57 @@ const HomeworkForm = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={1.7}
-                        data={schoolClasses.listData}
+                        heightNumber={schoolClasses.listData.length / 2.2}
                         headerText="Classes"
-                        objId='class_id'
-                        objValue='class_name'
                         showModal={showClassModal}
                         setShowModal={setShowClassModal}
                         action={setHomeworkClassData}
-                    />
+                    >
+                        {schoolClasses.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "class_name", setHomeworkClassData, "class_id")} key={index}>
+                                <Text style={styles.textStyle}>{item["class_name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
-
             {showSectionModal && (
                 <View style={{
-                    width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
+                    width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1, marginBottom: 10
                 }}>
                     <CustomModal
-                        heightNumber={1.6}
-                        data={schoolSections.listData}
+                        heightNumber={schoolSections.listData.length / 1.2}
                         headerText="Sections"
-                        objId='section_id'
-                        objValue='section_name'
                         showModal={showSectionModal}
                         setShowModal={setShowSectionModal}
-                        action={setHomeworkSectionData}
-                    />
+                    >
+                        {schoolSections.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "section_name", setHomeworkSectionData, "section_id")} key={index}>
+                                <Text style={styles.textStyle}>{item["section_name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
-
             {showSubjectModal && (
                 <View style={{
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={2.1}
-                        data={schoolSubjects.listData}
+                        heightNumber={2}
                         headerText="Subjects"
-                        objId='id'
-                        objValue='name'
                         showModal={showSubjectModal}
                         setShowModal={setShowSubjectModal}
-                        action={setHomeworkSubjectData}
-                    />
+                    >
+                        {schoolSubjects.listData.map((item, index) =>
+                            <TouchableOpacity onPress={() => handlePress(item, "name", setHomeworkSubjectData, "id")} key={index}>
+                                <Text style={styles.textStyle}>{item["name"]} </Text>
+                            </TouchableOpacity>
+
+                        )}
+                    </CustomModal>
                 </View>
             )}
         </SafeAreaView>

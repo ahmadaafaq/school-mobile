@@ -26,7 +26,10 @@ const Toast = ({
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            width: WINDOW_WIDTH / 1.13
+            zIndex: 11,
+            elevation: 11,
+            width: WINDOW_WIDTH / 1.1,
+            margin: 10
         },
         messageStyle: {
             fontFamily: FONT.bold,

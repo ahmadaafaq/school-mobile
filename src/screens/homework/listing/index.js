@@ -19,6 +19,7 @@ import CustomModal from '../../common/CustomModal';
 import CustomPressable from '../../common/CustomPressable';
 import LoadingAnimationModal from "../../common/LoadingAnimationModal";
 import ListingComponent from './ListingComponent';
+import Toast from '../../common/Toast';
 
 import { SIZES } from '../../../assets/constants';
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
@@ -41,15 +42,15 @@ const HomeworkListing = () => {
     const schoolClasses = useSelector(state => state.schoolClasses);
     const schoolSections = useSelector(state => state.schoolSections);
     const schoolSubjects = useSelector(state => state.schoolSubjects);
+    const toastInfo = useSelector(state => state.toastInfo);
     const allSubjects = useSelector(state => state.allSubjects);
     const teacherHomework = useSelector(state => state.teacherHomework);
     const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
 
     const dispatch = useDispatch();
     const theme = useTheme();
-    const pathname = usePathname();
     const { getPaginatedData } = useCommon();
-    const { fetchAndSetSchoolData, fetchAndSetAll, findMultipleById, setAsyncStorage } = Utility();
+    const { fetchAndSetSchoolData, fetchAndSetAll, findMultipleById, setAsyncStorage, toastAndNavigate } = Utility();
 
     // writing this function separately because an effect function must no return anything besides a function, used for cleanup, 
     // you are returning promise, getting this error when calling directly
@@ -65,12 +66,16 @@ const HomeworkListing = () => {
 
     // to fetch students based on selected class & section from dropdown
     useEffect(() => {
-        if (classData.class_id && sectionData.section_id) {
+        if (!classData.class_id && !sectionData.section_id && !subjectData.id) {
+            console.log('ander aaya')
+            toastAndNavigate(dispatch, true, "Please Select Class, Section and Subject From the Dropdown", theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
+        }
+        else if (classData.class_id && sectionData.section_id && subjectData.id) {
             console.log('classData and Sectiondata')
-            getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id });
+            getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id, subjectId: subjectData.id });
         }
         console.log('outside if classData and Sectiondata', classData, sectionData)
-    }, [classData.class_id, sectionData.section_id]);
+    }, [classData.class_id, sectionData.section_id, subjectData.id]);
 
     useEffect(() => {
         if (!teacherHomework?.listData?.length) {
@@ -91,26 +96,24 @@ const HomeworkListing = () => {
     }, []);
 
     useEffect(() => {
-        if (pathname === 'homeworkListing') {
-            if (Object.values(sectionData) && Object.values(subjectData)) {
-                dispatch(setHomeworkSectionData({}));
-                dispatch(setHomeworkSubjectData({}));
-                console.log(pathname, 'pathname')
-            }
-            const getAndSetSections = () => {
-                const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
-                const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
-                dispatch(setSchoolSections(selectedSections));
-                // console.log('getandsetsections called listing', selectedSections, classSections);
-            };
-            getAndSetSections();
-        }
+        // if (Object.values(sectionData) && Object.values(subjectData)) {
+        //     dispatch(setHomeworkSectionData({}));
+        //     dispatch(setHomeworkSubjectData({}));
+        //     console.log(pathname, 'pathname')
+        // }
+        const getAndSetSections = () => {
+            const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
+            const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
+            dispatch(setSchoolSections(selectedSections));
+            // console.log('getandsetsections called listing', selectedSections, classSections);
+        };
+        getAndSetSections();
     }, [classData?.class_id, dbClassObj?.length]);
 
     useEffect(() => {
-        if (Object.values(sectionData)) {
-            dispatch(setHomeworkSubjectData({}));
-        }
+        // if (Object.values(sectionData)) {
+        //     dispatch(setHomeworkSubjectData({}));
+        // }
         const getAndSetSubjects = () => {
             const sectionSubjects = dbClassObj?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
             const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
@@ -181,6 +184,16 @@ const HomeworkListing = () => {
                         />
                     </View>
                 </View>
+
+                <Toast
+                    alerting={toastInfo.alerting}
+                    message={toastInfo.message}
+                    actionText={toastInfo.actionText}
+                    actionTextColor={toastInfo.actionTextColor}
+                    backgroundColor={toastInfo.backgroundColor}
+                    textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
+                />
+
                 <ListingComponent />
             </ScrollView>
 
@@ -189,7 +202,7 @@ const HomeworkListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={schoolClasses.listData.length / 2.2}
+                        heightNumber={schoolClasses?.listData?.length / 2.2 || 2}
                         headerText="Classes"
                         showModal={showClassModal}
                         setShowModal={setShowClassModal}
@@ -208,7 +221,7 @@ const HomeworkListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={schoolSections.listData.length / 1.2}
+                        heightNumber={schoolSections?.listData?.length / 1.2 || 2}
                         headerText="Sections"
                         showModal={showSectionModal}
                         setShowModal={setShowSectionModal}

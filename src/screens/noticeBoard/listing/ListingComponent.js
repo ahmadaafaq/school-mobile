@@ -9,7 +9,7 @@
 */
 
 import { useCallback } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, ScrollView, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { useTheme } from 'react-native-paper';
 
@@ -22,9 +22,7 @@ const ListingComponent = () => {
     const { listData } = useSelector(state => state.allNotices);
 
     const flatListOptimizationProps = {
-        initialNumToRender: 0,
         maxToRenderPerBatch: 1,
-        removeClippedSubviews: true,
         scrollEventThrottle: 16,
         windowSize: 2,
         keyExtractor: useCallback(e => e.id, []),
@@ -56,18 +54,21 @@ const ListingComponent = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* <Chip icon="information" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
-                <Text style={{ color: MD2Colors.black }}>{listData?.count || 0} Notices Found</Text>
-            </Chip> */}
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
-                <FlatList
-                    data={listData?.rows}
-                    renderItem={({ item, index }) => <ListingItem item={item} index={index} theme={theme} />}
-                    pagingEnabled={true}
-                    keyExtractor={(item) => item.id.toString()}
-                    {...flatListOptimizationProps}
-                />
-            </ScrollView>
+            {listData?.rows && listData?.rows?.length > 0 ? (
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
+                    <FlatList
+                        data={listData?.rows}
+                        renderItem={({ item, index }) => <ListingItem item={item} index={index} theme={theme} />}
+                        pagingEnabled={true}
+                        keyExtractor={(item) => item.id.toString()}
+                        {...flatListOptimizationProps}
+                    />
+                </ScrollView>
+            ) : (
+                <View>
+                    <Text style={styles.headerText}>No Data Found</Text>
+                </View>
+            )}
         </SafeAreaView>
     );
 };
