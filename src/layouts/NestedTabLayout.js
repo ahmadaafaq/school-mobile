@@ -25,7 +25,10 @@ export default () => {
                     headerTitle: "Tab-List",
                     headerShown: false,
                     tabBarLabel: "Dashboard",
-                    tabBarStyle: { backgroundColor: theme.colors.whiteSnow[500], paddingBottom: 8, paddingTop: 2, fontSize: 12 },
+                    tabBarStyle: {
+                        backgroundColor: theme.colors.whiteSnow[500], paddingBottom: 8,
+                        paddingTop: 2, fontSize: 12, display: "none"
+                    },
                     tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={18} color={color} />
                 }}
             />

@@ -7,6 +7,7 @@
  */
 
 import { AddressAPI } from "./AddressAPI";
+import { AttendanceAPI } from "./AttendanceAPI";
 import { ClassAPI } from "./ClassAPI";
 import { CommonAPI } from "./CommonAPI";
 import { HomeworkAPI } from "./HomeworkAPI";
@@ -24,6 +25,7 @@ import { UserAPI } from "./UserAPI";
 
 export default {
     AddressAPI,
+    AttendanceAPI,
     ClassAPI,
     CommonAPI,
     HomeworkAPI,

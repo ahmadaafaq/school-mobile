@@ -28,9 +28,7 @@ const ListingComponent = () => {
     const { listData } = useSelector(state => state.teacherHomework);
 
     const flatListOptimizationProps = {
-        initialNumToRender: 0,
         maxToRenderPerBatch: 1,
-        removeClippedSubviews: true,
         scrollEventThrottle: 16,
         windowSize: 2,
         keyExtractor: useCallback(e => e.id, []),

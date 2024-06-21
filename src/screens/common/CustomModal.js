@@ -111,7 +111,8 @@ const CustomModal = ({
             </TouchableOpacity>
 
             <View style={styles.subContainer2}>
-                <Text style={styles.headerText}>{headerText ? headerText : ''}</Text>
+                {headerText ? <Text style={styles.headerText}>{headerText}</Text>
+                    : null}
                 {children}
             </View>
         </Animated.View>

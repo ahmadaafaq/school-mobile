@@ -57,7 +57,8 @@ const StudentListing = () => {
     useEffect(() => {
         if (classData.class_id && sectionData.section_id) {
             console.log('fetch CLASS students');
-            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI, { class_id: classData.class_id, section: sectionData.section_id, school_id: params.school_id });
+            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI,
+                { class_id: classData.class_id, section: sectionData.section_id, school_id: params.school_id });
         } else {
             console.log('fetch ALL students')
             getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI);
@@ -75,7 +76,6 @@ const StudentListing = () => {
             const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
             dispatch(setSchoolSections(selectedSections));
-            // console.log('getandsetsections called listing', selectedSections, classSections);
         };
         getAndSetSections();
     }, [dbClassObj?.length, classData?.class_id]);

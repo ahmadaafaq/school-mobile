@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, ImageBackground } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground } from 'react-native';
 import { Paragraph, IconButton, useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -29,7 +29,7 @@ import { Utility } from '../../utility';
 
 const HomePage = () => {
     const [image, setImage] = useState(null);       //for top section
-    const [uploading, setUploading] = useState(false);      // For modal
+    const [_uploading, setUploading] = useState(false);      // For modal
     const [visible, setVisible] = useState(false);      // For modal
     const allHolidays = useSelector(state => state.allHolidays);
     const { listData, loading } = useSelector(state => state.someTeachers);
@@ -44,6 +44,7 @@ const HomePage = () => {
         school_id: params.school_id,
         id: listData?.rows?.[0]?.id
     };
+    const classTeacher = listData?.rows?.[0]?.is_class_teacher.data[0] === 1;
 
     // Function to capture an image using the device's camera 
     const pickImageCamera = async () => {
@@ -81,6 +82,16 @@ const HomePage = () => {
     };
 
     // ROUTES
+    const handleAttendancePress = () => {
+        router.push({
+            pathname: '/(attendance)/attendanceListing',
+            params: {
+                class_id: listData?.rows?.[0]?.class_id,
+                section: listData?.rows?.[0]?.section_id
+            }
+        });
+    };
+
     const handleHomeworkPress = () => {
         router.push('/(homework)/homeworkListing');
     };
@@ -90,7 +101,10 @@ const HomePage = () => {
     };
 
     const handleStudentPress = () => {
-        router.push({ pathname: '/(student)/studentListing', params: params });
+        router.push({
+            pathname: '/(student)/studentListing',
+            params: { school_id: params.school_id }
+        });
     };
 
     const handleTimeTablePress = () => {
@@ -111,7 +125,6 @@ const HomePage = () => {
     }, [getPaginatedData, listData?.rows?.length, params.id]);
 
     console.log(listData, params, 'home params');
-    console.log(image, 'image');
 
     const styles = StyleSheet.create({
         container: {
@@ -138,6 +151,13 @@ const HomePage = () => {
                 { rotateZ: '-170deg' },
                 { rotateX: '80deg' }
             ]
+        },
+        headerText: {
+            color: theme.colors.black[500],
+            fontSize: 18,
+            letterSpacing: 0.2,
+            marginBottom: 10,
+            fontWeight: '700'
         }
     });
 
@@ -167,11 +187,12 @@ const HomePage = () => {
                     </View>
                     <View style={styles.boxContainer}>
                         <Box title='Time Table' bg={theme.colors.grayishGreen[500]} mb={10} iconName="th-list" handlePress={handleTimeTablePress} />
+                        {classTeacher ? <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />
+                            : null}
                     </View>
                     {/* <View style={styles.boxContainer}>
                         <Box title='Examination' bg={theme.colors.grayishRed[500]} mb={10} iconName="receipt-long" />
                         <Box title='Results' bg={theme.colors.grayishYellow[500]} mb={10} iconName="fact-check" />
-                        <Box title='Time-Table' bg={theme.colors.blue[500]} mb={10} iconName="insert-invitation" />
                         <Box title='Fees' bg={theme.colors.blue[500]} mb={10} iconName="payment" />
                     </View>*/}
 
@@ -183,7 +204,7 @@ const HomePage = () => {
                         width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 11
                     }}>
                         <CustomModal
-                            heightNumber={2}
+                            heightNumber={!image ? 1.4 : 1.5}
                             showModal={visible}
                             setShowModal={setVisible}
                         >
@@ -195,7 +216,8 @@ const HomePage = () => {
                                         zIndex: 1
                                     }}
                                 >
-                                    <Paragraph>{image ? 'Options' : 'Choose From'}</Paragraph>
+                                    {image ? <Paragraph style={styles.headerText}>Options</Paragraph>
+                                        : null}
 
                                     <View style={{
                                         flexDirection: 'row',
@@ -206,18 +228,18 @@ const HomePage = () => {
                                                 <View>
                                                     <IconButton
                                                         icon="camera"
-                                                        size={40}
+                                                        size={35}
                                                         onPress={pickImageCamera}
                                                     />
-                                                    <Paragraph style={{ paddingLeft: 10 }}>Camera</Paragraph>
+                                                    <Paragraph style={{ paddingLeft: 11 }}>Camera</Paragraph>
                                                 </View>
                                                 <View>
                                                     <IconButton
                                                         icon="folder"
-                                                        size={40}
+                                                        size={35}
                                                         onPress={pickImageGallery}
                                                     />
-                                                    <Paragraph style={{ paddingLeft: 10 }}>Gallery</Paragraph>
+                                                    <Paragraph style={{ paddingLeft: 11 }}>Gallery</Paragraph>
                                                 </View>
                                             </>
                                         ) : (
@@ -225,36 +247,23 @@ const HomePage = () => {
                                                 <View>
                                                     <IconButton
                                                         icon="camera"
-                                                        size={40}
+                                                        size={35}
                                                         onPress={pickImageCamera}
                                                     />
-                                                    <Paragraph style={{ paddingLeft: 10 }}>Retake</Paragraph>
+                                                    <Paragraph style={{ paddingLeft: 11 }}>Retake</Paragraph>
                                                 </View>
                                                 <View>
                                                     <IconButton
                                                         icon="upload"
-                                                        size={40}
+                                                        size={35}
                                                         onPress={() => uploadImg(setUploading, image, 'teacher', API.CommonAPI, params?.school, item)}
                                                     />
-                                                    <Paragraph style={{ paddingLeft: 10 }}>Upload</Paragraph>
+                                                    <Paragraph style={{ paddingLeft: 11 }}>Upload</Paragraph>
                                                 </View>
                                             </>
                                         )}
                                     </View>
 
-                                    <View style={{
-                                        justifyContent: 'center'
-                                    }}>
-                                        <TouchableOpacity
-                                            style={{
-                                                justifyContent: 'center', alignItems: 'center',
-                                                backgroundColor: theme.colors.blue[500], padding: 10, borderWidth: 1
-                                            }}
-                                            onPress={() => setVisible(false)}
-                                        >
-                                            <Paragraph>Cancel</Paragraph>
-                                        </TouchableOpacity>
-                                    </View>
                                 </SafeAreaView>}
                         </CustomModal>
                     </View>

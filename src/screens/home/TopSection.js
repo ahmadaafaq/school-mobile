@@ -122,14 +122,27 @@ const TopSection = ({
                                 />
                             </TouchableOpacity>
                         ) : (
-                            <ImageBackground
-                                source={{ uri: image }}
-                                style={{
-                                    flex: 1,
-                                    objectFit: "contain",
-                                    width: "100%",
-                                }}
-                            />
+                            <>
+                                <ImageBackground
+                                    source={{ uri: image }}
+                                    style={{
+                                        flex: 1,
+                                        objectFit: "contain",
+                                        width: "100%",
+                                    }}
+                                />
+                                <IconButton
+                                    icon="pencil"
+                                    size={15}
+                                    onPress={() => setVisible(true)}
+                                    style={{
+                                        position: "absolute",
+                                        right: 1,
+                                        top: 1,
+                                        backgroundColor: "white"
+                                    }}
+                                />
+                            </>
                         )}
                     </View>
                     <View style={{

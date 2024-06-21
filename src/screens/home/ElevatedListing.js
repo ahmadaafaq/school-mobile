@@ -101,31 +101,37 @@ const ElevatedListing = ({ data }) => {
                 <View style={{ flex: 1, height: 0.5, elevation: 0.5, backgroundColor: theme.colors.indigo[400] }}></View>
             </View>
 
-            <ScrollView horizontal={true} style={{ width: "100%" }}>
-                <FlatList
-                    data={data}
-                    keyExtractor={item => item.id.toString()}
-                    pagingEnabled={true}
-                    {...flatListOptimizationProps}
-                    renderItem={({ item }) => {
-                        return (
-                            <View style={styles.listItemContainer}>
-                                <View style={[styles.iconContainer]}>
-                                    <FontAwesome5 name='calendar-alt' size={16} color={theme.colors.whiteSmoke[500]} />
-                                </View>
+            {data && data.length > 0 ? (
+                <ScrollView horizontal={true} style={{ width: "100%" }}>
+                    <FlatList
+                        data={data}
+                        keyExtractor={item => item.id.toString()}
+                        pagingEnabled={true}
+                        {...flatListOptimizationProps}
+                        renderItem={({ item }) => {
+                            return (
+                                <View style={styles.listItemContainer}>
+                                    <View style={[styles.iconContainer]}>
+                                        <FontAwesome5 name='calendar-alt' size={16} color={theme.colors.whiteSmoke[500]} />
+                                    </View>
 
-                                <View style={styles.subContainer}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                        <Text style={styles.serviceName}> {item.title} </Text>
-                                        <Text style={styles.serviceName}> {item.startDate} </Text>
+                                    <View style={styles.subContainer}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                            <Text style={styles.serviceName}> {item.title} </Text>
+                                            <Text style={styles.serviceName}> {item.startDate} </Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        )
-                    }}
-                />
-            </ScrollView>
-        </SafeAreaView >
+                            )
+                        }}
+                    />
+                </ScrollView>
+            ) : (
+                <View>
+                    <Text style={styles.nameText}>No Data Found</Text>
+                </View>
+            )}
+        </SafeAreaView>
     );
 };
 

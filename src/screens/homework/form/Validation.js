@@ -14,7 +14,7 @@ const checkoutSchema = yup.object().shape({
         .max(40, 'Title is Too Long!')
         .required("This Field is Required"),
     description: yup.string()
-        .min(2, 'Description is Too Short!')
+        .min(10, 'Description is Too Short!')
         .max(250, 'Description is Too Long!')
         .required("This Field is Required"),
     status: yup.string()
