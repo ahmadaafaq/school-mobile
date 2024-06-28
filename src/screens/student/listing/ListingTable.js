@@ -30,6 +30,10 @@ export const ListingTable = ({ item, theme }) => {
     const { uploadImg } = Utility();
     const params = useLocalSearchParams();
 
+    function normalizeSpacing(name) {
+        return name.replace(/\s+/g, ' ').trim();
+    }
+
     useEffect(() => {
         if (item.image_src)
             setPreviewVisible(true);
@@ -59,15 +63,15 @@ export const ListingTable = ({ item, theme }) => {
 
     const styles = StyleSheet.create({
         plusBox: {
-            height: WINDOW_HEIGHT / 4,
-            width: WINDOW_WIDTH - 250,
-            borderRadius: 5,
+            height: 80,
+            width: 80,
+            borderRadius: 200,
             backgroundColor: MD3Colors.secondary20,
             justifyContent: 'center',
             alignItems: 'center',
             borderWidth: 1,
-            margin: 7
-
+            margin: 0,
+            overflow: "hidden"
         },
         plusButton: {
             width: 40,
@@ -92,25 +96,25 @@ export const ListingTable = ({ item, theme }) => {
             // flexDirection: 'row',
             margin: 20,
         },
-        titleLabelText: {
-            color: theme.colors.black[600],
-            fontFamily: FONT.regular,
-            fontSize: SIZES.medium,
-            paddingTop: SIZES.small,
-            paddingLeft: SIZES.xSmall,
-            letterSpacing: 0.22,
-            textTransform: 'capitalize'
-        },
-        titleText: {
-            color: theme.colors.blue[700],
-            fontFamily: FONT.regular,
-            fontSize: SIZES.medium,
-            paddingTop: SIZES.small,
-            paddingLeft: SIZES.xSmall,
-            letterSpacing: 0.22,
-            fontWeight: 'bold',
-            textTransform: 'capitalize'
-        },
+        // titleLabelText: {
+        //     color: theme.colors.black[600],
+        //     fontFamily: FONT.regular,
+        //     fontSize: SIZES.medium,
+        //     // paddingTop: SIZES.small,
+        //     // paddingLeft: SIZES.xSmall,
+        //     letterSpacing: 0.22,
+        //     textTransform: 'capitalize'
+        // },
+        // titleText: {
+        //     color: theme.colors.blue[700],
+        //     fontFamily: FONT.regular,
+        //     fontSize: SIZES.medium,
+        //     // paddingTop: SIZES.small,
+        //     // paddingLeft: SIZES.xSmall,
+        //     // letterSpacing: 0.22,
+        //     fontWeight: "700",
+        //     textTransform: 'capitalize'
+        // },
         detailBtn: {
             borderWidth: 1,
             top: 10,
@@ -146,6 +150,37 @@ export const ListingTable = ({ item, theme }) => {
         },
     });
 
+    const styles2 = StyleSheet.create({
+        container: {
+            width: '150%',
+            // borderRadius: 5,
+            // padding: 10,
+        },
+        row: {
+            flexDirection: 'row', 
+            justifyContent: 'space-between',
+            marginBottom: 5,
+        },
+        titleText: {
+            color: theme.colors.blue[700],
+            fontFamily: FONT.regular,
+            fontSize: SIZES.medium,
+            // paddingTop: SIZES.small,
+            // paddingLeft: SIZES.xSmall,
+            // letterSpacing: 0.22,
+            fontWeight: "700",
+            textTransform: 'capitalize'
+        },
+        titleLabelText: {
+            flex:1,
+            color: theme.colors.black[600],
+            fontFamily: FONT.regular,
+            fontSize: SIZES.medium,
+            // letterSpacing: 0.22,
+            textTransform: 'capitalize'
+        },
+    });
+
     const CameraPreview = ({ photo }) => {
         return (
             <View
@@ -165,25 +200,25 @@ export const ListingTable = ({ item, theme }) => {
             </View>
         )
     }
-    // console.log('hellllllooooooooooooo', previewVisible, loading, params);
 
     return (
         <SafeAreaView style={{
-            display: "flex",
+            // display: "flex",
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            // justifyContent: 'space-around',
             // height: WINDOW_HEIGHT / 5.5,
+            gap: 10,
             width: WINDOW_WIDTH - 25,
-            // borderWidth: 1,
+            borderWidth: 1,
             borderColor: 'grey',
             borderRadius: 5,
             margin: 10,
             paddingTop: 10,
             paddingBottom: 10,
             paddingLeft: 10,
-            backgroundColor: MD2Colors.blue400,
+            backgroundColor: MD2Colors.blue100,
         }}>
-            <View style={{ display: 'flex', flexDirection: 'column', justifyContent: "center" }}>
+            <View style={{ display: 'flex', justifyContent: "center" }}>
                 <View style={styles.plusBox}>
                     {(previewVisible && capturedImage) || item.image_src ? (
                         <CameraPreview photo={capturedImage || item?.image_src} />
@@ -198,7 +233,7 @@ export const ListingTable = ({ item, theme }) => {
                     )}
                 </View>
                 {previewVisible &&
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', margin: 10 }}>
+                    <View style={{ flexDirection: 'row'}}>
                         {!uploading ? (
                             <>
                                 <TouchableOpacity onPress={() => {
@@ -209,18 +244,18 @@ export const ListingTable = ({ item, theme }) => {
                                     <IconButton
                                         icon="camera"
                                         iconColor={MD3Colors.error30}
-                                        size={30}
+                                        size={25}
                                     />
-                                    <Text style={{ marginLeft: 10 }}>Retake</Text>
+                                    <Text style={{ marginLeft: 5 }}>Retake</Text>
                                 </TouchableOpacity>
                                 {capturedImage &&
                                     <TouchableOpacity onPress={() => uploadImg(setUploading, capturedImage, 'student', API.CommonAPI, params?.school, item)}>
                                         <IconButton
                                             icon="upload"
                                             iconColor={MD3Colors.error30}
-                                            size={30}
+                                            size={25}
                                         />
-                                        <Text style={{ marginLeft: 10 }}>Upload</Text>
+                                        <Text style={{ marginLeft: 5 }}>Upload</Text>
                                     </TouchableOpacity>}
                             </>) : (
                             <ActivityIndicator size={'small'} animating={true} color={MD3Colors.primary100} />
@@ -230,11 +265,30 @@ export const ListingTable = ({ item, theme }) => {
             <View style={{
                 width: '50%', borderRadius: 5,
             }}>
-                <Text style={styles.titleText}>Name:</Text><Text style={styles.titleLabelText}>{item?.studentName}</Text>
-                <Text style={styles.titleText}> Class:</Text><Text style={styles.titleLabelText}>{item?.className}</Text>
-                <Text style={styles.titleText}> Father&#39;s Name:</Text><Text style={styles.titleLabelText}>{item?.father_name}</Text>
-                <Text style={styles.titleText}> Gender: </Text><Text style={styles.titleLabelText}>{item?.gender}</Text>
-                <Text style={styles.titleText}> blood Group:</Text><Text style={styles.titleLabelText}>{item?.blood_group}</Text>
+                <View style={styles2.container}>
+                    <View style={styles2.row}>
+                        <Text style={styles2.titleText}>Name: </Text>
+                        <Text style={styles2.titleLabelText}>{normalizeSpacing(item?.studentName)}</Text>
+                    </View>
+                    <View style={styles2.row}>
+                        <Text style={styles2.titleText}>Class: </Text>
+                        <Text style={styles2.titleLabelText}>{normalizeSpacing(item?.className)}</Text>
+                    </View>
+                    <View style={styles2.row}>
+                        <Text style={styles2.titleText}>Father's{'\n'}Name:</Text>
+                        <Text style={styles2.titleLabelText}>{'\n'}{normalizeSpacing(item?.father_name)}</Text>
+                    </View>
+                    {/* Uncomment if needed
+            <View style={styles.row}>
+                <Text style={styles.titleText}>Gender:</Text>
+                <Text style={styles.titleLabelText}>{normalizeSpacing(item?.gender)}</Text>
+            </View>
+            <View style={styles.row}>
+                <Text style={styles.titleText}>Blood Group:</Text>
+                <Text style={styles.titleLabelText}>{normalizeSpacing(item?.blood_group)}</Text>
+            </View>
+            */}
+                </View>
             </View>
         </SafeAreaView>
     );

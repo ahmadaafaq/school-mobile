@@ -21,6 +21,7 @@ const ListingComponent = () => {
     const theme = useTheme();
     const flatListRef = useRef(null);
     const { listData } = useSelector(state => state.schoolStudents);
+    console.log("listdata",listData)
 
     const flatListOptimizationProps = {
         initialNumToRender: 0,

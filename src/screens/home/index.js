@@ -9,7 +9,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground, Dimensions } from 'react-native';
 import { Paragraph, IconButton, useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -27,6 +27,9 @@ import { setSchoolStudents } from "../../redux/actions/StudentAction";
 import { setTeachers } from '../../redux/actions/TeacherAction';
 import { useCommon } from "../../hooks/common";
 import { Utility } from '../../utility';
+
+const WINDOW_WIDTH = Dimensions.get("window").width;
+const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const HomePage = () => {
     const [image, setImage] = useState(null);       //for top section
@@ -160,7 +163,7 @@ const HomePage = () => {
         }
     }, [getPaginatedData, listData?.rows?.length, params.id, userRole]);
 
-    console.log(listData, params, 'home params');
+    console.log(WINDOW_HEIGHT / -9.57, 'window');
 
     const styles = StyleSheet.create({
         container: {
@@ -178,14 +181,14 @@ const HomePage = () => {
         cornerStyle: {
             position: "absolute",
             backgroundColor: theme.colors.blue[600],
-            width: 500,
-            height: 400,
-            top: -55,
-            left: -125,
+            width: WINDOW_WIDTH * 1.4,
+            height: WINDOW_HEIGHT / 1.4,
+            top: WINDOW_HEIGHT / -9.57,
+            left: -140,
             zIndex: -1,
             transform: [
                 { rotateZ: '-170deg' },
-                { rotateX: '80deg' }
+                { rotateX: '75deg' }
             ]
         },
         headerText: {

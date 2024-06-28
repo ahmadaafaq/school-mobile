@@ -14,6 +14,7 @@ import { useTheme } from 'react-native-paper';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 
 import { FONT, SIZES } from '../../theme/theme';
+import { useEffect } from 'react';
 
 export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
     const theme = useTheme();
@@ -36,6 +37,7 @@ export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
             marginLeft: 16
         }
     });
+    console.log('dataaassa', data)
 
     return (
         <SafeAreaView>
@@ -65,10 +67,10 @@ const CustomDropdown = ({
     bg,
     data,
     placeholder,
+    selected,
     setSelected,
-    search,
     width = 'auto',
-    height = 'auto'
+    height = 'auto',
 }) => {
     const theme = useTheme();
 
@@ -76,6 +78,12 @@ const CustomDropdown = ({
         console.log(value, 'dropdown value');
         setSelected(value.toLowerCase());
     };
+
+    useEffect(() => {
+        if (selected) {
+            handleSelection(selected);
+        }
+    }, [selected]);
 
     const styles = StyleSheet.create({
         boxStyles: {
@@ -101,12 +109,12 @@ const CustomDropdown = ({
             setSelected={(val) => handleSelection(val)}
             data={data}
             save="value"
-            search={search}
+            // search={search}
             placeholder={placeholder}
             placeholderTextColor={theme.colors.whiteSmoke[400]}
             fontFamily={FONT.regular}
             boxStyles={styles.boxStyles}
-            inputStyles={{ color: theme.colors.whiteSmoke[700], fontFamily: FONT.medium }}
+            inputStyles={{ color: theme.colors.whiteSmoke[700], fontFamily: FONT.medium, elevation: 10 }}
             dropdownStyles={styles.dropdownStyles}
             dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
             dropdownTextStyles={{
@@ -114,6 +122,7 @@ const CustomDropdown = ({
                 textAlign: 'center',
                 fontFamily: FONT.medium
             }}
+            defaultOption={{ key:'1', value:`${selected.charAt(0).toUpperCase() + selected.slice(1)}` }}
         />
     );
 };

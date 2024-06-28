@@ -8,45 +8,53 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, ScrollView, Text } from "react-native";
 import { useSelector } from "react-redux";
 import { Chip, MD3Colors, useTheme } from 'react-native-paper';
+import { useLocalSearchParams } from 'expo-router';
 
 import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 import CustomDropdown from '../../common/CustomDropdown';
+import { useCommon } from "../../../hooks/common";
 
 import { FONT, SIZES } from "../../../assets/constants";
+import { setTimeTables } from "../../../redux/actions/TimeTableAction";
+import API from '../../../apis';
 
 const ListingComponent = () => {
     const [selected, setSelected] = useState("");
-    const [filteredData, setFilteredData] = useState([]);
     const { listData } = useSelector(state => state.allTimeTables);
     const theme = useTheme();
+    const { getPaginatedData } = useCommon();
+    const params = useLocalSearchParams();
+    console.log('params', params);
+
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay() - 1;
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const flatListOptimizationProps = {
-        initialNumToRender: 0,
-        maxToRenderPerBatch: 1,
-        removeClippedSubviews: true,
-        scrollEventThrottle: 16,
-        windowSize: 2,
-        keyExtractor: useCallback(e => e.id, []),
-        getItemLayout: useCallback(
-            (_, index) => ({
-                index,
-                length: WINDOW_WIDTH,
-                offset: index * WINDOW_WIDTH
-            }),
-            []
-        )
-    };
+    // const flatListOptimizationProps = {
+    //     initialNumToRender: 0,
+    //     maxToRenderPerBatch: 1,
+    //     removeClippedSubviews: true,
+    //     scrollEventThrottle: 16,
+    //     windowSize: 2,
+    //     keyExtractor: useCallback(e => e.id, []),
+    //     getItemLayout: useCallback(
+    //         (_, index) => ({
+    //             index,
+    //             length: WINDOW_WIDTH,
+    //             offset: index * WINDOW_WIDTH
+    //         }),
+    //         []
+    //     )
+    // };
 
     useEffect(() => {
-        const filtered = listData.rows.filter((item) => item.day === selected);
-        setFilteredData(filtered);
-    }, [selected, listData.rows.length]);
-    console.log(filteredData, 'timetable filtered')
+        console.log('selected', selected, daysOfWeek[currentDay]);
+        getPaginatedData(0, 80, setTimeTables, API.TimeTableAPI, { teacherId: params?.id, day: selected ? selected : daysOfWeek[currentDay] });
+    }, [selected]);
 
     const styles = StyleSheet.create({
         container: {
@@ -64,16 +72,17 @@ const ListingComponent = () => {
             fontWeight: '400'
         }
     });
+    console.log('listData', listData);
 
     return (
         <SafeAreaView style={styles.container}>
-            <Chip icon="information" style={{ color: theme.colors.brightBlue[500], backgroundColor: theme.colors.grayishGreen[300], marginBottom: 20 }} selectedColor={MD3Colors.error70} type="flat">
+            <Chip icon="information" style={{ color: theme.colors.brightBlue[500], backgroundColor: theme.colors.grayishGreen[300], marginBottom: 20, elevation: 5 }} selectedColor={MD3Colors.error70} type="flat">
                 <Text style={{ color: theme.colors.brightBlue[500] }}>Present Week</Text>
             </Chip>
-            <CustomDropdown placeholder="Select Day" data={daysOfWeek} setSelected={setSelected} width='60%' bg={theme.colors.grayishGreen[200]} />
+            <CustomDropdown placeholder="Select Day" data={daysOfWeek} setSelected={setSelected} selected={selected || daysOfWeek[currentDay]} width='60%' bg={theme.colors.grayishGreen[200]} />
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} >
                 <FlatList
-                    data={filteredData}
+                    data={listData?.rows}
                     renderItem={({ item, index }) => <ListingItem item={item} index={index} theme={theme} />}
                     pagingEnabled={true}
                     keyExtractor={(item) => item.period.toString()}
