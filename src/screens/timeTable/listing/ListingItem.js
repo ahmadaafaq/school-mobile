@@ -30,13 +30,13 @@ const ListingItem = ({ item, index, theme }) => {
             paddingHorizontal: 10,
         },
         titleText: {
-            color: theme.colors.powderBlue[700],
+            color: theme.colors.powderBlue[800],
             fontFamily: FONT.regular,
-            fontSize: SIZES.medium,
+            fontSize: SIZES.small,
             paddingTop: SIZES.small,
             paddingLeft: SIZES.xSmall,
             letterSpacing: 0.22,
-            fontWeight: '400',
+            fontWeight: '600',
             textTransform: 'capitalize'
         },
         subText: {
@@ -52,23 +52,23 @@ const ListingItem = ({ item, index, theme }) => {
     return (
         <SafeAreaView style={{
             width: WINDOW_WIDTH - 25,
-            borderRadius: 5,
+            borderRadius: 20,
             margin: 10,
             padding: 10,
-            backgroundColor: theme.colors.grayishGreen[500],
+            backgroundColor: theme.colors.grayishGreen[200],
+            borderWidth: 1,
+            borderColor: "grey",
+            elevation: 5
         }}>
             <View style={{ borderWidth: 0 }}>
-                <Text style={[styles.titleText, {
-                    fontSize: SIZES.large
-                }]}>Period    :   {item.period}</Text>
                 <Text style={styles.titleText}>
-                    Time           :    {item.duration}</Text>
-                <Text style={[styles.titleText, {
-                    fontSize: SIZES.large
-                }]}>Class      :   {item.className}</Text>
-                <Text style={[styles.titleText, {
-                    fontSize: SIZES.large
-                }]}>Subject   :   {item.subject}</Text>
+                    Period    :   {item.period}</Text>
+                <Text style={styles.titleText}>
+                    Time       :    {item.duration}</Text>
+                <Text style={styles.titleText}>
+                    Class      :   {item.className}</Text>
+                <Text style={styles.titleText}>
+                    Subject  :   {item.subject}</Text>
             </View>
         </SafeAreaView>
     );

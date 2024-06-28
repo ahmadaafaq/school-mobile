@@ -107,12 +107,12 @@ export const Utility = () => {
         const uniqueDataArray = new Set();
 
         dataArray.forEach(obj => {
-            let combinedKeys = `${obj[key1]}-${obj[key2]}`;
-            uniqueDataArray.add(key3 ? `${combinedKeys}-${obj[key3]}` : combinedKeys);
+            let combinedKeys = `${obj[key1]}+${obj[key2]}`;
+            uniqueDataArray.add(key3 ? `${combinedKeys}+${obj[key3]}` : combinedKeys);
         });
         // Convert the Set back to an array of unique objects
         return Array.from(uniqueDataArray).map(compoundKey => {
-            const [id, name, sub] = compoundKey.split('-');
+            const [id, name, sub] = compoundKey.split('+');
             let obj = {
                 [key1]: parseInt(id),
                 [key2]: name

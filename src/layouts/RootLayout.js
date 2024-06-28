@@ -85,7 +85,7 @@ const RootLayout = () => {
     if (!loaded && !error) {
         return null;
     }
-    console.log(userRole, 'userrole in root layout')
+    // console.log(userRole, 'userrole in root layout')
 
     // Render the children routes now that all the assets are loaded
     return (

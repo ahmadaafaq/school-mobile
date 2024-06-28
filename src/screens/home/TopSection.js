@@ -36,20 +36,22 @@ const TopSection = ({
             justifyContent: "space-between",
             alignItems: "center",
             width: WINDOW_WIDTH,
-            height: WINDOW_HEIGHT / 4.4,
+            height: WINDOW_HEIGHT / 3.4,
             padding: 10,
             backgroundColor: bg,
             borderRadius: 0,
             marginBottom: 60,
             overflow: 'hidden',
             elevation: 10,
+            // top: 5
+
         },
         titleStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.bold,
-            fontSize: 25,
+            fontSize: WINDOW_HEIGHT / 40,
             fontWeight: 500,
-            // marginBottom: 30
+            // top: 5
         },
         contentStyle: {
             color: theme.colors.whiteSmoke[200],
@@ -149,7 +151,8 @@ const TopSection = ({
                     </View>
                     <View style={{
                         flexGrow: 0.5,
-                        width: '50%'
+                        width: '50%',
+                        top: 10
                     }}>
                         <Text style={styles.titleStyle}>{title}</Text>
                         <Text style={styles.contentStyle}>Classes  : {classes} </Text>
