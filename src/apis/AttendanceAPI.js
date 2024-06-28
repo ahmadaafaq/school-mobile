@@ -10,6 +10,28 @@ import { api } from "./config/axiosConfig";
 import { defineCancelApiObject } from "./config/axiosUtils";
 
 export const AttendanceAPI = {
+  /** Get attendance from the database that meets the specified query parameters
+     */
+  getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
+    // Send the data that is used in where condition
+    let queryParam = '';
+    if (conditionObj) {
+      Object.keys(conditionObj).map(key => {
+        queryParam += `&${key}=${conditionObj[key]}`
+      })
+    }
+    // Send the data that is used in listing page search
+    const searchParam = search ? `&search=${search}` : '';
+    console.log('queryParam=>', queryParam);
+
+    const { data: response } = await api.request({
+      url: `/get-attendance?page=${page}&size=${size}${queryParam}${searchParam}`,
+      method: "GET",
+      signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
+    });
+    return response;
+  },
+
   /** Create Attendance in the database
    */
   createAttendance: async (attendance, cancel = false) => {

@@ -7,7 +7,7 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground } from 'react-native';
 import { Paragraph, IconButton, useTheme } from 'react-native-paper';
@@ -23,6 +23,7 @@ import LoadingAnimationModal from "../common/LoadingAnimationModal";
 import TopSection from './TopSection';
 
 import { setHolidays } from '../../redux/actions/HolidayAction';
+import { setSchoolStudents } from "../../redux/actions/StudentAction";
 import { setTeachers } from '../../redux/actions/TeacherAction';
 import { useCommon } from "../../hooks/common";
 import { Utility } from '../../utility';
@@ -31,8 +32,9 @@ const HomePage = () => {
     const [image, setImage] = useState(null);       //for top section
     const [_uploading, setUploading] = useState(false);      // For modal
     const [visible, setVisible] = useState(false);      // For modal
+
     const allHolidays = useSelector(state => state.allHolidays);
-    const { listData, loading } = useSelector(state => state.someTeachers);
+    // const { listData, loading } = useSelector(state => userRole === "teacher" ? state.someTeachers : userRole === "parent" ? state.schoolStudents : []);
 
     const theme = useTheme();
     const router = useRouter();
@@ -40,11 +42,29 @@ const HomePage = () => {
     const { getPaginatedData } = useCommon();
     const { capitalizeAlphabet, uploadImg } = Utility();
 
+    const userRole = params.role == 4 ? 'teacher' : params.role == 5 ? 'parent' : null;
+
+    const selectedState = useMemo(() => {
+        if (userRole === "teacher") {
+            return state => state.someTeachers;
+        } else if (userRole === "parent") {
+            return state => state.schoolStudents;
+        } else {
+            // eslint-disable-next-line no-unused-vars
+            return state => [];
+        }
+    }, [userRole]);
+
+    const { listData, loading } = useSelector(selectedState);
     const item = {
         school_id: params.school_id,
         id: listData?.rows?.[0]?.id
     };
-    const classTeacher = listData?.rows?.[0]?.is_class_teacher.data[0] === 1;
+    const name = userRole === 'teacher' ? listData?.rows?.[0]?.teacherName : userRole === 'parent' ? listData?.rows?.[0]?.studentName : null;
+    const className = userRole === 'teacher' ? listData?.rows?.[0]?.classnames : userRole === 'parent' ? listData?.rows?.[0]?.className : null;
+    const isClassTeacher = listData?.rows?.[0]?.is_class_teacher?.data[0];
+    const awsFolderName = userRole === 'teacher' ? 'teacher' : userRole === 'parent' ? 'student' : null;
+
 
     // Function to capture an image using the device's camera 
     const pickImageCamera = async () => {
@@ -84,45 +104,61 @@ const HomePage = () => {
     // ROUTES
     const handleAttendancePress = () => {
         router.push({
-            pathname: '/(attendance)/attendanceListing',
+            pathname: `/${userRole}/(attendance)/${userRole === 'teacher' ? 'attendanceListing'
+                : userRole === 'parent' ? 'attendanceCalendar' : ''}`,
             params: {
                 class_id: listData?.rows?.[0]?.class_id,
-                section: listData?.rows?.[0]?.section_id
+                section: listData?.rows?.[0]?.section_id,
+                id: listData?.rows?.[0]?.id
             }
         });
     };
 
     const handleHomeworkPress = () => {
-        router.push('/(homework)/homeworkListing');
+        router.push({
+            pathname: `/${userRole}/(homework)/homeworkListing`,
+            params: {
+                class_id: listData?.rows?.[0]?.class_id,
+                section: listData?.rows?.[0]?.section_id,
+                userRole
+            }
+        });
     };
 
     const handleNoticeBoardPress = () => {
-        router.push('/(noticeBoard)/noticeBoardListing');
+        router.push(`/${userRole}/(noticeBoard)/noticeBoardListing`);
     };
 
     const handleStudentPress = () => {
         router.push({
-            pathname: '/(student)/studentListing',
+            pathname: `/${userRole}/(student)/studentListing`,
             params: { school_id: params.school_id }
         });
     };
 
     const handleTimeTablePress = () => {
-        router.push('/(timeTable)/timeTableListing');
+        router.push({
+            pathname: `/${userRole}/(timeTable)/timeTableListing`,
+            params: { id: listData?.rows?.[0]?.id }
+        })
     };
 
     useEffect(() => {
         if (!allHolidays?.listData?.rows?.length) {
-            getPaginatedData(0, 10, setHolidays, API.HolidayAPI);
+            getPaginatedData(0, 50, setHolidays, API.HolidayAPI);
         }
     }, [getPaginatedData, allHolidays?.listData?.rows?.length]);
 
     useEffect(() => {
         if (!listData?.rows?.length && params.id) {
             console.log('inside teacher get paginated data in home screen')
-            getPaginatedData(0, 1, setTeachers, API.TeacherAPI, { key: "parent_id", value: params.id });
+            if (userRole === "teacher") {
+                getPaginatedData(0, 1, setTeachers, API.TeacherAPI, { key: "parent_id", value: params.id });
+            } else if (userRole === "parent") {
+                getPaginatedData(0, 1, setSchoolStudents, API.StudentAPI, { key: "parent_id", value: params.id });
+            }
         }
-    }, [getPaginatedData, listData?.rows?.length, params.id]);
+    }, [getPaginatedData, listData?.rows?.length, params.id, userRole]);
 
     console.log(listData, params, 'home params');
 
@@ -137,7 +173,7 @@ const HomePage = () => {
         },
         boxContainer: {
             flexDirection: 'row',
-            marginVertical: 10
+            marginVertical: 15
         },
         cornerStyle: {
             position: "absolute",
@@ -172,24 +208,25 @@ const HomePage = () => {
                     {/* <Search /> */}
 
                     <TopSection schoolName={params.school}
-                        title={capitalizeAlphabet(listData?.rows?.[0]?.teacherName)}
-                        classes={listData?.rows?.[0]?.classnames}
+                        title={capitalizeAlphabet(name)}
+                        classes={className}
                         subjects={listData?.rows?.[0]?.subjects}
                         bg={theme.colors.blue[600]}
                         image={image || listData?.rows?.[0]?.image_src}
                         setVisible={setVisible}
+                        userRole={userRole}
                     />
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
-                        <Box title='Students' bg={theme.colors.blue[500]} mb={10} iconName="users" handlePress={handleStudentPress} />
+                        {(isClassTeacher || userRole === 'parent') && <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />}
                         <Box title='Homework' bg={theme.colors.grayishRed[500]} mb={10} iconName="book" handlePress={handleHomeworkPress} />
                         <Box title='Notice Board' bg={theme.colors.grayishYellow[500]} mb={10} iconName="comment-alt" handlePress={handleNoticeBoardPress} />
                     </View>
-                    <View style={styles.boxContainer}>
-                        <Box title='Time Table' bg={theme.colors.grayishGreen[500]} mb={10} iconName="th-list" handlePress={handleTimeTablePress} />
-                        {classTeacher ? <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />
-                            : null}
-                    </View>
+                    {userRole === 'teacher' &&
+                        <View style={styles.boxContainer}>
+                            <Box title='Students' bg={theme.colors.blue[500]} mb={10} iconName="users" handlePress={handleStudentPress} />
+                            <Box title='Time Table' bg={theme.colors.grayishGreen[500]} mb={10} iconName="th-list" handlePress={handleTimeTablePress} />
+                        </View>}
                     {/* <View style={styles.boxContainer}>
                         <Box title='Examination' bg={theme.colors.grayishRed[500]} mb={10} iconName="receipt-long" />
                         <Box title='Results' bg={theme.colors.grayishYellow[500]} mb={10} iconName="fact-check" />
@@ -256,7 +293,7 @@ const HomePage = () => {
                                                     <IconButton
                                                         icon="upload"
                                                         size={35}
-                                                        onPress={() => uploadImg(setUploading, image, 'teacher', API.CommonAPI, params?.school, item)}
+                                                        onPress={() => uploadImg(setUploading, image, awsFolderName, API.CommonAPI, params?.school, item)}
                                                     />
                                                     <Paragraph style={{ paddingLeft: 11 }}>Upload</Paragraph>
                                                 </View>

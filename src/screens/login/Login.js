@@ -51,6 +51,7 @@ const LoginScreen = () => {
         const getAuthInfo = async () => {
             const authInfo = await getAsyncStorage("auth");
             if (authInfo?.token) {
+                console.log('auth no no 1')
                 router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
             }
         }

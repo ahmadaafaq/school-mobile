@@ -6,4 +6,4 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-export { default } from 'src/layouts/attendanceLayout';
+export { default } from 'src/screens/noticeBoard/listing';

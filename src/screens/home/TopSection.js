@@ -24,7 +24,8 @@ const TopSection = ({
     subjects,
     bg,
     image,
-    setVisible
+    setVisible,
+    userRole
 }) => {
 
     const theme = useTheme();
@@ -131,17 +132,18 @@ const TopSection = ({
                                         width: "100%",
                                     }}
                                 />
-                                <IconButton
-                                    icon="pencil"
-                                    size={15}
-                                    onPress={() => setVisible(true)}
-                                    style={{
-                                        position: "absolute",
-                                        right: 1,
-                                        top: 1,
-                                        backgroundColor: "white"
-                                    }}
-                                />
+                                {userRole === 'teacher' &&
+                                    <IconButton
+                                        icon="pencil"
+                                        size={15}
+                                        onPress={() => setVisible(true)}
+                                        style={{
+                                            position: "absolute",
+                                            right: 1,
+                                            top: 1,
+                                            backgroundColor: "white"
+                                        }}
+                                    />}
                             </>
                         )}
                     </View>
@@ -167,7 +169,8 @@ TopSection.propTypes = {
     subjects: PropTypes.string,
     bg: PropTypes.string,
     image: PropTypes.string,
-    setVisible: PropTypes.func
+    setVisible: PropTypes.func,
+    userRole: PropTypes.string,
 };
 
 export default TopSection;

@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
-import { MD2Colors } from 'react-native-paper';
 
 import { FONT, SIZES } from "../../../assets/constants";
 
@@ -61,15 +60,15 @@ const ListingItem = ({ item, index, theme }) => {
             <View style={{ borderWidth: 0 }}>
                 <Text style={[styles.titleText, {
                     fontSize: SIZES.large
-                }]}>{item.period}</Text>
+                }]}>Period    :   {item.period}</Text>
+                <Text style={styles.titleText}>
+                    Time           :    {item.duration}</Text>
                 <Text style={[styles.titleText, {
                     fontSize: SIZES.large
-                }]}>{item.subject}</Text>
+                }]}>Class      :   {item.className}</Text>
                 <Text style={[styles.titleText, {
                     fontSize: SIZES.large
-                }]}>{item.className}</Text>
-                {/* <Text style={styles.titleText}>{item.description}</Text> */}
-                <Text style={styles.subText}>{item.duration}</Text>
+                }]}>Subject   :   {item.subject}</Text>
             </View>
         </SafeAreaView>
     );

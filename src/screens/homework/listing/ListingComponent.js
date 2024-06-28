@@ -8,11 +8,13 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
+import PropTypes from 'prop-types';
+
 import { useCallback, useEffect } from 'react';
 import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from 'expo-router';
 import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 
 import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
@@ -21,7 +23,7 @@ import { setMenuItem } from "../../../redux/actions/MenuItemAction";
 
 import { Utility } from "../../../utility";
 
-const ListingComponent = () => {
+const ListingComponent = ({ userRole }) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const theme = useTheme();
@@ -90,11 +92,13 @@ const ListingComponent = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => handlePress()}
-                style={styles.touchableOpacityStyles}
-            >
-                <Text style={styles.touchableOpacityText}> Create New Homework </Text>
-            </TouchableOpacity>
+            {userRole === 'teacher' &&
+                <TouchableOpacity onPress={() => handlePress()}
+                    style={styles.touchableOpacityStyles}
+                >
+                    <Text style={styles.touchableOpacityText}> Create New Homework </Text>
+                </TouchableOpacity>
+            }
             <Chip icon="information" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
                 <Text style={{ color: MD2Colors.black }}>{listData?.count || 0} Homeworks Found</Text>
             </Chip>
@@ -109,6 +113,10 @@ const ListingComponent = () => {
             </ScrollView>
         </SafeAreaView>
     );
+};
+
+ListingComponent.propTypes = {
+    userRole: PropTypes.string
 };
 
 export default ListingComponent;
