@@ -19,6 +19,8 @@
     "expo": "~49.0.15",
     "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
+    "expo-image-manipulator": "~11.3.0",
+    "expo-image-picker": "~14.3.2",
     "expo-linking": "~5.0.2",
     "expo-router": "^2.0.0",
     "expo-splash-screen": "~0.20.4",
@@ -27,6 +29,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.10",
+    "react-native-calendars": "^1.1305.0",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-get-random-values": "~1.9.0",
@@ -39,10 +42,8 @@
     "react-redux": "^9.0.4",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
-    "yup": "^1.3.3",
     "web-streams-polyfill": "^4.0.0",
-    "expo-image-manipulator": "~11.3.0",
-    "expo-image-picker": "~14.3.2"
+    "yup": "^1.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

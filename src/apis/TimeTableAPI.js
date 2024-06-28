@@ -24,7 +24,7 @@ export const TimeTableAPI = {
         const searchParam = search ? `&search=${search}` : '';
 
         const { data: response } = await api.request({
-            url: `/get-time-tables?page=${page}&size=${size}${queryParam}${searchParam}`,
+            url: `/get-time-tables-mobile?page=${page}&size=${size}${queryParam}${searchParam}`,
             method: "GET",
             signal: cancel ? cancelApiObject[this.getAll.name].handleRequestCancellation().signal : undefined
         });

@@ -7,10 +7,11 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
+import PropTypes from 'prop-types';
+
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import PropTypes from 'prop-types';
 
 import { FONT, SIZES } from '../../theme/theme';
 
@@ -60,20 +61,32 @@ export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
     );
 };
 
-const CustomDropdown = ({ data, placeholder, setSelected, search, width = 'auto', height = 'auto' }) => {
+const CustomDropdown = ({
+    bg,
+    data,
+    placeholder,
+    setSelected,
+    search,
+    width = 'auto',
+    height = 'auto'
+}) => {
     const theme = useTheme();
+
+    const handleSelection = (value) => {
+        console.log(value, 'dropdown value');
+        setSelected(value.toLowerCase());
+    };
 
     const styles = StyleSheet.create({
         boxStyles: {
             width: width,
             height: height,
             borderWidth: 0,
-            borderRightWidth: 1,
             borderRadius: 0,
-            backgroundColor: theme.colors.whiteSmoke[500]
+            backgroundColor: bg
         },
         dropdownStyles: {
-            width: width - 5,
+            width: width,
             borderWidth: 0,
             borderBottomWidth: 1,
             borderRadius: 0,
@@ -84,26 +97,24 @@ const CustomDropdown = ({ data, placeholder, setSelected, search, width = 'auto'
     });
 
     return (
-        <SafeAreaView>
-            <SelectList
-                setSelected={(val) => setSelected(val)}
-                data={data}
-                save="value"
-                search={search}
-                placeholder={placeholder}
-                placeholderTextColor={theme.colors.whiteSmoke[400]}
-                fontFamily={FONT.regular}
-                boxStyles={styles.boxStyles}
-                inputStyles={{ color: theme.colors.whiteSmoke[700], fontFamily: FONT.medium }}
-                dropdownStyles={styles.dropdownStyles}
-                dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
-                dropdownTextStyles={{
-                    color: theme.colors.white[700],
-                    textAlign: 'center',
-                    fontFamily: FONT.medium
-                }}
-            />
-        </SafeAreaView>
+        <SelectList
+            setSelected={(val) => handleSelection(val)}
+            data={data}
+            save="value"
+            search={search}
+            placeholder={placeholder}
+            placeholderTextColor={theme.colors.whiteSmoke[400]}
+            fontFamily={FONT.regular}
+            boxStyles={styles.boxStyles}
+            inputStyles={{ color: theme.colors.whiteSmoke[700], fontFamily: FONT.medium }}
+            dropdownStyles={styles.dropdownStyles}
+            dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
+            dropdownTextStyles={{
+                color: theme.colors.white[700],
+                textAlign: 'center',
+                fontFamily: FONT.medium
+            }}
+        />
     );
 };
 
@@ -114,6 +125,7 @@ MultipleDropdown.propTypes = {
 };
 
 CustomDropdown.propTypes = {
+    bg: PropTypes.string,
     data: PropTypes.array,
     placeholder: PropTypes.string,
     setSelected: PropTypes.func,

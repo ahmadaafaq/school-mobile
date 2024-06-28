@@ -7,12 +7,14 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
+import PropTypes from 'prop-types';
+
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useFocusEffect, usePathname } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
@@ -24,7 +26,6 @@ import Toast from '../../common/Toast';
 import { SIZES } from '../../../assets/constants';
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
 import { setSchoolSections } from "../../../redux/actions/SectionAction";
-// import { setSchoolStudents } from "../../../redux/actions/StudentAction";
 import { setAllSubjects, setSchoolSubjects } from "../../../redux/actions/SubjectAction";
 import {
     setTeacherHomeworks, setHomeworkClassData,
@@ -44,11 +45,12 @@ const HomeworkListing = () => {
     const schoolSubjects = useSelector(state => state.schoolSubjects);
     const toastInfo = useSelector(state => state.toastInfo);
     const allSubjects = useSelector(state => state.allSubjects);
-    const teacherHomework = useSelector(state => state.teacherHomework);
+    const homework = useSelector(state => state.teacherHomework);
     const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
 
     const dispatch = useDispatch();
     const theme = useTheme();
+    const params = useLocalSearchParams();
     const { getPaginatedData } = useCommon();
     const { fetchAndSetSchoolData, fetchAndSetAll, findMultipleById, setAsyncStorage, toastAndNavigate } = Utility();
 
@@ -63,35 +65,42 @@ const HomeworkListing = () => {
             setMenuInAsyncStorage();
         }, [])
     );
+    console.log(params, params.userRole, 'params in homework')
 
     // to fetch students based on selected class & section from dropdown
     useEffect(() => {
-        if (!classData.class_id && !sectionData.section_id && !subjectData.id) {
-            console.log('ander aaya')
-            toastAndNavigate(dispatch, true, "Please Select Class, Section and Subject From the Dropdown", theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
-        }
-        else if (classData.class_id && sectionData.section_id && subjectData.id) {
-            console.log('classData and Sectiondata')
-            getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id, subjectId: subjectData.id });
+        if (params.userRole === 'teacher') {
+            if (!classData.class_id && !sectionData.section_id && !subjectData.id) {
+                console.log('ander aaya')
+                toastAndNavigate(dispatch, true, "Please Select Class, Section and Subject From the Dropdown", theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
+            }
+            else if (classData.class_id && sectionData.section_id && subjectData.id) {
+                console.log('classData and Sectiondata')
+                getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id, subjectId: subjectData.id });
+            }
         }
         console.log('outside if classData and Sectiondata', classData, sectionData)
     }, [classData.class_id, sectionData.section_id, subjectData.id]);
 
     useEffect(() => {
-        if (!teacherHomework?.listData?.length) {
-            getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI);
+        if (!homework?.listData?.length) {
+            getPaginatedData(0, 100, setTeacherHomeworks, API.HomeworkAPI, params.userRole === 'parent' ? { class_id: params.class_id, section: params.section } : params.userRole === 'teacher' ? null : null);
         }
-    }, [teacherHomework?.listData?.length]);
+    }, [homework?.listData?.length]);
 
     useEffect(() => {
-        if (!allSubjects?.listData?.length) {
-            fetchAndSetAll(dispatch, setAllSubjects, API.SubjectAPI);
+        if (params.userRole === 'teacher') {
+            if (!allSubjects?.listData?.length) {
+                fetchAndSetAll(dispatch, setAllSubjects, API.SubjectAPI);
+            }
         }
     }, []);
 
     useEffect(() => {
-        if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
-            fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
+        if (params.userRole === 'teacher') {
+            if ((!schoolSubjects?.listData?.length || !schoolClasses?.listData?.length || !schoolSections?.listData?.length)) {
+                fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
+            }
         }
     }, []);
 
@@ -159,31 +168,33 @@ const HomeworkListing = () => {
             <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}
                 style={{ flexGrow: 1 }}
             >
-                <View>
-                    <View style={{ flexDirection: 'row', shadowColor: theme.colors.brightBlue[500], marginBottom: 20 }}>
-                        <CustomPressable
-                            onPress={() => setShowClassModal(!showClassModal)}
-                            title="Class"
-                            value={classData.class_name}
-                            iconSource={require('../../../assets/icons/down-arrow-lite.png')}
-                            width='33%'
-                        />
-                        <CustomPressable
-                            onPress={() => setShowSectionModal(!showSectionModal)}
-                            title="Section"
-                            value={sectionData.section_name}
-                            iconSource={require('../../../assets/icons/down-arrow-lite.png')}
-                            width='33%'
-                        />
-                        <CustomPressable
-                            onPress={() => setShowSubjectModal(!showSubjectModal)}
-                            title="Subject"
-                            value={subjectData.name}
-                            iconSource={require('../../../assets/icons/down-arrow-lite.png')}
-                            width='33%'
-                        />
+                {params.userRole === 'teacher' &&
+                    <View>
+                        <View style={{ flexDirection: 'row', shadowColor: theme.colors.brightBlue[500], marginBottom: 20 }}>
+                            <CustomPressable
+                                onPress={() => setShowClassModal(!showClassModal)}
+                                title="Class"
+                                value={classData.class_name}
+                                iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                                width='33%'
+                            />
+                            <CustomPressable
+                                onPress={() => setShowSectionModal(!showSectionModal)}
+                                title="Section"
+                                value={sectionData.section_name}
+                                iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                                width='33%'
+                            />
+                            <CustomPressable
+                                onPress={() => setShowSubjectModal(!showSubjectModal)}
+                                title="Subject"
+                                value={subjectData.name}
+                                iconSource={require('../../../assets/icons/down-arrow-lite.png')}
+                                width='33%'
+                            />
+                        </View>
                     </View>
-                </View>
+                }
 
                 <Toast
                     alerting={toastInfo.alerting}
@@ -194,10 +205,10 @@ const HomeworkListing = () => {
                     textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
                 />
 
-                <ListingComponent />
+                <ListingComponent userRole={params.userRole} />
             </ScrollView>
 
-            {showClassModal && (
+            {params.userRole === 'teacher' && showClassModal && (
                 <View style={{
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
@@ -216,7 +227,7 @@ const HomeworkListing = () => {
                     </CustomModal>
                 </View>
             )}
-            {showSectionModal && (
+            {params.userRole === 'teacher' && showSectionModal && (
                 <View style={{
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
@@ -235,7 +246,7 @@ const HomeworkListing = () => {
                     </CustomModal>
                 </View>
             )}
-            {showSubjectModal && (
+            {params.userRole === 'teacher' && showSubjectModal && (
                 <View style={{
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
@@ -254,9 +265,13 @@ const HomeworkListing = () => {
                     </CustomModal>
                 </View>
             )}
-            {teacherHomework?.loading ? <LoadingAnimationModal /> : null}
+            {homework?.loading ? <LoadingAnimationModal /> : null}
         </SafeAreaView>
     );
+};
+
+HomeworkListing.propTypes = {
+    userRole: PropTypes.string
 };
 
 export default HomeworkListing;

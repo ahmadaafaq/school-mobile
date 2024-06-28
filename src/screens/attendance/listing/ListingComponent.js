@@ -88,7 +88,7 @@ const ListingComponent = ({ class_id, section_id }) => {
             await Promise.all(promise);
             toastAndNavigate(dispatch, true, "Successfully Submitted", theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
             setTimeout(() => {
-                router.push('/(tabs)/(homeTabDrawer)/home');
+                router.back();
             }, 2000);
         } catch (err) {
             toastAndNavigate(dispatch, true, err ? err.response?.data?.msg : "An Error Occurred", theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);

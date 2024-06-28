@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import API from '../../../apis';
 import LoadingAnimationModal from "../../common/LoadingAnimationModal";
@@ -23,10 +23,11 @@ import { setTimeTables } from "../../../redux/actions/TimeTableAction";
 import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
-const NoticeBoardListing = () => {
+const TimeTableListing = () => {
     const allTimeTables = useSelector(state => state.allTimeTables);
-
     const theme = useTheme();
+    const params = useLocalSearchParams();
+
     const { getPaginatedData } = useCommon();
     const { setAsyncStorage } = Utility();
 
@@ -44,7 +45,7 @@ const NoticeBoardListing = () => {
 
     useEffect(() => {
         if (!allTimeTables?.listData?.length) {
-            getPaginatedData(0, 10, setTimeTables, API.TimeTableAPI);
+            getPaginatedData(0, 80, setTimeTables, API.TimeTableAPI, { teacherId: params?.id });
         }
     }, [allTimeTables?.listData?.length]);
 
@@ -74,4 +75,4 @@ const NoticeBoardListing = () => {
     );
 };
 
-export default NoticeBoardListing;
+export default TimeTableListing;
