@@ -22,6 +22,126 @@ export const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
+const styles = StyleSheet.create({
+    plusBox: {
+        height: 80,
+        width: 80,
+        borderRadius: 200,
+        backgroundColor: MD3Colors.secondary20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        margin: 0,
+        overflow: "hidden"
+    },
+    plusButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 30,
+        backgroundColor: 'grey',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    camera: {
+        flex: 1,
+        position: 'relative',
+        zIndex: 5,
+        height: WINDOW_HEIGHT / 1.2,
+        width: WINDOW_WIDTH
+    },
+    cameraButtonContainer: {
+        flex: 1,
+        width: '90%',
+        height: 500,
+        backgroundColor: 'transparent',
+        // flexDirection: 'row',
+        margin: 20,
+    },
+    // titleLabelText: {
+    //     color: theme.colors.black[600],
+    //     fontFamily: FONT.regular,
+    //     fontSize: SIZES.medium,
+    //     // paddingTop: SIZES.small,
+    //     // paddingLeft: SIZES.xSmall,
+    //     letterSpacing: 0.22,
+    //     textTransform: 'capitalize'
+    // },
+    // titleText: {
+    //     color: theme.colors.blue[700],
+    //     fontFamily: FONT.regular,
+    //     fontSize: SIZES.medium,
+    //     // paddingTop: SIZES.small,
+    //     // paddingLeft: SIZES.xSmall,
+    //     // letterSpacing: 0.22,
+    //     fontWeight: "700",
+    //     textTransform: 'capitalize'
+    // },
+    detailBtn: {
+        borderWidth: 1,
+        top: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+        width: '25%',
+        height: 40,
+        borderRadius: 4,
+        // backgroundColor: theme.colors.green[500],
+        marginBottom: 10,
+        zIndex: 1
+    },
+    detailText: {
+        // color: theme.colors.white[500],
+        fontFamily: FONT.regular,
+        fontSize: 15,
+        letterSpacing: 0.12,
+        fontWeight: '400'
+    },
+    fab: {
+        height: 60,
+        backgroundColor: "white",
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        top: 20,
+    },
+    // icon: {
+    //     color: theme.colors.white[500]
+    // },
+});
+
+const styles2 = StyleSheet.create({
+    container: {
+        width: '150%',
+        // borderRadius: 5,
+        // padding: 10,
+    },
+    row: {
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+        marginBottom: 5,
+    },
+    titleText: {
+        // color: theme.colors.blue[700],
+        fontFamily: FONT.regular,
+        fontSize: SIZES.medium,
+        // paddingTop: SIZES.small,
+        // paddingLeft: SIZES.xSmall,
+        // letterSpacing: 0.22,
+        fontWeight: "700",
+        textTransform: 'capitalize'
+    },
+    titleLabelText: {
+        flex:1,
+        // color: theme.colors.black[600],
+        fontFamily: FONT.regular,
+        fontSize: SIZES.medium,
+        // letterSpacing: 0.22,
+        textTransform: 'capitalize'
+    },
+});
+
 export const ListingTable = ({ item, theme }) => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [previewVisible, setPreviewVisible] = useState(false);
@@ -59,127 +179,9 @@ export const ListingTable = ({ item, theme }) => {
             setPreviewVisible(true);
         }
     };
-    console.log(capturedImage, 'captured image')
+    console.log(capturedImage,params.school, 'captured image')
 
-    const styles = StyleSheet.create({
-        plusBox: {
-            height: 80,
-            width: 80,
-            borderRadius: 200,
-            backgroundColor: MD3Colors.secondary20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: 1,
-            margin: 0,
-            overflow: "hidden"
-        },
-        plusButton: {
-            width: 40,
-            height: 40,
-            borderRadius: 30,
-            backgroundColor: 'grey',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        camera: {
-            flex: 1,
-            position: 'relative',
-            zIndex: 5,
-            height: WINDOW_HEIGHT / 1.2,
-            width: WINDOW_WIDTH
-        },
-        cameraButtonContainer: {
-            flex: 1,
-            width: '90%',
-            height: 500,
-            backgroundColor: 'transparent',
-            // flexDirection: 'row',
-            margin: 20,
-        },
-        // titleLabelText: {
-        //     color: theme.colors.black[600],
-        //     fontFamily: FONT.regular,
-        //     fontSize: SIZES.medium,
-        //     // paddingTop: SIZES.small,
-        //     // paddingLeft: SIZES.xSmall,
-        //     letterSpacing: 0.22,
-        //     textTransform: 'capitalize'
-        // },
-        // titleText: {
-        //     color: theme.colors.blue[700],
-        //     fontFamily: FONT.regular,
-        //     fontSize: SIZES.medium,
-        //     // paddingTop: SIZES.small,
-        //     // paddingLeft: SIZES.xSmall,
-        //     // letterSpacing: 0.22,
-        //     fontWeight: "700",
-        //     textTransform: 'capitalize'
-        // },
-        detailBtn: {
-            borderWidth: 1,
-            top: 10,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'flex-end',
-            width: '25%',
-            height: 40,
-            borderRadius: 4,
-            backgroundColor: theme.colors.green[500],
-            marginBottom: 10,
-            zIndex: 1
-        },
-        detailText: {
-            color: theme.colors.white[500],
-            fontFamily: FONT.regular,
-            fontSize: 15,
-            letterSpacing: 0.12,
-            fontWeight: '400'
-        },
-        fab: {
-            height: 60,
-            backgroundColor: "white",
-            position: 'absolute',
-            margin: 16,
-            right: 0,
-            bottom: 0,
-            top: 20,
-        },
-        icon: {
-            color: theme.colors.white[500]
-        },
-    });
-
-    const styles2 = StyleSheet.create({
-        container: {
-            width: '150%',
-            // borderRadius: 5,
-            // padding: 10,
-        },
-        row: {
-            flexDirection: 'row', 
-            justifyContent: 'space-between',
-            marginBottom: 5,
-        },
-        titleText: {
-            color: theme.colors.blue[700],
-            fontFamily: FONT.regular,
-            fontSize: SIZES.medium,
-            // paddingTop: SIZES.small,
-            // paddingLeft: SIZES.xSmall,
-            // letterSpacing: 0.22,
-            fontWeight: "700",
-            textTransform: 'capitalize'
-        },
-        titleLabelText: {
-            flex:1,
-            color: theme.colors.black[600],
-            fontFamily: FONT.regular,
-            fontSize: SIZES.medium,
-            // letterSpacing: 0.22,
-            textTransform: 'capitalize'
-        },
-    });
+  
 
     const CameraPreview = ({ photo }) => {
         return (
@@ -249,7 +251,7 @@ export const ListingTable = ({ item, theme }) => {
                                     <Text style={{ marginLeft: 5 }}>Retake</Text>
                                 </TouchableOpacity>
                                 {capturedImage &&
-                                    <TouchableOpacity onPress={() => uploadImg(setUploading, capturedImage, 'student', API.CommonAPI, params?.school, item)}>
+                                    <TouchableOpacity onPress={() => uploadImg(setUploading, capturedImage, 'student', API.CommonAPI, params.school, item)}>
                                         <IconButton
                                             icon="upload"
                                             iconColor={MD3Colors.error30}

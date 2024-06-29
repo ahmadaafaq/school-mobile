@@ -30,7 +30,7 @@ const ListingItem = ({ item, index, theme }) => {
             paddingHorizontal: 10,
         },
         titleText: {
-            color: theme.colors.powderBlue[800],
+            color: theme.colors.powderBlue[900],
             fontFamily: FONT.regular,
             fontSize: SIZES.small,
             paddingTop: SIZES.small,
@@ -40,7 +40,7 @@ const ListingItem = ({ item, index, theme }) => {
             textTransform: 'capitalize'
         },
         subText: {
-            color: theme.colors.white[700],
+            color: theme.colors.white[800],
             fontSize: SIZES.small,
             paddingLeft: SIZES.small,
             paddingTop: SIZES.xSmall,
@@ -64,7 +64,7 @@ const ListingItem = ({ item, index, theme }) => {
                 <Text style={styles.titleText}>
                     Period    :   {item.period}</Text>
                 <Text style={styles.titleText}>
-                    Time       :    {item.duration}</Text>
+                    Time       :   {item.duration}</Text>
                 <Text style={styles.titleText}>
                     Class      :   {item.className}</Text>
                 <Text style={styles.titleText}>
