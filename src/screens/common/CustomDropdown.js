@@ -5,14 +5,12 @@
  * This software is the confidential information of School CRM Inc., and is licensed as
  * restricted rights software. The use, reproduction, or disclosure of this software is subject to
  * restrictions set forth in your license agreement with School CRM.
-*/
+ */
 
 import PropTypes from 'prop-types';
-
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-
 import { FONT, SIZES } from '../../theme/theme';
 import { useEffect } from 'react';
 
@@ -23,21 +21,18 @@ export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
         boxStyles: {
             borderWidth: 0,
             borderRadius: 4,
-            width: "92%",
+            width: "90%",
             margin: SIZES.smallMedium,
-            backgroundColor: theme.colors.whiteSmoke[500]
+            backgroundColor: theme.colors.whiteSmoke[500],
         },
         dropdownStyles: {
-            width: "92%",
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
+            width: "90%",
             borderColor: theme.colors.whiteSmoke[500],
             borderRadius: 8,
             marginTop: -10,
-            marginLeft: 16
-        }
+            marginLeft: 16,
+        },
     });
-    console.log('dataaassa', data)
 
     return (
         <SafeAreaView>
@@ -52,12 +47,6 @@ export const MultipleDropdown = ({ data, placeholder, setSelected }) => {
                 dropdownStyles={styles.dropdownStyles}
                 dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
                 inputStyles={{ color: theme.colors.whiteSmoke[700] }}
-            // badgeStyles={{
-            //     backgroundColor: theme.colors.blackish[400]
-            // }}
-            // checkBoxStyles={{
-            //     backgroundColor: theme.colors.blue[400]
-            // }}
             />
         </SafeAreaView>
     );
@@ -91,17 +80,23 @@ const CustomDropdown = ({
             height: height,
             borderWidth: 0,
             borderRadius: 0,
-            backgroundColor: bg
+            backgroundColor: bg,
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10,
+            elevation: 10
         },
         dropdownStyles: {
             width: width,
             borderWidth: 0,
             borderBottomWidth: 1,
             borderRadius: 0,
-            marginTop: -8,
-            marginLeft: 1
-            // borderColor: theme.colors.whiteSmoke[500]
-        }
+            marginTop: 0,
+            marginLeft: 0,
+            borderBottomRightRadius: 10,
+            borderBottomLeftRadius: 10,
+            elevation: 10,
+            backgroundColor:"white"
+        },
     });
 
     return (
@@ -109,38 +104,37 @@ const CustomDropdown = ({
             setSelected={(val) => handleSelection(val)}
             data={data}
             save="value"
-            // search={search}
             placeholder={placeholder}
             placeholderTextColor={theme.colors.whiteSmoke[400]}
             fontFamily={FONT.regular}
             boxStyles={styles.boxStyles}
-            inputStyles={{ color: theme.colors.whiteSmoke[700], fontFamily: FONT.medium, elevation: 10 }}
+            inputStyles={{ color: theme.colors.whiteSmoke[900], fontFamily: FONT.medium }}
             dropdownStyles={styles.dropdownStyles}
-            dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[500] }}
+            dropdownItemStyles={{ backgroundColor: theme.colors.whiteSmoke[100] }}
             dropdownTextStyles={{
-                color: theme.colors.white[700],
+                color: theme.colors.white[800],
                 textAlign: 'center',
-                fontFamily: FONT.medium
+                fontFamily: FONT.medium,
             }}
-            defaultOption={{ key:'1', value:`${selected.charAt(0).toUpperCase() + selected.slice(1)}` }}
+            defaultOption={{ key: '1', value: `${selected.charAt(0).toUpperCase() + selected.slice(1)}` }}
         />
     );
 };
 
 MultipleDropdown.propTypes = {
-    data: PropTypes.array,
-    placeholder: PropTypes.string,
-    setSelected: PropTypes.func
+    data: PropTypes.array.isRequired,
+    placeholder: PropTypes.string.isRequired,
+    setSelected: PropTypes.func.isRequired,
 };
 
 CustomDropdown.propTypes = {
-    bg: PropTypes.string,
-    data: PropTypes.array,
-    placeholder: PropTypes.string,
-    setSelected: PropTypes.func,
-    search: PropTypes.bool,
+    bg: PropTypes.string.isRequired,
+    data: PropTypes.array.isRequired,
+    placeholder: PropTypes.string.isRequired,
+    selected: PropTypes.string.isRequired,
+    setSelected: PropTypes.func.isRequired,
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 export default CustomDropdown;
