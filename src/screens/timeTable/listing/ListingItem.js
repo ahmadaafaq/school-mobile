@@ -9,7 +9,6 @@
 import PropTypes from 'prop-types';
 
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
 
 import { FONT, SIZES } from "../../../assets/constants";
 
@@ -17,7 +16,7 @@ export const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
-const ListingItem = ({ item, index, theme }) => {
+const ListingItem = ({ item, userRole, theme }) => {
 
     const styles = StyleSheet.create({
         container: {
@@ -69,6 +68,10 @@ const ListingItem = ({ item, index, theme }) => {
                     Class      :   {item.className}</Text>
                 <Text style={styles.titleText}>
                     Subject  :   {item.subject}</Text>
+                {userRole === 'parent' ?
+                    <Text style={styles.titleText}>
+                        Teacher  :   {item.teacher}</Text>
+                    : null}
             </View>
         </SafeAreaView>
     );

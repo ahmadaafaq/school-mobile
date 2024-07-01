@@ -135,14 +135,23 @@ const HomePage = () => {
     const handleStudentPress = () => {
         router.push({
             pathname: `/${userRole}/(student)/studentListing`,
-            params: { school_id: params.school_id }
+            params: {
+                school_id: params.school_id,
+                school: params.school,
+                userRole
+            }
         });
     };
 
     const handleTimeTablePress = () => {
         router.push({
             pathname: `/${userRole}/(timeTable)/timeTableListing`,
-            params: { id: listData?.rows?.[0]?.id }
+            params: {
+                id: listData?.rows?.[0]?.id,
+                class_id: listData?.rows?.[0]?.class_id,
+                section: listData?.rows?.[0]?.section_id,
+                userRole
+            }
         })
     };
 
@@ -162,8 +171,7 @@ const HomePage = () => {
             }
         }
     }, [getPaginatedData, listData?.rows?.length, params.id, userRole]);
-
-    console.log(WINDOW_HEIGHT / -9.57, 'window');
+    console.log(params, listData, 'home me');
 
     const styles = StyleSheet.create({
         container: {
@@ -221,15 +229,16 @@ const HomePage = () => {
                     />
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
-                        {(isClassTeacher || userRole === 'parent') && <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />}
+                        {(isClassTeacher || userRole === 'parent') &&
+                            <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />}
                         <Box title='Homework' bg={theme.colors.grayishRed[500]} mb={10} iconName="book" handlePress={handleHomeworkPress} />
                         <Box title='Notice Board' bg={theme.colors.grayishYellow[500]} mb={10} iconName="comment-alt" handlePress={handleNoticeBoardPress} />
                     </View>
-                    {userRole === 'teacher' &&
-                        <View style={styles.boxContainer}>
-                            <Box title='Students' bg={theme.colors.blue[500]} mb={10} iconName="users" handlePress={handleStudentPress} />
-                            <Box title='Time Table' bg={theme.colors.grayishGreen[500]} mb={10} iconName="th-list" handlePress={handleTimeTablePress} />
-                        </View>}
+                    <View style={styles.boxContainer}>
+                        {userRole === 'teacher' &&
+                            <Box title='Students' bg={theme.colors.blue[500]} mb={10} iconName="users" handlePress={handleStudentPress} />}
+                        <Box title='Time Table' bg={theme.colors.grayishGreen[500]} mb={10} iconName="th-list" handlePress={handleTimeTablePress} />
+                    </View>
                     {/* <View style={styles.boxContainer}>
                         <Box title='Examination' bg={theme.colors.grayishRed[500]} mb={10} iconName="receipt-long" />
                         <Box title='Results' bg={theme.colors.grayishYellow[500]} mb={10} iconName="fact-check" />

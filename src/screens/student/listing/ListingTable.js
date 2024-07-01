@@ -118,7 +118,7 @@ const styles2 = StyleSheet.create({
         // padding: 10,
     },
     row: {
-        flexDirection: 'row', 
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 5,
     },
@@ -133,7 +133,7 @@ const styles2 = StyleSheet.create({
         textTransform: 'capitalize'
     },
     titleLabelText: {
-        flex:1,
+        flex: 1,
         // color: theme.colors.black[600],
         fontFamily: FONT.regular,
         fontSize: SIZES.medium,
@@ -179,9 +179,8 @@ export const ListingTable = ({ item, theme }) => {
             setPreviewVisible(true);
         }
     };
-    console.log(capturedImage,params.school, 'captured image')
+    console.log(capturedImage, params.school, 'captured image')
 
-  
 
     const CameraPreview = ({ photo }) => {
         return (
@@ -235,7 +234,7 @@ export const ListingTable = ({ item, theme }) => {
                     )}
                 </View>
                 {previewVisible &&
-                    <View style={{ flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                         {!uploading ? (
                             <>
                                 <TouchableOpacity onPress={() => {
@@ -269,16 +268,16 @@ export const ListingTable = ({ item, theme }) => {
             }}>
                 <View style={styles2.container}>
                     <View style={styles2.row}>
-                        <Text style={styles2.titleText}>Name: </Text>
-                        <Text style={styles2.titleLabelText}>{normalizeSpacing(item?.studentName)}</Text>
+                        <Text style={styles2.titleText}>Name    : </Text>
+                        <Text style={styles2.titleLabelText}>   {normalizeSpacing(item?.studentName)}</Text>
                     </View>
                     <View style={styles2.row}>
-                        <Text style={styles2.titleText}>Class: </Text>
-                        <Text style={styles2.titleLabelText}>{normalizeSpacing(item?.className)}</Text>
+                        <Text style={styles2.titleText}>Class   : </Text>
+                        <Text style={styles2.titleLabelText}>   {normalizeSpacing(item?.className)}</Text>
                     </View>
                     <View style={styles2.row}>
-                        <Text style={styles2.titleText}>Father's{'\n'}Name:</Text>
-                        <Text style={styles2.titleLabelText}>{'\n'}{normalizeSpacing(item?.father_name)}</Text>
+                        <Text style={styles2.titleText}>Father's Name   :</Text>
+                        <Text style={styles2.titleLabelText}>    {normalizeSpacing(item?.father_name)}</Text>
                     </View>
                     {/* Uncomment if needed
             <View style={styles.row}>
@@ -300,8 +299,7 @@ ListingTable.propTypes = {
     item: PropTypes.object,
     index: PropTypes.number,
     theme: PropTypes.object,
-    photo: PropTypes.object,
-    flatListRef: PropTypes.object
+    photo: PropTypes.object
 };
 
 export default ListingTable;
