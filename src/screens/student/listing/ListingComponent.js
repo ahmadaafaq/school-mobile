@@ -28,7 +28,7 @@ const ListingComponent = () => {
         maxToRenderPerBatch: 1,
         removeClippedSubviews: true,
         scrollEventThrottle: 16,
-        windowSize: 2,
+        windowSize: 10,
         keyExtractor: useCallback(e => e.id, []),
         getItemLayout: useCallback(
             (_, index) => ({

@@ -7,18 +7,23 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useCallback } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { useCallback, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from 'expo-router';
 
+import CustomModal from '../../common/CustomModal';
 import ListingComponent from './ListingComponent';
 
 import { SIZES } from '../../../assets/constants';
 import { Utility } from "../../../utility";
 
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 const TimeTableListing = () => {
+    const [showDayModal, setShowDayModal] = useState(false);
+    const [selected, setSelected] = useState("");
     const theme = useTheme();
     const { setAsyncStorage } = Utility();
 
@@ -50,12 +55,36 @@ const TimeTableListing = () => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={theme.colors.magicMint[500]} />
-            <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}
-                style={{ flexGrow: 1 }}
-            >
-                <ListingComponent />
+            <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]} style={{ flexGrow: 1 }}>
+                <ListingComponent
+                    daysOfWeek={daysOfWeek}
+                    selected={selected}
+                    showDayModal={showDayModal}
+                    setShowDayModal={setShowDayModal}
+                />
             </ScrollView>
-            {/* {allTimeTables?.loading ? <LoadingAnimationModal /> : null} */}
+
+            {showDayModal && (
+                <View style={{
+                    width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
+                }}>
+                    <CustomModal
+                        heightNumber={2.2}
+                        headerText="Days"
+                        showModal={showDayModal}
+                        setShowModal={setShowDayModal}
+                    >
+                        {daysOfWeek.map((item, index) =>
+                            <TouchableOpacity key={index} onPress={() => {
+                                setSelected(item);
+                                setShowDayModal(false);
+                            }}>
+                                <Text style={styles.textStyle}>{`${item}\n`}</Text>
+                            </TouchableOpacity>
+                        )}
+                    </CustomModal>
+                </View>
+            )}
         </SafeAreaView>
     );
 };

@@ -67,9 +67,10 @@ const StudentListing = () => {
 
     useEffect(() => {
         if (!schoolClasses?.listData?.length || !schoolSections?.listData?.length) {
+            console.log('fetch and set called')
             fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
         }
-    }, []);
+    }, [schoolSections?.listData?.length]);
 
     useEffect(() => {
         const getAndSetSections = () => {
@@ -94,6 +95,7 @@ const StudentListing = () => {
             }));
         }
     };
+    console.log('student listing', schoolSections)
 
     const styles = StyleSheet.create({
         container: {
@@ -144,8 +146,9 @@ const StudentListing = () => {
                         setShowModal={setShowClassModal}
                     >
                         {schoolClasses.listData.map((item, index) =>
-                            <TouchableOpacity onPress={() => handlePress(item, "class_name", setHomeworkClassData, "class_id")} key={index}>
-                                <Text style={styles.textStyle}>{item["class_name"]} </Text>
+                            <TouchableOpacity style={{ height: 40 }}
+                                onPress={() => handlePress(item, "class_name", setHomeworkClassData, "class_id")} key={index}>
+                                <Text style={styles.textStyle}>{`${item["class_name"]}\n`}</Text>
                             </TouchableOpacity>
 
                         )}
@@ -157,14 +160,15 @@ const StudentListing = () => {
                     width: '100%', position: 'absolute', left: 0, top: 0, zIndex: 1
                 }}>
                     <CustomModal
-                        heightNumber={schoolSections.listData.length / 1.2 || 1.5}
+                        heightNumber={1.9}
                         headerText="Sections"
                         showModal={showSectionModal}
                         setShowModal={setShowSectionModal}
                     >
                         {schoolSections.listData.map((item, index) =>
-                            <TouchableOpacity onPress={() => handlePress(item, "section_name", setHomeworkSectionData, "section_id")} key={index}>
-                                <Text style={styles.textStyle}>{item["section_name"]} </Text>
+                            <TouchableOpacity
+                                onPress={() => handlePress(item, "section_name", setHomeworkSectionData, "section_id")} key={index}>
+                                <Text style={styles.textStyle}>{`${item["section_name"]}\n`} </Text>
                             </TouchableOpacity>
 
                         )}
