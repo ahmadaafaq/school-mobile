@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "school-crm-mobile",
-    "slug": "school-crm-mobile",
+    "name": "The-Skolar",
+    "slug": "The-Skolar",
     "scheme": "acme",
     "splash": {
       "image": "src/assets/images/splash.png",

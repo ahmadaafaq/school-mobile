@@ -10,24 +10,29 @@
 
 import PropTypes from 'prop-types';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState, memo } from 'react';
 import { FlatList, Text, TouchableOpacity, SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import ListingItem, { WINDOW_WIDTH } from './ListingItem';
 
 import { FONT, SIZES } from "../../../assets/constants";
 import { setMenuItem } from "../../../redux/actions/MenuItemAction";
-
+import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
-const ListingComponent = ({ userRole }) => {
+const ListingComponent = ({page, userRole }) => {
+    const [homeworkData, setHomeworkData] = useState([]);
+    const { listData } = useSelector(state => state.teacherHomework);
+
     const dispatch = useDispatch();
+    const flatListRef = useRef(null);
     const router = useRouter();
     const theme = useTheme();
-    const { listData } = useSelector(state => state.teacherHomework);
+    const params = useLocalSearchParams();
+    const { getPaginatedData } = useCommon();
 
     const flatListOptimizationProps = {
         initialNumToRender: 0,
@@ -47,8 +52,28 @@ const ListingComponent = ({ userRole }) => {
     };
     const { getAsyncStorage } = Utility();
 
+    useEffect(() => {
+        console.log("USE EFFECT");
+        if (page > 0 && listData?.rows?.length) {
+            setHomeworkData([
+                ...homeworkData,
+                ...listData.rows
+            ]);
+        } else if (listData?.rows?.length) {
+            setHomeworkData(listData.rows);
+            console.log('scroll to top')
+            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
+    }, [listData?.rows]);
+
+    // useEffect(() => {
+    //     if (!listData?.length) {
+    //         getPaginatedData(0, 100, setTeacherHomeworks, API.HomeworkAPI, params.userRole === 'parent' ? { class_id: params.class_id, section: params.section } : params.userRole === 'teacher' ? null : null);
+    //     }
+    // }, [listData?.length]);
+
     const handlePress = () => {
-        router.push('/(homework)/homeworkForm');
+        router.push(`/${userRole}/(homework)/homeworkForm`);
     };
 
     useEffect(() => {
@@ -121,4 +146,4 @@ ListingComponent.propTypes = {
     userRole: PropTypes.string
 };
 
-export default ListingComponent;
+export default memo(ListingComponent);

@@ -19,12 +19,12 @@ export const useCommon = () => {
 
     /** Get data for pagination according to given parameters to be used in API call
      */
-    const getPaginatedData = useCallback(async (page = 0, size, action, api, condition = false, search = false) => {
+    const getPaginatedData = useCallback(async (page = 0, size, action, api, condition = false, search = false, callback = () => { }) => {
         const authInfo = await getAsyncStorage("auth");
-        console.log('condition', condition);
+        // console.log('condition', condition);
         api.getAll(condition, page, size, search, authInfo)
             .then(res => {
-                console.log('getall response', res?.data?.rows)
+                // console.log('getall response', res?.data?.rows)
                 if (res.status === 'Success') {
                     dispatch(action({ listData: res.data, loading: false }));
                 } else if (res.status === 'Error') {
@@ -32,6 +32,7 @@ export const useCommon = () => {
                 } else {
                     dispatch(action({ listData: [], loading: false }));
                 }
+                callback();
             })
             .catch(err => {
                 dispatch(action({ listData: [], loading: false }));

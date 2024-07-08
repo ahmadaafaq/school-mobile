@@ -18,7 +18,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import API from "../../apis";
 import Toast from "../common/Toast";
 
-import { setMenuItem } from "../../redux/actions/MenuItemAction";
 import { SIZES, ALIGNMENT } from "../../assets/constants";
 import { Utility } from '../../utility';
 
@@ -41,7 +40,7 @@ const LoginScreen = () => {
     const inputRef = useRef(null);
     const router = useRouter();
     const theme = useTheme();
-    const { getAsyncStorage, remAsyncStorage, setAsyncStorage, toastAndNavigate } = Utility();
+    const { getAsyncStorage, setAsyncStorage, toastAndNavigate } = Utility();
 
     const handleFormDataChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
@@ -49,13 +48,17 @@ const LoginScreen = () => {
 
     useEffect(() => {
         const getAuthInfo = async () => {
-            const authInfo = await getAsyncStorage("auth");
-            if (authInfo?.token) {
-                console.log('auth no no 1')
-                router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
+            try {
+                const authInfo = await getAsyncStorage("auth");
+                if (authInfo?.token) {
+                    router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
+                }
+            } catch (error) {
+                console.error("Error getting auth info from storage:", error);
             }
         }
         getAuthInfo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSubmit = () => {
@@ -64,7 +67,6 @@ const LoginScreen = () => {
         }
         if (formData.school_code && (formData.contact_no && formData.password)) {
             setLoading(true);
-            console.log('inside login m')
             API.UserAPI.login(formData)
                 .then(async response => {
                     console.log(response, 'api response login')
@@ -89,17 +91,9 @@ const LoginScreen = () => {
                             school_id: response.data.school_id
                         };
                         setAsyncStorage("auth", authInfo);
-                        const navigatedPath = await getAsyncStorage("navigatedPath");
                         response.data?.school_info ? setAsyncStorage("schoolInfo", response.data.school_info) : null;
-                        if (navigatedPath) {
-                            const splittedPath = navigatedPath.split('/');
-                            setAsyncStorage("menu", { selected: splittedPath[splittedPath.length - 2] });
-                            dispatch(setMenuItem(splittedPath[splittedPath.length - 2]));
-                            router.push(`/${navigatedPath}`);
-                            remAsyncStorage("navigatedPath");       //removing path after navigating user
-                        } else {
-                            router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
-                        }
+                        // Navigate to the home screen
+                        router.push({ pathname: '/(tabs)/(homeTabDrawer)/home', params: authInfo });
                     }
                 })
                 .catch(err => {
@@ -108,7 +102,7 @@ const LoginScreen = () => {
                         ...formData,
                         password: ''
                     });
-                    toastAndNavigate(dispatch, true, err.message, theme.colors.red[500], theme.colors.lightBlue[600]);
+                    toastAndNavigate(dispatch, true, err?.message, theme.colors.red[500], theme.colors.lightBlue[600]);
                     console.log(err, 'Error Occurred In User Api');
                 });
         }
@@ -167,13 +161,10 @@ const LoginScreen = () => {
                     <Toast
                         alerting={toastInfo.alerting}
                         message={toastInfo.message}
-                        actionText={toastInfo.actionText}
-                        actionTextColor={toastInfo.actionTextColor}
                         backgroundColor={toastInfo.backgroundColor}
                         textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
                     />
                 </View>
-                {/* <Text style={{ color: theme.colors.spanishPink[500], fontSize: 25 }}> mode: {theme} </Text> */}
                 <View style={styles.inputContainer}>
                     <FontAwesome5 name='school' color={theme.colors.yaleBlue[500]} size={22}
                         style={styles.icon}

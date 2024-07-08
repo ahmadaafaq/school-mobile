@@ -10,7 +10,7 @@
 import PropTypes from 'prop-types';
 
 import { Dimensions, StyleSheet, View, TouchableOpacity, ImageBackground } from 'react-native';
-import { Card, PaperProvider, IconButton, Text, useTheme } from 'react-native-paper';
+import { Card, PaperProvider, IconButton, Text, useTheme, Button } from 'react-native-paper';
 
 import { SIZES, FONT } from "../../assets/constants";
 
@@ -25,7 +25,9 @@ const TopSection = ({
     bg,
     image,
     setVisible,
-    userRole
+    userRole,
+    multiple,
+    setIsMultiple
 }) => {
 
     const theme = useTheme();
@@ -42,24 +44,18 @@ const TopSection = ({
             borderRadius: 0,
             marginBottom: 60,
             overflow: 'hidden',
-            elevation: 10,
-            // top: 5
-
+            elevation: 10
         },
         titleStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.bold,
             fontSize: WINDOW_HEIGHT / 40,
-            fontWeight: 500,
-            // top: 5
+            fontWeight: 500
         },
         contentStyle: {
             color: theme.colors.whiteSmoke[200],
             fontFamily: FONT.medium,
             fontSize: SIZES.smallMedium
-        },
-        TouchableOpacityStyle: {
-
         },
         imageStyle: {
             width: 80,
@@ -100,6 +96,7 @@ const TopSection = ({
 
                 <View style={{
                     flexDirection: 'row',
+                    flexWrap: 'wrap',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     width: WINDOW_WIDTH - 30,
@@ -156,8 +153,22 @@ const TopSection = ({
                     }}>
                         <Text style={styles.titleStyle}>{title}</Text>
                         <Text style={styles.contentStyle}>Classes  : {classes} </Text>
-                        <Text style={styles.contentStyle}>Subjects : {subjects}</Text>
+                        {/* <Text style={styles.contentStyle}>Subjects : {subjects}</Text> */}
                     </View>
+                    {multiple &&
+                        <Button
+                            mode='contained'
+                            buttonColor={theme.colors.blue[400]}
+                            theme={{ colors: { primary: 'white' } }}
+                            onPress={() => setIsMultiple(true)}
+                            style={{
+                                marginTop: 40,
+                                marginLeft: WINDOW_WIDTH - 280
+                            }}
+                        >
+                            All Children
+                        </Button>
+                    }
                 </View>
             </Card>
 
@@ -166,14 +177,16 @@ const TopSection = ({
 };
 
 TopSection.propTypes = {
-    schoolName: PropTypes.string,
-    title: PropTypes.string,
-    classes: PropTypes.string,
-    subjects: PropTypes.string,
     bg: PropTypes.string,
+    classes: PropTypes.string,
     image: PropTypes.string,
+    multiple: PropTypes.bool,
+    schoolName: PropTypes.string,
+    setIsMultiple: PropTypes.func,
+    subjects: PropTypes.string,
     setVisible: PropTypes.func,
     userRole: PropTypes.string,
+    title: PropTypes.string
 };
 
 export default TopSection;

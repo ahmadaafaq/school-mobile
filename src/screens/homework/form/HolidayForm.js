@@ -95,8 +95,6 @@ const FormComponent = () => {
             <Toast
                 alerting={toastInfo.alerting}
                 message={toastInfo.message}
-                actionText={toastInfo.actionText}
-                actionTextColor={toastInfo.actionTextColor}
                 backgroundColor={toastInfo.backgroundColor}
                 textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
             />

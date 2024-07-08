@@ -7,6 +7,6 @@
 */
 
 import icons from "./icons";
-import { COLORS, FONT, ALIGNMENT, SPACING, SIZES, SHADOWS } from '../../theme/theme';
+import { FONT, ALIGNMENT, SIZES, SHADOWS } from '../../theme/theme';
 
-export { icons, COLORS, FONT, ALIGNMENT, SPACING, SIZES, SHADOWS };
+export { icons, FONT, ALIGNMENT, SIZES, SHADOWS };

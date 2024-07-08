@@ -13,8 +13,17 @@ export const TeacherAPI = {
   /** Get teachers from the database that meets the specified query parameters
    */
   getAll: async (conditionObj = false, page = 0, size = 5, search = false, authInfo, cancel = false) => {
-    const queryParam = conditionObj ? `&${conditionObj.key}=${conditionObj.value}` : '';
+    // Send the data that is used in where condition
+    let queryParam = '';
+    if (conditionObj) {
+      Object.keys(conditionObj).map(key => {
+        queryParam += `&${key}=${conditionObj[key]}`
+      })
+    }
+    // Send the data that is used in listing page search
     const searchParam = search ? `&search=${search}` : '';
+    console.log('queryParam=>', queryParam);
+
     const { data: response } = await api.request({
       url: `/get-teachers?page=${page}&size=${size}${queryParam}${searchParam}`,
       method: "GET",

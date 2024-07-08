@@ -7,20 +7,19 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useColorScheme } from 'react-native';
 import { Provider as StoreProvider } from 'react-redux';
 import { PaperProvider, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 
 import { useFonts } from "expo-font";
-import { Stack, SplashScreen, useLocalSearchParams } from "expo-router";
+import { Stack, SplashScreen } from "expo-router";
 
 import store from "../redux/store";
 
-import { COLORS, FONT, SIZES } from "../assets/constants";
+import { FONT, SIZES } from "../assets/constants";
 import { LightScheme } from "../theme/lightScheme";
 import { DarkScheme } from "../theme/darkScheme";
-import { Utility } from "../utility";
 
 export {
     // Catch any errors thrown by the Layout component
@@ -52,32 +51,18 @@ const RootLayout = () => {
         DMMedium: require("../assets/fonts/DMSans-Medium.ttf"),
         DMRegular: require("../assets/fonts/DMSans-Regular.ttf")
     });
-    const [userRole, setUserRole] = useState();
-    const { getAsyncStorage } = Utility();      //remove them
-
-    // const params = useLocalSearchParams();
-    // const [paperTheme, setPaperTheme] = useState(LightTheme);
     const colorScheme = useColorScheme();
     const paperTheme = colorScheme === 'light' ? LightTheme : DarkTheme;
-
-    useEffect(() => {
-        const getAuthInfo = async () => {
-            const authInfo = await getAsyncStorage("auth");
-            console.log('auth function ', authInfo);
-            if (authInfo?.role) {
-                const role = authInfo?.role == 4 ? 'teacher' : authInfo?.role == 5 ? 'parent' : null;
-                setUserRole(role);
-                console.log('auth function if condition', authInfo.role);
-            }
-        }
-        getAuthInfo();
-    }, []);
 
     // Expo Router uses Error Boundaries to catch errors in the navigation tree
     useEffect(() => {
         if (loaded || error) {
             // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready
-            SplashScreen.hideAsync();
+            try {
+                SplashScreen.hideAsync();
+            } catch (err) {
+                console.warn('Error hiding splash screen:', err);
+            }
         }
     }, [loaded, error]);
 
@@ -85,7 +70,6 @@ const RootLayout = () => {
     if (!loaded && !error) {
         return null;
     }
-    // console.log(userRole, 'userrole in root layout')
 
     // Render the children routes now that all the assets are loaded
     return (

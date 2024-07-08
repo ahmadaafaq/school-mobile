@@ -196,17 +196,14 @@ export const Utility = () => {
         return model.filter(obj => ids.split(',').indexOf(obj.id.toString()) > -1);
     };
 
-    /** Formats an image name by appending a random number and removing special characters.
-     * @param {string} name - The original image name.
-     * @returns {string} - The formatted image name.
+    /** Formats a name by converting it to lowercase, trimming any whitespaces,
+     * adding an underscore and appending a 4-digit random number.
+     * @param {string} name - The original name.
+     * @returns {string} The formatted name.
      */
-    const formatImageName = (name) => {
-        const formattedName = Math.ceil(Math.random() * 100000000) + name
-            .toLowerCase()
-            .trim()
-            .replace(/[!@#$%^&*();:'"`~`'$]/g, "")
-            .replace(/\s+/g, "_");
-        return formattedName;
+    const formatName = (name) => {
+        const randomNum = Math.ceil(Math.random() * 10000);
+        return name.toLowerCase().trim().replace(/ /g, "_") + "_" + randomNum;
     };
 
     /** Gets user initials from the first and last name stored in auth information.
@@ -373,11 +370,9 @@ export const Utility = () => {
         }
     };
 
-    const uploadImg = async (setUploading, capturedImage, folderName, api, schoolName, item) => {
+    const uploadImg = async (setUploading, capturedImage, folderName, api, schoolName, item, name = '') => {
         setUploading(true);
-        let nameArray = capturedImage.split("/");
-        let name = nameArray[nameArray.length - 1];
-        let formattedName = formatImageName(name);
+        let formattedName = formatName(name);
         const manipResult = await ImageManipulator.manipulateAsync(
             capturedImage,
             [{ resize: { width: 400, height: 400 } }],
@@ -425,7 +420,7 @@ export const Utility = () => {
         fetchAndSetSchoolData,
         findById,
         findMultipleById,
-        formatImageName,
+        formatName,
         getInitials,
         getNameAndType,
         getAsyncStorage,

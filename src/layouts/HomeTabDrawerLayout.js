@@ -40,7 +40,7 @@ const DrawerLayout = () => {
                 name="home"
                 options={{
                     drawerLabel: 'Dashboard',
-                    headerTitle: "The Skolar",
+                    headerTitle: "",
                     headerTitleAlign: 'center',
                     headerShadowVisible: false,
                     headerTintColor: theme.colors.yaleBlue[100], // topbar text color

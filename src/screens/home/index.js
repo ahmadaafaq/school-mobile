@@ -9,7 +9,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground, Dimensions } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View, ImageBackground, Image, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { Paragraph, IconButton, useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -22,6 +22,7 @@ import ElevatedListing from './ElevatedListing';
 import LoadingAnimationModal from "../common/LoadingAnimationModal";
 import TopSection from './TopSection';
 
+import { FONT } from '../../theme/theme';
 import { setHolidays } from '../../redux/actions/HolidayAction';
 import { setSchoolStudents } from "../../redux/actions/StudentAction";
 import { setTeachers } from '../../redux/actions/TeacherAction';
@@ -35,9 +36,10 @@ const HomePage = () => {
     const [image, setImage] = useState(null);       //for top section
     const [_uploading, setUploading] = useState(false);      // For modal
     const [visible, setVisible] = useState(false);      // For modal
+    const [dataIndex, setDataIndex] = useState(0);      // for listData index
+    const [isMultiple, setIsMultiple] = useState(true);
 
     const allHolidays = useSelector(state => state.allHolidays);
-    // const { listData, loading } = useSelector(state => userRole === "teacher" ? state.someTeachers : userRole === "parent" ? state.schoolStudents : []);
 
     const theme = useTheme();
     const router = useRouter();
@@ -61,10 +63,11 @@ const HomePage = () => {
     const { listData, loading } = useSelector(selectedState);
     const item = {
         school_id: params.school_id,
-        id: listData?.rows?.[0]?.id
+        id: listData?.rows?.[dataIndex]?.id
     };
-    const name = userRole === 'teacher' ? listData?.rows?.[0]?.teacherName : userRole === 'parent' ? listData?.rows?.[0]?.studentName : null;
-    const className = userRole === 'teacher' ? listData?.rows?.[0]?.classnames : userRole === 'parent' ? listData?.rows?.[0]?.className : null;
+    const name = userRole === 'teacher' ? listData?.rows?.[dataIndex]?.teacherName : userRole === 'parent' ? listData?.rows?.[dataIndex]?.studentName : null;
+    const className = userRole === 'teacher' ? listData?.rows?.[dataIndex]?.classnames : userRole === 'parent' ? listData?.rows?.[dataIndex]?.className : null;
+
     const isClassTeacher = listData?.rows?.[0]?.is_class_teacher?.data[0];
     const awsFolderName = userRole === 'teacher' ? 'teacher' : userRole === 'parent' ? 'student' : null;
 
@@ -110,9 +113,9 @@ const HomePage = () => {
             pathname: `/${userRole}/(attendance)/${userRole === 'teacher' ? 'attendanceListing'
                 : userRole === 'parent' ? 'attendanceCalendar' : ''}`,
             params: {
-                class_id: listData?.rows?.[0]?.class_id,
-                section: listData?.rows?.[0]?.section_id,
-                id: listData?.rows?.[0]?.id
+                class_id: listData?.rows?.[dataIndex]?.class_id,
+                section: listData?.rows?.[dataIndex]?.section_id,
+                id: listData?.rows?.[dataIndex]?.id
             }
         });
     };
@@ -121,8 +124,8 @@ const HomePage = () => {
         router.push({
             pathname: `/${userRole}/(homework)/homeworkListing`,
             params: {
-                class_id: listData?.rows?.[0]?.class_id,
-                section: listData?.rows?.[0]?.section_id,
+                class_id: listData?.rows?.[dataIndex]?.class_id,
+                section: listData?.rows?.[dataIndex]?.section_id,
                 userRole
             }
         });
@@ -147,9 +150,9 @@ const HomePage = () => {
         router.push({
             pathname: `/${userRole}/(timeTable)/timeTableListing`,
             params: {
-                id: listData?.rows?.[0]?.id,
-                class_id: listData?.rows?.[0]?.class_id,
-                section: listData?.rows?.[0]?.section_id,
+                id: listData?.rows?.[dataIndex]?.id,
+                class_id: listData?.rows?.[dataIndex]?.class_id,
+                section: listData?.rows?.[dataIndex]?.section_id,
                 userRole
             }
         })
@@ -163,15 +166,13 @@ const HomePage = () => {
 
     useEffect(() => {
         if (!listData?.rows?.length && params.id) {
-            console.log('inside teacher get paginated data in home screen')
             if (userRole === "teacher") {
-                getPaginatedData(0, 1, setTeachers, API.TeacherAPI, { key: "parent_id", value: params.id });
+                getPaginatedData(0, 1, setTeachers, API.TeacherAPI, { parent_id: params.id });
             } else if (userRole === "parent") {
-                getPaginatedData(0, 1, setSchoolStudents, API.StudentAPI, { key: "parent_id", value: params.id });
+                getPaginatedData(0, 10, setSchoolStudents, API.StudentAPI, { parent_id: params.id });
             }
         }
     }, [getPaginatedData, listData?.rows?.length, params.id, userRole]);
-    console.log(params, listData, 'home me');
 
     const styles = StyleSheet.create({
         container: {
@@ -208,6 +209,93 @@ const HomePage = () => {
         }
     });
 
+    const handleMultipleSwitch = (index) => {
+        setIsMultiple(false);
+        setDataIndex(index);
+    }
+
+    // When Parent has multiple children in same school
+    if (listData?.rows?.length > 1 && userRole === 'parent' && isMultiple) {
+        return (
+            <ImageBackground
+                source={require('../../assets/images/listBG.jpg')}
+                style={styles.background}
+            >
+                <View style={{
+                    flex: 1,
+                    paddingVertical: 20,
+                    flexDirection: 'column',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center'
+                }}>
+                    <View style={{ marginTop: 20 }}>
+                        <Text style={{
+                            color: theme.colors.whiteSmoke[900],
+                            fontFamily: FONT.bold,
+                            fontSize: 18,
+                            fontWeight: 400,
+                            letterSpacing: 0.12,
+                            textAlign: 'center',
+                        }}> Select Child
+                        </Text>
+                    </View>
+                    <View style={{
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-evenly',
+                        gap: 10,
+                        width: '90%',
+                        height: '60%',
+                    }}>
+                        {listData?.rows?.map((stud, index) => (
+                            <TouchableOpacity key={stud.id} style={{
+                                width: '40%',
+                                height: '40%',
+                                alignItems: 'center',
+                            }}
+                                onPress={() => handleMultipleSwitch(index)}
+                            >
+                                <View style={{
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    width: 120,
+                                    height: 120,
+                                    borderWidth: 4,
+                                    borderColor: theme.colors.blue[400],
+                                    borderRadius: 50,
+                                    overflow: 'hidden'
+                                }}>
+                                    <Image
+                                        source={{ uri: stud.image_src }}  // Correctly use stud.image_src
+                                        style={{
+                                            flex: 1,
+                                            width: '100%',
+                                            resizeMode: 'cover',
+                                            borderRadius: 30
+                                        }}
+                                    />
+                                </View>
+                                <View style={{ marginTop: 20 }}>
+                                    <Text style={{
+                                        color: theme.colors.whiteSmoke[900],
+                                        fontFamily: FONT.bold,
+                                        fontSize: 16,
+                                        fontWeight: 400,
+                                        letterSpacing: 0.12,
+                                        textAlign: 'center',
+                                    }}>
+                                        {stud.studentName}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+            </ImageBackground>
+        )
+    }
+
+    console.log(isClassTeacher, userRole, dataIndex, listData?.rows?.[dataIndex]?.subjects, 'role')
     return (
         <ImageBackground
             source={require('../../assets/images/listBG.jpg')}
@@ -216,16 +304,17 @@ const HomePage = () => {
             <SafeAreaView style={styles.container}>
                 <StatusBar backgroundColor={theme.colors.indigo[600]} />
                 <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1 }}>
-                    {/* <Search /> */}
 
                     <TopSection schoolName={params.school}
                         title={capitalizeAlphabet(name)}
                         classes={className}
-                        subjects={listData?.rows?.[0]?.subjects}
+                        subjects={listData?.rows?.[dataIndex]?.subjects}
                         bg={theme.colors.blue[600]}
-                        image={image || listData?.rows?.[0]?.image_src}
+                        image={image || listData?.rows?.[dataIndex]?.image_src}
                         setVisible={setVisible}
                         userRole={userRole}
+                        multiple={listData?.rows?.length > 1}
+                        setIsMultiple={setIsMultiple}
                     />
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
@@ -305,7 +394,7 @@ const HomePage = () => {
                                                     <IconButton
                                                         icon="upload"
                                                         size={35}
-                                                        onPress={() => uploadImg(setUploading, image, awsFolderName, API.CommonAPI, params?.school, item)}
+                                                        onPress={() => uploadImg(setUploading, image, awsFolderName, API.CommonAPI, params?.school, item, name)}
                                                     />
                                                     <Paragraph style={{ paddingLeft: 11 }}>Upload</Paragraph>
                                                 </View>

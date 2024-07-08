@@ -40,11 +40,11 @@ const HomeworkListing = () => {
     const [showSectionModal, setShowSectionModal] = useState(false);
     const [showSubjectModal, setShowSubjectModal] = useState(false);
 
+    const allSubjects = useSelector(state => state.allSubjects);
     const schoolClasses = useSelector(state => state.schoolClasses);
     const schoolSections = useSelector(state => state.schoolSections);
     const schoolSubjects = useSelector(state => state.schoolSubjects);
     const toastInfo = useSelector(state => state.toastInfo);
-    const allSubjects = useSelector(state => state.allSubjects);
     const homework = useSelector(state => state.teacherHomework);
     const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
 
@@ -65,28 +65,19 @@ const HomeworkListing = () => {
             setMenuInAsyncStorage();
         }, [])
     );
-    console.log(params, params.userRole, 'params in homework')
 
     // to fetch students based on selected class & section from dropdown
     useEffect(() => {
         if (params.userRole === 'teacher') {
             if (!classData.class_id && !sectionData.section_id && !subjectData.id) {
-                console.log('ander aaya')
                 toastAndNavigate(dispatch, true, "Please Select Class, Section and Subject From the Dropdown", theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
             }
             else if (classData.class_id && sectionData.section_id && subjectData.id) {
-                console.log('classData and Sectiondata')
                 getPaginatedData(0, 10, setTeacherHomeworks, API.HomeworkAPI, { class_id: classData.class_id, section: sectionData.section_id, subjectId: subjectData.id });
             }
         }
-        console.log('outside if classData and Sectiondata', classData, sectionData)
     }, [classData.class_id, sectionData.section_id, subjectData.id]);
 
-    useEffect(() => {
-        if (!homework?.listData?.length) {
-            getPaginatedData(0, 100, setTeacherHomeworks, API.HomeworkAPI, params.userRole === 'parent' ? { class_id: params.class_id, section: params.section } : params.userRole === 'teacher' ? null : null);
-        }
-    }, [homework?.listData?.length]);
 
     useEffect(() => {
         if (params.userRole === 'teacher') {
@@ -199,8 +190,6 @@ const HomeworkListing = () => {
                 <Toast
                     alerting={toastInfo.alerting}
                     message={toastInfo.message}
-                    actionText={toastInfo.actionText}
-                    actionTextColor={toastInfo.actionTextColor}
                     backgroundColor={toastInfo.backgroundColor}
                     textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
                 />

@@ -14,7 +14,7 @@ import { Dimensions, View, Text, FlatList, SafeAreaView, ScrollView, StyleSheet 
 import { useTheme } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { ALIGNMENT, COLORS, FONT, SIZES } from "../../assets/constants";
+import { ALIGNMENT, FONT, SIZES } from "../../assets/constants";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 
@@ -67,7 +67,7 @@ const ElevatedListing = ({ data }) => {
             width: WINDOW_WIDTH / 1.25,
             marginBottom: 14,
             marginLeft: 12,
-            borderColor: COLORS.white[700],
+            borderColor: theme.colors.white[700],
             flexDirection: 'row',
             alignSelf: 'flex-start',
             alignItems: 'center'
