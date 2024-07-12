@@ -110,7 +110,6 @@ export const Utility = () => {
             let combinedKeys = `${obj[key1]}+${obj[key2]}`;
             uniqueDataArray.add(key3 ? `${combinedKeys}+${obj[key3]}` : combinedKeys);
         });
-        console.log(dataArray, key1, key2, key3, 'unique function')
         // Convert the Set back to an array of unique objects
         return Array.from(uniqueDataArray).map(compoundKey => {
             const [id, name, sub] = compoundKey.split('+');
@@ -150,7 +149,6 @@ export const Utility = () => {
     const fetchAndSetSchoolData = (dispatch, setClassesAction = false, setSectionsAction = false, setClassData = false, api = null) => {
         api.getSchoolClasses()
             .then(classData => {
-                console.log(classData, 'classData')
                 if (classData.status === 'Success') {
                     if (setClassesAction) {
                         const uniqueClassDataArray = createUniqueDataArray(classData.data, 'class_id', 'class_name');

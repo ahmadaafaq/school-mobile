@@ -52,7 +52,8 @@ const RootLayout = () => {
         DMRegular: require("../assets/fonts/DMSans-Regular.ttf")
     });
     const colorScheme = useColorScheme();
-    const paperTheme = colorScheme === 'light' ? LightTheme : DarkTheme;
+    const paperTheme = colorScheme === 'dark' ? LightTheme : DarkTheme;
+    console.log(colorScheme, 'theme')
 
     // Expo Router uses Error Boundaries to catch errors in the navigation tree
     useEffect(() => {

@@ -41,6 +41,9 @@ const ListingComponent = ({ class_id, section_id, api, page, setPage }) => {
             console.log('scroll to top')
             flatListRef.current.scrollToOffset({ offset: 0, animated: true });
         }
+         else if (class_id && section_id && !listData?.rows?.length) {
+            setStudentData([]);
+        }
     }, [listData?.rows]);
 
     useEffect(() => {
@@ -54,7 +57,7 @@ const ListingComponent = ({ class_id, section_id, api, page, setPage }) => {
         }
     }, [class_id, section_id, page]);
 
-    console.log("new listdata", studentData.length, page, listData?.count)
+    console.log("new listdata", studentData, page, listData?.rows)
 
     const styles = StyleSheet.create({
         container: {

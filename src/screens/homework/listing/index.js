@@ -7,8 +7,6 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import PropTypes from 'prop-types';
-
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -39,13 +37,13 @@ const HomeworkListing = () => {
     const [showClassModal, setShowClassModal] = useState(false);      //for modal visibility
     const [showSectionModal, setShowSectionModal] = useState(false);
     const [showSubjectModal, setShowSubjectModal] = useState(false);
+    const [page, setPage] = useState(0);        //for load more page
 
     const allSubjects = useSelector(state => state.allSubjects);
     const schoolClasses = useSelector(state => state.schoolClasses);
     const schoolSections = useSelector(state => state.schoolSections);
     const schoolSubjects = useSelector(state => state.schoolSubjects);
     const toastInfo = useSelector(state => state.toastInfo);
-    const homework = useSelector(state => state.teacherHomework);
     const { classData, sectionData, subjectData } = useSelector(state => state.teacherHomework);
 
     const dispatch = useDispatch();
@@ -96,29 +94,19 @@ const HomeworkListing = () => {
     }, [schoolSections?.listData?.length]);
 
     useEffect(() => {
-        // if (Object.values(sectionData) && Object.values(subjectData)) {
-        //     dispatch(setHomeworkSectionData({}));
-        //     dispatch(setHomeworkSubjectData({}));
-        //     console.log(pathname, 'pathname')
-        // }
         const getAndSetSections = () => {
             const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
             dispatch(setSchoolSections(selectedSections));
-            // console.log('getandsetsections called listing', selectedSections, classSections);
         };
         getAndSetSections();
     }, [classData?.class_id, dbClassObj?.length]);
 
     useEffect(() => {
-        // if (Object.values(sectionData)) {
-        //     dispatch(setHomeworkSubjectData({}));
-        // }
         const getAndSetSubjects = () => {
             const sectionSubjects = dbClassObj?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
             const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
             dispatch(setSchoolSubjects(selectedSubjects));
-            console.log('getandsetsubjects called', selectedSubjects, sectionSubjects);
         };
         getAndSetSubjects();
     }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, dbClassObj.length]);
@@ -139,6 +127,15 @@ const HomeworkListing = () => {
             }));
         }
     };
+
+    // to fill default data in modal
+    useEffect(() => {
+        if (schoolClasses?.listData?.length && schoolSections?.listData?.length) {
+            handlePress(schoolClasses?.listData[0], "class_name", setHomeworkClassData, "class_id", true);
+            handlePress(schoolSections?.listData[0], "section_name", setHomeworkSectionData, "section_id", true);
+            handlePress(schoolSubjects?.listData[0], "name", setHomeworkSubjectData, "id", true);
+        }
+    }, [schoolClasses?.listData?.length, schoolSections?.listData?.length, schoolSubjects?.listData?.length])
 
     const styles = StyleSheet.create({
         container: {
@@ -194,7 +191,14 @@ const HomeworkListing = () => {
                     textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
                 />
 
-                <ListingComponent userRole={params.userRole} />
+                <ListingComponent
+                    class_id={classData.class_id}
+                    section_id={sectionData.section_id}
+                    subject_id={subjectData.id}
+                    api={API}
+                    page={page}
+                    setPage={setPage}
+                    userRole={params.userRole} />
             </ScrollView>
 
             {params.userRole === 'teacher' && showClassModal && (
@@ -254,13 +258,9 @@ const HomeworkListing = () => {
                     </CustomModal>
                 </View>
             )}
-            {homework?.loading ? <LoadingAnimationModal /> : null}
         </SafeAreaView>
     );
 };
-
-HomeworkListing.propTypes = {
-    userRole: PropTypes.string
-};
+// {loading ? <LoadingAnimationModal /> : null}
 
 export default HomeworkListing;

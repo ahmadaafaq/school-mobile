@@ -48,9 +48,9 @@ const ListingComponent = () => {
             color: theme.colors.brightBlue[500],
             fontSize: SIZES.mediumLarge,
             fontFamily: FONT.medium,
-            marginBottom: 20,
+            margin: 20,
             letterSpacing: 0.12,
-            fontWeight: '400'
+            fontWeight: '600'
         }
     });
 

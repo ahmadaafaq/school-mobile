@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "The-Skolar",
-    "slug": "The-Skolar",
+    "name": "the-skolar",
+    "slug": "the-skolar",
     "scheme": "acme",
     "splash": {
       "image": "src/assets/images/splash.png",
@@ -22,11 +22,23 @@
         "origin": false
       },
       "eas": {
-        "projectId": "9bb4c503-d9f5-45dc-afe4-78c1ae396434"
+        "projectId": "12310fe5-bccd-4816-9f2b-be383644567b"
       }
     },
+    "owner": "codevamp",
+    "updates": {
+      "url": "https://u.expo.dev/12310fe5-bccd-4816-9f2b-be383644567b"
+    },
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "userInterfaceStyle": "automatic"
+    },
     "android": {
-      "package": "com.aafaqahmad.schoolcrmmobile"
+      "package": "com.codevamp.theskolar",
+      "userInterfaceStyle": "automatic"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

@@ -23,9 +23,11 @@ const ElevatedListing = ({ data }) => {
 
     //optimization props for better performance
     const flatListOptimizationProps = {
+        initialNumToRender: 0,
         maxToRenderPerBatch: 1,
+        removeClippedSubviews: true,
         scrollEventThrottle: 16,
-        windowSize: 2,
+        windowSize: 10,
         keyExtractor: useCallback(e => e.id, []),
         getItemLayout: useCallback(
             (_, index) => ({
@@ -43,17 +45,17 @@ const ElevatedListing = ({ data }) => {
             marginVertical: 20,
             marginHorizontal: 25,
             paddingVertical: 10,
-            backgroundColor: theme.colors.indigo[100],
+            backgroundColor: theme.colors.indigo[800],
             borderRadius: 20
         },
         nameText: {
-            color: theme.colors.yaleBlue[500],
-            fontSize: SIZES.mediumLarge,
+            color: theme.colors.brightBlue[400],
+            fontSize: SIZES.large,
             fontFamily: FONT.bold,
-            paddingVertical: 6,
-            paddingLeft: 8,
+            fontWeight: FONT.boldStyle,
             letterSpacing: 0.12,
-            fontWeight: '700',
+            paddingVertical: 6,
+            paddingLeft: 10,
             textTransform: 'capitalize'
         },
         lineContainer: {
@@ -66,8 +68,8 @@ const ElevatedListing = ({ data }) => {
             height: 56,
             width: WINDOW_WIDTH / 1.25,
             marginBottom: 14,
-            marginLeft: 12,
-            borderColor: theme.colors.white[700],
+            marginLeft: 15,
+            borderColor: theme.colors.white[900],
             flexDirection: 'row',
             alignSelf: 'flex-start',
             alignItems: 'center'
@@ -76,20 +78,20 @@ const ElevatedListing = ({ data }) => {
             height: 50,
             width: 50,
             borderRadius: 12,
-            backgroundColor: theme.colors.indigo[400],
+            backgroundColor: theme.colors.indigo[600],
             alignItems: 'center',
             justifyContent: 'center'
         },
         subContainer: {
-            width: '73%',
+            width: '82%',
             justifyContent: 'space-around',
-            marginLeft: 15
+            marginLeft: 10
         },
         serviceName: {
-            color: theme.colors.indigo[400],
+            color: theme.colors.white[100],
             fontFamily: FONT.bold,
             fontSize: 14,
-            letterSpacing: 0.015,
+            letterSpacing: 0.15,
             textTransform: 'capitalize'
         }
     });
@@ -112,7 +114,7 @@ const ElevatedListing = ({ data }) => {
                             return (
                                 <View style={styles.listItemContainer}>
                                     <View style={[styles.iconContainer]}>
-                                        <FontAwesome5 name='calendar-alt' size={16} color={theme.colors.whiteSmoke[500]} />
+                                        <FontAwesome5 name='calendar-alt' size={22} color={theme.colors.white[500]} />
                                     </View>
 
                                     <View style={styles.subContainer}>
@@ -128,7 +130,9 @@ const ElevatedListing = ({ data }) => {
                 </ScrollView>
             ) : (
                 <View>
-                    <Text style={styles.nameText}>No Data Found</Text>
+                    <Text style={[styles.nameText,
+                    { textAlign: 'center' }
+                    ]}>No Data Found</Text>
                 </View>
             )}
         </SafeAreaView>

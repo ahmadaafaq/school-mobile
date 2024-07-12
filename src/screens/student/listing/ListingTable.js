@@ -179,7 +179,7 @@ export const ListingTable = ({ item }) => {
             setPreviewVisible(true);
         }
     };
-    console.log(capturedImage, params.school, item.studentName, 'captured image')
+    // console.log(capturedImage, params.school, item.studentName, 'captured image')
 
 
     const CameraPreview = ({ photo }) => {
