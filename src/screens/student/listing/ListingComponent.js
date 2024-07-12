@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /**
  * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
  *
@@ -6,88 +7,106 @@
  * restrictions set forth in your license agreement with School CRM.
 */
 
-import { useCallback, useRef } from 'react';
-import { FlatList, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import PropTypes from 'prop-types';
+
+import { useRef, useEffect, useState, memo } from 'react';
+import { FlatList, Text, SafeAreaView, StyleSheet, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
-import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
+import { Chip, MD2Colors, MD3Colors, useTheme, Button } from 'react-native-paper';
+import { useLocalSearchParams } from 'expo-router';
 
-import { ListingTable, WINDOW_WIDTH } from './ListingTable';
+import { ListingTable } from './ListingTable';
 
-import { FONT, SIZES } from "../../../assets/constants";
+import { useCommon } from "../../../hooks/common";
+import { setSchoolStudents } from "../../../redux/actions/StudentAction";
 
-
-const ListingComponent = () => {
-    // const dispatch = useDispatch();
+const ListingComponent = ({ class_id, section_id, api, page, setPage }) => {
     const theme = useTheme();
     const flatListRef = useRef(null);
+    const params = useLocalSearchParams();
+    const { getPaginatedData } = useCommon();
+    const [studentData, setStudentData] = useState([]);
     const { listData } = useSelector(state => state.schoolStudents);
-    console.log("listdata",listData)
+    let SIZE = 10;
 
-    const flatListOptimizationProps = {
-        initialNumToRender: 0,
-        maxToRenderPerBatch: 1,
-        removeClippedSubviews: true,
-        scrollEventThrottle: 16,
-        windowSize: 10,
-        keyExtractor: useCallback(e => e.id, []),
-        getItemLayout: useCallback(
-            (_, index) => ({
-                index,
-                length: WINDOW_WIDTH,
-                offset: index * WINDOW_WIDTH
-            }),
-            []
-        )
-    };
+    useEffect(() => {
+        console.log("USE EFFECT");
+        if (page > 0 && listData?.rows?.length) {
+            setStudentData([
+                ...studentData,
+                ...listData.rows
+            ]);
+        } else if (listData?.rows?.length) {
+            setStudentData(listData.rows);
+            console.log('scroll to top')
+            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
+         else if (class_id && section_id && !listData?.rows?.length) {
+            setStudentData([]);
+        }
+    }, [listData?.rows]);
+
+    useEffect(() => {
+        if (class_id && section_id) {
+            console.log('fetch CLASS students', page);
+            getPaginatedData(page, SIZE, setSchoolStudents, api.StudentAPI,
+                { class_id: class_id, section: section_id, school_id: params.school_id }, false);
+        } else {
+            console.log('fetch ALL students', page)
+            getPaginatedData(page, SIZE, setSchoolStudents, api.StudentAPI, {}, false);
+        }
+    }, [class_id, section_id, page]);
+
+    console.log("new listdata", studentData, page, listData?.rows)
 
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             alignItems: "center",
-            justifyContent: "center",
-        },
-        touchableOpacityStyles: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '50%',
-            height: 50,
-            borderRadius: 18,
-            marginBottom: 15,
-            backgroundColor: theme.colors.brightBlue[500]
-        },
-        touchableOpacityText: {
-            color: theme.colors.white[500],
-            fontFamily: FONT.regular,
-            fontSize: 15,
-            letterSpacing: 0.12,
-            fontWeight: '400'
-        },
-        headerText: {
-            color: theme.colors.brightBlue[500],
-            fontSize: SIZES.mediumLarge,
-            fontFamily: FONT.medium,
-            marginBottom: 20,
-            letterSpacing: 0.12,
-            fontWeight: '400'
+            justifyContent: "center"
         }
     });
 
     return (
         <SafeAreaView style={styles.container}>
-            <Chip icon="school" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }} selectedColor={MD3Colors.error70} type="flat">
-                <Text style={{color: MD2Colors.black}}>{listData?.count || 0} Students Found</Text>
+            <Chip icon="school" style={{ backgroundColor: MD2Colors.grey400, marginBottom: 10 }}
+                selectedColor={MD3Colors.error70} type="flat">
+                <Text style={{ color: MD2Colors.black }}>{listData?.count || studentData?.length} Students Found</Text>
             </Chip>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} ref={flatListRef}>
-                <FlatList
-                    data={listData?.rows}
-                    renderItem={({ item, index }) => <ListingTable item={item} index={index} theme={theme} flatListRef={flatListRef} />}
-                    pagingEnabled={true}
-                    keyExtractor={(item) => item.id.toString()}
-                    {...flatListOptimizationProps}
-                />
-            </ScrollView>
+            <FlatList
+                ref={flatListRef}
+                data={studentData}
+                renderItem={({ item }) => <ListingTable item={item} />}
+                extraData={class_id}
+                keyExtractor={(item) => item.id.toString()}
+                scrollsToTop={!page}
+                scrollToIndex
+            />
+            {/* {!isFetchingNextPage ? */}
+            {listData?.count && listData?.count !== studentData?.length &&
+                <Button
+                    mode='outlined'
+                    buttonColor='#72A0C1'
+                    theme={{ colors: { primary: 'white' } }}
+                    onPress={() => setPage(page + 1)}
+                    style={{ marginBottom: 20 }}
+                >
+                    Load More
+                </Button>
+            }
+            {/* :
+                <ActivityIndicator />
+            } */}
         </SafeAreaView>
     );
 };
 
-export default ListingComponent;
+ListingComponent.propTypes = {
+    class_id: PropTypes.any,
+    section_id: PropTypes.any,
+    api: PropTypes.any,
+    page: PropTypes.number,
+    setPage: PropTypes.func
+};
+
+export default memo(ListingComponent);

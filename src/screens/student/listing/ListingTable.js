@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from "react-native";
-import { ActivityIndicator, IconButton, MD2Colors, MD3Colors } from 'react-native-paper';
+import { ActivityIndicator, Button, IconButton, MD2Colors, MD3Colors } from 'react-native-paper';
 import * as ImagePicker from "expo-image-picker";
 
 import API from "../../../apis";
@@ -142,7 +142,7 @@ const styles2 = StyleSheet.create({
     },
 });
 
-export const ListingTable = ({ item, theme }) => {
+export const ListingTable = ({ item }) => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [previewVisible, setPreviewVisible] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -179,7 +179,7 @@ export const ListingTable = ({ item, theme }) => {
             setPreviewVisible(true);
         }
     };
-    console.log(capturedImage, params.school, 'captured image')
+    // console.log(capturedImage, params.school, item.studentName, 'captured image')
 
 
     const CameraPreview = ({ photo }) => {
@@ -204,82 +204,53 @@ export const ListingTable = ({ item, theme }) => {
 
     return (
         <SafeAreaView style={{
-            // display: "flex",
-            flexDirection: 'row',
-            // justifyContent: 'space-around',
-            // height: WINDOW_HEIGHT / 5.5,
-            gap: 10,
-            width: WINDOW_WIDTH - 25,
             borderWidth: 1,
-            borderColor: 'grey',
-            borderRadius: 5,
-            margin: 10,
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingLeft: 10,
-            backgroundColor: MD2Colors.blue100,
+            marginVertical: 10,
+            borderColor: MD2Colors.blue500,
+            borderRadius: 5
         }}>
-            <View style={{ display: 'flex', justifyContent: "center" }}>
-                <View style={styles.plusBox}>
-                    {(previewVisible && capturedImage) || item.image_src ? (
-                        <CameraPreview photo={capturedImage || item?.image_src} />
-                    ) : (
-                        <TouchableOpacity style={styles.plusButton} onPress={pickImageCamera}>
-                            <IconButton
-                                icon="plus-circle"
-                                iconColor={MD3Colors.error30}
-                                size={50}
-                            />
-                        </TouchableOpacity>
-                    )}
-                </View>
-                {previewVisible &&
-                    <View style={{ flexDirection: 'row' }}>
-                        {!uploading ? (
-                            <>
-                                <TouchableOpacity onPress={() => {
-                                    setCapturedImage(null);
-                                    setPreviewVisible(false);
-                                    pickImageCamera();
-                                }}>
-                                    <IconButton
-                                        icon="camera"
-                                        iconColor={MD3Colors.error30}
-                                        size={25}
-                                    />
-                                    <Text style={{ marginLeft: 5 }}>Retake</Text>
-                                </TouchableOpacity>
-                                {capturedImage &&
-                                    <TouchableOpacity onPress={() => uploadImg(setUploading, capturedImage, 'student', API.CommonAPI, params.school, item)}>
-                                        <IconButton
-                                            icon="upload"
-                                            iconColor={MD3Colors.error30}
-                                            size={25}
-                                        />
-                                        <Text style={{ marginLeft: 5 }}>Upload</Text>
-                                    </TouchableOpacity>}
-                            </>) : (
-                            <ActivityIndicator size={'small'} animating={true} color={MD3Colors.primary100} />
-                        )}
-                    </View>}
-            </View>
-            <View style={{
-                width: '50%', borderRadius: 5,
+            <SafeAreaView style={{
+                flexDirection: 'row',
+                gap: 10,
+                width: WINDOW_WIDTH - 10,
+                borderColor: 'grey',
+                paddingTop: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+                backgroundColor: MD2Colors.blue300,
             }}>
-                <View style={styles2.container}>
-                    <View style={styles2.row}>
-                        <Text style={styles2.titleText}>Name    : </Text>
-                        <Text style={styles2.titleLabelText}>   {normalizeSpacing(item?.studentName)}</Text>
+                <View style={{ display: 'flex', justifyContent: "center" }}>
+                    <View style={styles.plusBox}>
+                        {(previewVisible && capturedImage) || item.image_src ? (
+                            <CameraPreview photo={capturedImage || item?.image_src} />
+                        ) : (
+                            <TouchableOpacity style={styles.plusButton} onPress={pickImageCamera}>
+                                <IconButton
+                                    icon="plus-circle"
+                                    iconColor={MD3Colors.error30}
+                                    size={50}
+                                />
+                            </TouchableOpacity>
+                        )}
                     </View>
-                    <View style={styles2.row}>
-                        <Text style={styles2.titleText}>Class   : </Text>
-                        <Text style={styles2.titleLabelText}>   {normalizeSpacing(item?.className)}</Text>
-                    </View>
-                    <View style={styles2.row}>
-                        <Text style={styles2.titleText}>Father's Name   :</Text>
-                        <Text style={styles2.titleLabelText}>    {normalizeSpacing(item?.father_name)}</Text>
-                    </View>
-                    {/* Uncomment if needed
+                </View>
+                <View style={{
+                    width: '50%', borderRadius: 5,
+                }}>
+                    <View style={styles2.container}>
+                        <View style={styles2.row}>
+                            <Text style={styles2.titleText}>Name    : </Text>
+                            <Text style={styles2.titleLabelText}>   {normalizeSpacing(item?.studentName)}</Text>
+                        </View>
+                        <View style={styles2.row}>
+                            <Text style={styles2.titleText}>Class     : </Text>
+                            <Text style={styles2.titleLabelText}>   {normalizeSpacing(item?.className)}</Text>
+                        </View>
+                        <View style={styles2.row}>
+                            <Text style={styles2.titleText}>Father   :</Text>
+                            <Text style={styles2.titleLabelText}>    {normalizeSpacing(item?.father_name)}</Text>
+                        </View>
+                        {/* Uncomment if needed
             <View style={styles.row}>
                 <Text style={styles.titleText}>Gender:</Text>
                 <Text style={styles.titleLabelText}>{normalizeSpacing(item?.gender)}</Text>
@@ -289,8 +260,47 @@ export const ListingTable = ({ item, theme }) => {
                 <Text style={styles.titleLabelText}>{normalizeSpacing(item?.blood_group)}</Text>
             </View>
             */}
+                    </View>
                 </View>
-            </View>
+            </SafeAreaView>
+            {previewVisible &&
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: capturedImage ? 'space-around' : 'center',
+                    backgroundColor: MD2Colors.blue200,
+                    width: WINDOW_WIDTH - 10,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingLeft: 10
+                }}
+                >
+                    {!uploading ? (
+                        <>
+                            <Button
+                                mode='outlined'
+                                buttonColor={MD2Colors.blue400}
+                                theme={{ colors: { primary: 'white' } }}
+                                style={{ height: 45, width: 95 }}
+                                onPress={() => {
+                                    setCapturedImage(null);
+                                    setPreviewVisible(false);
+                                    pickImageCamera();
+                                }}>
+                                Retake
+                            </Button>
+                            {capturedImage &&
+                                <Button
+                                    mode='outlined'
+                                    buttonColor='purple'
+                                    theme={{ colors: { primary: 'white' } }}
+                                    onPress={() => uploadImg(setUploading, capturedImage, 'student', API.CommonAPI, params.school, item, item?.studentName)}>
+                                    Upload
+                                </Button>
+                            }
+                        </>) : (
+                        <ActivityIndicator size={'small'} animating={true} color={MD3Colors.primary100} />
+                    )}
+                </View>}
         </SafeAreaView>
     );
 };

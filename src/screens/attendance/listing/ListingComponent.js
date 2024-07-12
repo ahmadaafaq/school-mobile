@@ -25,11 +25,11 @@ const ListingComponent = ({ class_id, section_id }) => {
     const [studentAttendance, setStudentAttendance] = useState([]);
     const toastInfo = useSelector(state => state.toastInfo);
     const { listData } = useSelector(state => state.schoolStudents);
+
     const dispatch = useDispatch();
+    const flatListRef = useRef(null);
     const router = useRouter();
     const theme = useTheme();
-    const flatListRef = useRef(null);
-
     const { toastAndNavigate } = Utility();
 
     listData?.rows?.forEach(obj => {
@@ -138,8 +138,6 @@ const ListingComponent = ({ class_id, section_id }) => {
             <Toast
                 alerting={toastInfo.alerting}
                 message={toastInfo.message}
-                actionText={toastInfo.actionText}
-                actionTextColor={toastInfo.actionTextColor}
                 backgroundColor={toastInfo.backgroundColor}
                 textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
             />

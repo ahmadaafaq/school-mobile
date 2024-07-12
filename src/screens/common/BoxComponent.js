@@ -8,14 +8,11 @@
 
 import PropTypes from 'prop-types';
 
-import { Dimensions, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { FONT } from "../../assets/constants";
-
-const WINDOW_WIDTH = Dimensions.get("window").width;
-const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
     const theme = useTheme();
@@ -24,8 +21,8 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
         container: {
             justifyContent: 'center',
             alignItems: 'center',
-            width: WINDOW_WIDTH / 5.2,
-            height: WINDOW_HEIGHT / 10,
+            width: 65,
+            height: 65,
             marginBottom: mb,
             padding: 10,
             backgroundColor: bg,
@@ -37,10 +34,10 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
             alignItems: 'center'
         },
         titleStyle: {
-            color: theme.colors.whiteSmoke[900],
+            color: theme.colors.white[100],
             fontFamily: FONT.bold,
-            fontSize: 13,
-            fontWeight: 400,
+            fontSize: 14,
+            fontWeight: '600',
             letterSpacing: 0.12
         }
     });
@@ -53,7 +50,7 @@ const BoxComponent = ({ title, bg, mb, iconName, handlePress = null }) => {
                 mode=''
                 style={styles.container}
             >
-                <View><FontAwesome5 name={iconName} size={35} color={theme.colors.whiteSmoke[100]} /></View>
+                <View><FontAwesome5 name={iconName} size={30} color={theme.colors.white[900]} /></View>
             </Card>
             <View><Text style={styles.titleStyle}>{title}</Text></View>
         </TouchableOpacity>

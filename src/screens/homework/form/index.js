@@ -68,7 +68,7 @@ const HomeworkForm = () => {
             const sectionSubjects = classsData?.filter(obj => obj.class_id === classData?.class_id && obj.section_id === sectionData?.section_id);
             const selectedSubjects = sectionSubjects ? findMultipleById(sectionSubjects[0]?.subject_ids, allSubjects?.listData) : [];
             dispatch(setSchoolSubjects(selectedSubjects));
-            console.log('getandsetsubjects called form', selectedSubjects, sectionSubjects);
+            // console.log('getandsetsubjects called form', selectedSubjects, sectionSubjects);
         };
         getAndSetSubjects();
     }, [classData?.class_id, sectionData?.section_id, allSubjects?.listData?.length, classsData.length]);

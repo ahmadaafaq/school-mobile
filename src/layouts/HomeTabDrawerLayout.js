@@ -40,11 +40,11 @@ const DrawerLayout = () => {
                 name="home"
                 options={{
                     drawerLabel: 'Dashboard',
-                    headerTitle: "The Skolar",
+                    headerTitle: "",
                     headerTitleAlign: 'center',
                     headerShadowVisible: false,
-                    headerTintColor: theme.colors.yaleBlue[100], // topbar text color
-                    headerStyle: { backgroundColor: theme.colors.blue[600], borderBottomWidth: 0 }, //topbar background color
+                    headerTintColor: theme.colors.white[900], // topbar text color
+                    headerStyle: { backgroundColor: theme.colors.blue[600], borderBottomWidth: 0, height: 60 }, //topbar background color
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.xmLarge },
                     drawerStyle: { fontSize: 12, backgroundColor: theme.colors.blue[100] }, // drawer background color
                     drawerIcon: ({ color }) => <Ionicons name="home" size={18} color={color} />,
@@ -53,7 +53,7 @@ const DrawerLayout = () => {
                         <Ionicons
                             name="log-out-outline"
                             size={24}
-                            color={theme.colors.yaleBlue[100]}
+                            color={theme.colors.white[900]}
                             style={{ paddingRight: 10 }}
                             onPress={handleLogoutPress}
                         />
@@ -77,7 +77,7 @@ const DrawerLayout = () => {
                     title: "Students",
                     headerShadowVisible: false,
                     headerTintColor: theme.colors.yaleBlue[500],
-                    headerStyle: { backgroundColor: theme.colors.grayishWhite[500], borderBottomWidth: 0 },
+                    headerStyle: { backgroundColor: theme.colors.grayishWhite[400], borderBottomWidth: 0 },
                     headerTitleStyle: { fontWeight: '600', fontSize: SIZES.large },
                     drawerStyle: { fontSize: 12, backgroundColor: theme.colors.whiteSnow[500] },
                     drawerIcon: ({ color }) => <FontAwesome5 name="user-tie" size={18} color={color} />

@@ -22,7 +22,7 @@ import { setSchoolStudents } from "../../../redux/actions/StudentAction";
 import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
-const StudentListing = () => {
+const AttendanceListing = () => {
     const schoolStudents = useSelector(state => state.schoolStudents);
 
     const theme = useTheme();
@@ -43,9 +43,8 @@ const StudentListing = () => {
     );
 
     useEffect(() => {
-        console.log('params', params);
         getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI, { class_id: params.class_id, section: params.section });
-    }, []);
+    }, [params.class_id]);
 
 
     const styles = StyleSheet.create({
@@ -72,4 +71,4 @@ const StudentListing = () => {
     )
 };
 
-export default StudentListing;
+export default AttendanceListing;

@@ -10,9 +10,10 @@ import PropTypes from 'prop-types';
 
 import { useCallback, useEffect, useMemo } from 'react';
 import { Dimensions, View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 
-import { COLORS, FONT, SIZES } from '../../assets/constants';
+import { FONT, SIZES } from '../../assets/constants';
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
@@ -20,6 +21,7 @@ const CustomModal = ({
     children, heightNumber, headerText,
     showModal, setShowModal = null
 }) => {
+    const theme = useTheme();
     const translateY = useMemo(() => new Animated.Value(150), []);
 
     const animatedStyle = {
@@ -52,8 +54,6 @@ const CustomModal = ({
         }
     }, [showModal, showContainer, hideContainer]);
 
-    console.log(heightNumber)
-
     const styles = StyleSheet.create({
         container: {
             backgroundColor: 'rgba(0, 0, 0, 0.5)'
@@ -62,7 +62,7 @@ const CustomModal = ({
             height: WINDOW_HEIGHT / heightNumber
         },
         iconContainer: {
-            backgroundColor: COLORS.black[600],
+            backgroundColor: theme.colors.white[100],
             left: '45%',
             bottom: '20%',
             textAlign: 'center',
@@ -73,29 +73,20 @@ const CustomModal = ({
             paddingHorizontal: 6.5
         },
         subContainer2: {
-            backgroundColor: COLORS.whiteSnow,
+            backgroundColor: theme.colors.white[900],
             height: WINDOW_HEIGHT / 1,
             padding: 20,
             borderTopLeftRadius: 16,
             borderTopRightRadius: 16
         },
-        headerText: {
-            color: COLORS.tealBlue,
+        headerTextStyle: {
+            color: theme.colors.blue[400],
+            fontFamily: FONT.medium,
             fontSize: SIZES.mediumLarge,
             letterSpacing: 0.2,
             paddingHorizontal: 10,
             marginBottom: 20,
             fontWeight: '700'
-        },
-        textStyle: {
-            color: COLORS.black[600],
-            fontFamily: FONT.medium,
-            fontWeight: '600',
-            fontSize: 13,
-            letterSpacing: 0.5,
-            lineHeight: 20,
-            paddingLeft: 25,
-            marginBottom: 10
         }
     });
 
@@ -106,12 +97,12 @@ const CustomModal = ({
 
             <TouchableOpacity onPress={() => setShowModal(!showModal)}>
                 <View style={styles.iconContainer}>
-                    <Ionicons name="close-outline" size={26} color={COLORS.whiteSnow} />
+                    <Ionicons name="close-outline" size={26} color={theme.colors.white[900]} />
                 </View>
             </TouchableOpacity>
 
             <View style={styles.subContainer2}>
-                {headerText ? <Text style={styles.headerText}>{headerText}</Text>
+                {headerText ? <Text style={styles.headerTextStyle}>{headerText}</Text>
                     : null}
                 {children}
             </View>

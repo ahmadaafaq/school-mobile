@@ -9,10 +9,10 @@
 import PropTypes from 'prop-types';
 
 import { Image, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useTheme } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { icons, COLORS, SIZES } from "../../assets/constants";
+import { icons, SIZES } from "../../assets/constants";
 
 const FloatingSection = ({
     headerText,
@@ -21,8 +21,7 @@ const FloatingSection = ({
     showModal,
     setShowModal
 }) => {
-
-    const router = useRouter();
+    const theme = useTheme();
 
     const toggleModal = () => {
         setShowModal(!showModal);
@@ -32,6 +31,54 @@ const FloatingSection = ({
     const handleButtonPress = () => {
         console.log(`${headerText} pressed`);
     };
+
+    const styles = StyleSheet.create({
+        floatingSection: {
+            backgroundColor: theme.colors.whiteSnow[500],
+            padding: 20,
+            borderTopWidth: 1,
+            borderTopColor: 'rgba(105,105,105,0.1)',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center'
+        },
+        subSection1: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+        },
+        iconStyle: {
+            marginRight: 8,
+            color: theme.colors.moonstoneBlue[500]
+        },
+        leftTextStyle: {
+            fontSize: 12,
+            letterSpacing: 0.5,
+            marginTop: 4,
+            fontWeight: '600',
+            color: theme.colors.black[700]
+        },
+        buttonStyle: {
+            backgroundColor: theme.colors.spanishPink[500],
+            padding: 18,
+            paddingHorizontal: 40,
+            borderRadius: 8,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        buttonTextStyle: {
+            color: theme.colors.whiteSnow[500],
+            fontWeight: '600',
+            fontSize: 12,
+            letterSpacing: 0.5
+        },
+        rightIconStyle: {
+            height: SIZES.xSmall,
+            width: SIZES.xSmall,
+            tintColor: theme.colors.whiteSnow[500]
+        }
+    });
 
     return (
         <View style={styles.floatingSection}>
@@ -56,54 +103,6 @@ const FloatingSection = ({
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    floatingSection: {
-        backgroundColor: COLORS.whiteSnow,
-        padding: 20,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(105,105,105,0.1)',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center'
-    },
-    subSection1: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    iconStyle: {
-        marginRight: 8,
-        color: COLORS.moonstoneBlue
-    },
-    leftTextStyle: {
-        fontSize: 12,
-        letterSpacing: 0.5,
-        marginTop: 4,
-        fontWeight: '600',
-        color: COLORS.black[700]
-    },
-    buttonStyle: {
-        backgroundColor: COLORS.primaryColor,
-        padding: 18,
-        paddingHorizontal: 40,
-        borderRadius: 8,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    buttonTextStyle: {
-        color: COLORS.whiteSnow,
-        fontWeight: '600',
-        fontSize: 12,
-        letterSpacing: 0.5
-    },
-    rightIconStyle: {
-        height: SIZES.xSmall,
-        width: SIZES.xSmall,
-        tintColor: COLORS.whiteSnow
-    }
-});
 
 FloatingSection.propTypes = {
     headerText: PropTypes.string,

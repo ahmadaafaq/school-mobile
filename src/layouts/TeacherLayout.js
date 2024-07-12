@@ -10,18 +10,28 @@
 import { Stack } from 'expo-router';
 import { useTheme } from 'react-native-paper';
 
+import { FONT, SIZES } from "../assets/constants";
+
 const TeacherLayout = () => {
     const theme = useTheme();
 
     return (
-        <Stack>
+        <Stack screenOptions={{
+            headerShadowVisible: false,
+            headerTintColor: theme.colors.white[900],
+            headerTitleStyle: {
+                fontWeight: FONT.boldStyle,
+                fontSize: SIZES.xmLarge,
+                color: theme.colors.white[900]
+            }
+        }}
+        >
             <Stack.Screen
                 name={`(attendance)`}
                 options={{
                     headerTitle: "Attendance",
-                    headerTitleStyle: { color: theme.colors.white[100] },
                     headerStyle: {
-                        backgroundColor: theme.colors.blue[500]
+                        backgroundColor: theme.colors.blue[600]
                     }
                 }}
             />
@@ -29,17 +39,15 @@ const TeacherLayout = () => {
                 name={`(homework)`}
                 options={{
                     headerTitle: "Homework",
-                    headerTitleStyle: { color: theme.colors.white[100] },
-                    headerStyle: { backgroundColor: theme.colors.grayishRed[500] }
+                    headerStyle: { backgroundColor: theme.colors.grayishRed[600] }
                 }}
             />
             <Stack.Screen
                 name={`(student)`}
                 options={{
                     headerTitle: "Student",
-                    headerTitleStyle: { color: theme.colors.white[100] },
                     headerStyle: {
-                        backgroundColor: theme.colors.blue[500]
+                        backgroundColor: theme.colors.blue[600]
                     }
                 }}
             />
@@ -47,9 +55,8 @@ const TeacherLayout = () => {
                 name={`(noticeBoard)`}
                 options={{
                     headerTitle: "Notice Board",
-                    headerTitleStyle: { color: theme.colors.white[100] },
                     headerStyle: {
-                        backgroundColor: theme.colors.grayishYellow[500]
+                        backgroundColor: theme.colors.grayishYellow[600]
                     }
                 }}
             />
@@ -57,13 +64,12 @@ const TeacherLayout = () => {
                 name={`(timeTable)`}
                 options={{
                     headerTitle: "Time Table",
-                    headerTitleStyle: { color: theme.colors.white[100] },
                     headerStyle: {
-                        backgroundColor: theme.colors.grayishGreen[500]
+                        backgroundColor: theme.colors.grayishGreen[600]
                     }
                 }}
             />
-        </Stack>
+        </Stack >
     );
 };
 

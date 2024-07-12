@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 
 import API from '../../../apis';
 import CustomModal from '../../common/CustomModal';
@@ -22,15 +22,15 @@ import ListingComponent from './ListingComponent';
 
 import { setSchoolClasses } from "../../../redux/actions/ClassAction";
 import { setSchoolSections } from "../../../redux/actions/SectionAction";
-import { setSchoolStudents } from "../../../redux/actions/StudentAction";
 import { setHomeworkClassData, setHomeworkSectionData } from "../../../redux/actions/HomeworkAction";
-import { useCommon } from "../../../hooks/common";
 import { Utility } from "../../../utility";
 
 const StudentListing = () => {
     const [dbClassObj, setDbClassObj] = useState([]);
     const [showClassModal, setShowClassModal] = useState(false);      //for modal visibility
     const [showSectionModal, setShowSectionModal] = useState(false);
+    const [page, setPage] = useState(0);
+    const [defaultClass, setDefaultClass] = useState(true);
     const schoolClasses = useSelector(state => state.schoolClasses);
     const schoolSections = useSelector(state => state.schoolSections);
     const schoolStudents = useSelector(state => state.schoolStudents);
@@ -38,8 +38,6 @@ const StudentListing = () => {
 
     const dispatch = useDispatch();
     const theme = useTheme();
-    const params = useLocalSearchParams();
-    const { getPaginatedData } = useCommon();
     const { fetchAndSetSchoolData, setAsyncStorage } = Utility();
 
     // writing this function separately because an effect function must no return anything besides a function, used for cleanup, 
@@ -55,19 +53,7 @@ const StudentListing = () => {
     );
 
     useEffect(() => {
-        if (classData.class_id && sectionData.section_id) {
-            console.log('fetch CLASS students');
-            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI,
-                { class_id: classData.class_id, section: sectionData.section_id, school_id: params.school_id });
-        } else {
-            console.log('fetch ALL students')
-            getPaginatedData(0, 100, setSchoolStudents, API.StudentAPI);
-        }
-    }, [classData.class_id, sectionData.section_id]);
-
-    useEffect(() => {
         if (!schoolClasses?.listData?.length || !schoolSections?.listData?.length) {
-            console.log('fetch and set called')
             fetchAndSetSchoolData(dispatch, setSchoolClasses, setSchoolSections, setDbClassObj, API.SchoolAPI);
         }
     }, [schoolSections?.listData?.length]);
@@ -76,26 +62,50 @@ const StudentListing = () => {
         const getAndSetSections = () => {
             const classSections = dbClassObj?.filter(obj => obj.class_id === classData.class_id);
             const selectedSections = classSections.map(({ section_id, section_name }) => ({ section_id, section_name }));
+            console.log('selectedSections', selectedSections);
             dispatch(setSchoolSections(selectedSections));
         };
         getAndSetSections();
     }, [dbClassObj?.length, classData?.class_id]);
 
     //this function is used for modals
-    const handlePress = (item, objValue, action, objId) => {
+    const handlePress = (item, objValue, action, objId, def = false) => {
         if (objValue === "class_name") {
-            setShowClassModal(!showClassModal);
+            // if (classData?.class_id) {
+            //     sectionData[section_id] = ''
+            // }
+            console.log('inside dispatch classname',item, objValue, objId)
+            if (!def) {
+                setShowClassModal(!showClassModal);
+            }
         } else if (objValue === 'section_name') {
-            setShowSectionModal(!showSectionModal);
+            if (!def) {
+                setShowSectionModal(!showSectionModal);
+            }
         }
+        setPage(0);
         if (action) {
+            console.log('inside handlepress', item, objId, objValue)
             dispatch(action({
                 [objId]: item[objId],
                 [objValue]: item[objValue]
             }));
         }
     };
-    console.log('student listing', schoolSections)
+
+    // console.log(classData, sectionData, schoolStudents, 'baccho')
+
+    // to fill default data in modal
+    useEffect(() => {
+        if (schoolClasses?.listData?.length && schoolSections?.listData?.length && defaultClass) {
+            console.log('inside default useeffect')
+            handlePress(schoolClasses?.listData[0], "class_name", setHomeworkClassData, "class_id", true);
+            handlePress(schoolSections?.listData[0], "section_name", setHomeworkSectionData, "section_id", true);
+            setDefaultClass(false);
+        }
+    }, [schoolClasses?.listData?.length, schoolSections?.listData?.length]);
+
+    console.log('lengthhhh', schoolClasses?.listData?.length, schoolSections?.listData?.length);
 
     const styles = StyleSheet.create({
         container: {
@@ -132,7 +142,13 @@ const StudentListing = () => {
                         />
                     </View>
                 </View>
-                <ListingComponent />
+                <ListingComponent
+                    class_id={classData.class_id}
+                    section_id={sectionData.section_id}
+                    api={API}
+                    page={page}
+                    setPage={setPage}
+                />
             </ScrollView>
 
             {showClassModal && (

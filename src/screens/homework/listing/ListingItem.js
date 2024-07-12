@@ -9,13 +9,11 @@
 import PropTypes from 'prop-types';
 
 import { useEffect, useState } from 'react';
-
-import { View, Text, StyleSheet, Dimensions, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 
 import { FONT, SIZES } from "../../../assets/constants";
 
 export const WINDOW_WIDTH = Dimensions.get('window').width;
-
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 const ListingItem = ({ item, index, theme }) => {
@@ -50,7 +48,7 @@ const ListingItem = ({ item, index, theme }) => {
             paddingHorizontal: 10,
         },
         titleText: {
-            color: theme.colors.blue[600],
+            color: theme.colors.whiteSmoke[500],
             fontFamily: FONT.regular,
             fontSize: SIZES.medium,
             paddingTop: SIZES.small,
@@ -60,7 +58,7 @@ const ListingItem = ({ item, index, theme }) => {
             textTransform: 'capitalize'
         },
         subText: {
-            color: theme.colors.blue[400],
+            color: theme.colors.whiteSmoke[600],
             backgroundColor: theme.colors.blue[600],
             fontSize: SIZES.smallMedium,
             paddingLeft: SIZES.smallMedium,
@@ -76,7 +74,6 @@ const ListingItem = ({ item, index, theme }) => {
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center',
-            // alignSelf: 'flex-end',
             width: '80%',
             height: 40,
             borderRadius: 4,

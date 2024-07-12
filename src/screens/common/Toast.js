@@ -25,6 +25,8 @@ const Toast = ({
 
     const styles = StyleSheet.create({
         container: {
+            position: 'absolute',
+            top: 80,
             flex: 1,
             zIndex: 11,
             elevation: 11,
@@ -33,9 +35,11 @@ const Toast = ({
         },
         messageStyle: {
             fontFamily: FONT.bold,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: 400,
-            letterSpacing: 0.12
+            letterSpacing: 0.12,
+            textAlign: 'center',
+            textTransform: 'capitalize'
         }
     });
 

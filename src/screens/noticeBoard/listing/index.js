@@ -51,19 +51,12 @@ const NoticeBoardListing = () => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: theme.colors.grayishWhite[500]
-        },
-        icon: {
-            height: SIZES.medium,
-            width: SIZES.medium,
-            marginTop: SIZES.xSmall,
-            tintColor: theme.colors.brightBlue[300]
+            backgroundColor: theme.colors.white[900]
         }
     });
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={theme.colors.magicMint[500]} />
             <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}
                 style={{ flexGrow: 1 }}
             >

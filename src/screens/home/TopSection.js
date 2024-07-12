@@ -9,10 +9,10 @@
 
 import PropTypes from 'prop-types';
 
-import { Dimensions, StyleSheet, View, TouchableOpacity, ImageBackground } from 'react-native';
-import { Card, PaperProvider, IconButton, Text, useTheme } from 'react-native-paper';
+import { Dimensions, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { Card, PaperProvider, IconButton, Text, useTheme, Button } from 'react-native-paper';
 
-import { SIZES, FONT } from "../../assets/constants";
+import { FONT } from "../../assets/constants";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -21,11 +21,12 @@ const TopSection = ({
     schoolName,
     title,
     classes,
-    subjects,
     bg,
     image,
     setVisible,
-    userRole
+    userRole,
+    multiple,
+    setIsMultiple
 }) => {
 
     const theme = useTheme();
@@ -36,30 +37,20 @@ const TopSection = ({
             justifyContent: "space-between",
             alignItems: "center",
             width: WINDOW_WIDTH,
-            height: WINDOW_HEIGHT / 3.4,
+            height: WINDOW_HEIGHT / 3.5,
             padding: 10,
             backgroundColor: bg,
             borderRadius: 0,
             marginBottom: 60,
             overflow: 'hidden',
-            elevation: 10,
-            // top: 5
-
+            borderBottomStartRadius: 20,
+            borderBottomEndRadius: 20
         },
         titleStyle: {
-            color: theme.colors.whiteSmoke[200],
+            color: theme.colors.white[500],
             fontFamily: FONT.bold,
-            fontSize: WINDOW_HEIGHT / 40,
-            fontWeight: 500,
-            // top: 5
-        },
-        contentStyle: {
-            color: theme.colors.whiteSmoke[200],
-            fontFamily: FONT.medium,
-            fontSize: SIZES.smallMedium
-        },
-        TouchableOpacityStyle: {
-
+            fontSize: 18,
+            fontWeight: 500
         },
         imageStyle: {
             width: 80,
@@ -71,16 +62,16 @@ const TopSection = ({
             height: 80,
             width: 80,
             borderRadius: 100,
-            overflow: 'hidden',
-            marginLeft: 50
+            overflow: 'hidden'
         },
         headStyle: {
-            color: theme.colors.whiteSmoke[200],
+            color: theme.colors.white[500],
             fontFamily: FONT.bold,
             fontSize: 20,
             fontWeight: 500,
             marginBottom: 2,
-            marginLeft: 50,
+            textAlign: 'center',
+            marginTop: -15
         }
     });
 
@@ -93,45 +84,49 @@ const TopSection = ({
                 <View>
                     <Text style={styles.headStyle}>{schoolName}</Text>
                     <View style={{
-                        width: WINDOW_WIDTH - 60, height: 1, backgroundColor: theme.colors.whiteSmoke[500],
-                        margin: 20, marginTop: 5, marginBottom: 10
+                        width: WINDOW_WIDTH - 60,
+                        height: 1,
+                        backgroundColor: theme.colors.white[500],
+                        margin: 20,
+                        marginTop: 5,
+                        marginBottom: 10
                     }}></View>
                 </View>
 
                 <View style={{
-                    flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: WINDOW_WIDTH - 30,
-                    height: 120,
-                    marginLeft: 6
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-around',
+                    width: WINDOW_WIDTH - 40,
                 }}>
                     <View style={{
-                        flexGrow: 0.4,
-                        width: '25%',
-                        height: 100,
-                        marginLeft: 10,
-                        borderRadius: 8,
-                        justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: theme.colors.blue[300]
+                        borderColor: theme.colors.indigo[500],
+                        borderRadius: 8,
+                        borderWidth: 4,
+                        justifyContent: 'space-between',
+                        flexGrow: 0.4,
+                        height: 120,
+                        marginHorizontal: 20,
+                        overflow: 'hidden',
+                        width: '35%',
                     }}>
                         {!image ? (
                             <TouchableOpacity onPress={() => setVisible(true)}>
                                 <IconButton
                                     icon="plus-circle"
-                                    // iconColor={MD3Colors.error30}
                                     size={50}
                                 />
                             </TouchableOpacity>
                         ) : (
                             <>
-                                <ImageBackground
+                                <Image
                                     source={{ uri: image }}
                                     style={{
                                         flex: 1,
-                                        objectFit: "contain",
-                                        width: "100%",
+                                        objectFit: "fill",
+                                        width: "100%"
                                     }}
                                 />
                                 {userRole === 'teacher' &&
@@ -143,21 +138,33 @@ const TopSection = ({
                                             position: "absolute",
                                             right: 1,
                                             top: 1,
-                                            backgroundColor: "white"
+                                            backgroundColor: theme.colors.white[900]
                                         }}
                                     />}
                             </>
                         )}
                     </View>
                     <View style={{
-                        flexGrow: 0.5,
-                        width: '50%',
-                        top: 10
+                        flexGrow: 0.6,
+                        width: '50%'
                     }}>
                         <Text style={styles.titleStyle}>{title}</Text>
-                        <Text style={styles.contentStyle}>Classes  : {classes} </Text>
-                        <Text style={styles.contentStyle}>Subjects : {subjects}</Text>
+                        <Text style={styles.titleStyle}>Class  : {classes} </Text>
                     </View>
+                    {multiple &&
+                        <Button
+                            mode='contained'
+                            buttonColor={theme.colors.blue[400]}
+                            theme={{ colors: { primary: theme.colors.white[900] } }}
+                            onPress={() => setIsMultiple(true)}
+                            style={{
+                                marginTop: 40,
+                                marginLeft: WINDOW_WIDTH - 280
+                            }}
+                        >
+                            All Children
+                        </Button>
+                    }
                 </View>
             </Card>
 
@@ -166,14 +173,15 @@ const TopSection = ({
 };
 
 TopSection.propTypes = {
-    schoolName: PropTypes.string,
-    title: PropTypes.string,
-    classes: PropTypes.string,
-    subjects: PropTypes.string,
     bg: PropTypes.string,
+    classes: PropTypes.string,
     image: PropTypes.string,
+    multiple: PropTypes.bool,
+    schoolName: PropTypes.string,
+    setIsMultiple: PropTypes.func,
     setVisible: PropTypes.func,
-    userRole: PropTypes.string,
+    title: PropTypes.string,
+    userRole: PropTypes.string
 };
 
 export default TopSection;
