@@ -132,6 +132,10 @@ const HomePage = () => {
         router.push(`/${userRole}/(noticeBoard)/noticeBoardListing`);
     };
 
+    const handleMarkAttendancePress = () => {
+        router.push(`/${userRole}/(markAttendance)/markAttendanceListing`);
+    };
+
     const handleStudentPress = () => {
         router.push({
             pathname: `/${userRole}/(student)/studentListing`,
@@ -230,9 +234,13 @@ const HomePage = () => {
                     <View style={styles.cornerStyle}></View>
                     <View style={styles.boxContainer}>
                         {(isClassTeacher || userRole === 'parent') &&
-                            <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />}
+                            <Box title='Attendance' bg={theme.colors.blue[500]} mb={10} iconName="clipboard-list" handlePress={handleAttendancePress} />
+                        }
                         <Box title='Homework' bg={theme.colors.grayishRed[500]} mb={10} iconName="book" handlePress={handleHomeworkPress} />
                         <Box title='Notice Board' bg={theme.colors.grayishYellow[500]} mb={10} iconName="comment-alt" handlePress={handleNoticeBoardPress} />
+                        {(isClassTeacher) &&
+                            <Box title='Mark Attendance' bg={theme.colors.grayishYellow[500]} mb={10} iconName="clipboard-list" handlePress={handleMarkAttendancePress} />
+                        }
                     </View>
                     <View style={styles.boxContainer}>
                         {userRole === 'teacher' &&

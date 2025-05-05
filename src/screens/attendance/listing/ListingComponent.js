@@ -17,7 +17,7 @@ import { Chip, MD2Colors, MD3Colors, useTheme } from 'react-native-paper';
 import API from '../../../apis';
 import Toast from '../../common/Toast';
 
-import { ListingTable, WINDOW_WIDTH } from './ListingTable';
+import { ListingTable } from './ListingTable';
 import { FONT, SIZES } from "../../../assets/constants";
 import { Utility } from '../../../utility';
 
@@ -41,13 +41,13 @@ const ListingComponent = ({ class_id, section_id }) => {
         maxToRenderPerBatch: 1,
         removeClippedSubviews: true,
         scrollEventThrottle: 16,
-        windowSize: 10,
+        windowSize: 100,
         keyExtractor: useCallback(e => e.id, []),
         getItemLayout: useCallback(
             (_, index) => ({
                 index,
-                length: WINDOW_WIDTH,
-                offset: index * WINDOW_WIDTH
+                length: 200,
+                offset: index * 100
             }),
             []
         )
@@ -107,7 +107,7 @@ const ListingComponent = ({ class_id, section_id }) => {
         touchableOpacityStyles: {
             alignItems: 'center',
             justifyContent: 'center',
-            width: '30%',
+            width: '100%',
             height: 40,
             borderRadius: 18,
             marginBottom: 15,
@@ -143,7 +143,7 @@ const ListingComponent = ({ class_id, section_id }) => {
                 backgroundColor={toastInfo.backgroundColor}
                 textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
             />
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: "100%" }} ref={flatListRef}>
+            <ScrollView horizontal={false} style={{ width: "100%" }} ref={flatListRef}>
                 <FlatList
                     data={listData?.rows}
                     renderItem={({ item, index }) => (
