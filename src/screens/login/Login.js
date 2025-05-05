@@ -1,11 +1,3 @@
-/**
- * Copyright © 2023, School CRM Inc. ALL RIGHTS RESERVED.
- *
- * This software is the confidential information of School CRM Inc., and is licensed as
- * restricted rights software. The use, reproduction, or disclosure of this software is subject to
- * restrictions set forth in your license agreement with School CRM.
-*/
-
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dimensions, Image, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
@@ -43,6 +35,26 @@ const LoginScreen = () => {
     const theme = useTheme();
     const { getAsyncStorage, remAsyncStorage, setAsyncStorage, toastAndNavigate } = Utility();
 
+    // Create default color values in case theme colors are missing
+    const getThemeColor = (colorPath, defaultColor) => {
+        try {
+            const pathParts = colorPath.split('.');
+            let current = theme.colors;
+            
+            for (const part of pathParts) {
+                if (current && current[part]) {
+                    current = current[part];
+                } else {
+                    return defaultColor;
+                }
+            }
+            
+            return current;
+        } catch (error) {
+            return defaultColor;
+        }
+    };
+
     const handleFormDataChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
     };
@@ -60,7 +72,14 @@ const LoginScreen = () => {
 
     const handleSubmit = () => {
         if (!formData.school_code) {
-            toastAndNavigate(dispatch, true, 'School Code must be specified', theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
+            toastAndNavigate(
+                dispatch, 
+                true, 
+                'School Code must be specified', 
+                getThemeColor('yaleBlue.500', '#0A3161'), 
+                getThemeColor('lightBlue.600', '#76B6E1')
+            );
+            return;
         }
         if (formData.school_code && (formData.contact_no && formData.password)) {
             setLoading(true);
@@ -71,10 +90,22 @@ const LoginScreen = () => {
                     setLoading(false);
                     if (response.status === 'Success' &&
                         (response.data === "User does not exist" || response.data === "Username and Password do not match")) {
-                        toastAndNavigate(dispatch, true, response.data, theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
+                        toastAndNavigate(
+                            dispatch, 
+                            true, 
+                            response.data, 
+                            getThemeColor('yaleBlue.500', '#0A3161'), 
+                            getThemeColor('lightBlue.600', '#76B6E1')
+                        );
                     } else if (response.status === 'Success' &&
                         (response.data === "School Code must be specified" || response.data === "School code is incorrect")) {
-                        toastAndNavigate(dispatch, true, response.data, theme.colors.yaleBlue[500], theme.colors.lightBlue[600]);
+                        toastAndNavigate(
+                            dispatch, 
+                            true, 
+                            response.data, 
+                            getThemeColor('yaleBlue.500', '#0A3161'), 
+                            getThemeColor('lightBlue.600', '#76B6E1')
+                        );
                         inputRef.current.focus();
                     }
                     else {
@@ -108,24 +139,38 @@ const LoginScreen = () => {
                         ...formData,
                         password: ''
                     });
-                    toastAndNavigate(dispatch, true, err.message, theme.colors.red[500], theme.colors.lightBlue[600]);
+                    toastAndNavigate(
+                        dispatch, 
+                        true, 
+                        err.message, 
+                        getThemeColor('red.500', '#FF0000'), 
+                        getThemeColor('lightBlue.600', '#76B6E1')
+                    );
                     console.log(err, 'Error Occurred In User Api');
                 });
         }
     };
 
+    // Define safe color values
+    const yaleBlue = getThemeColor('yaleBlue.500', '#0A3161');
+    const whiteSmoke = getThemeColor('whiteSmoke.400', '#F5F5F5');
+    const grayishWhite = getThemeColor('grayishWhite.500', '#F8F8F8');
+    const white700 = getThemeColor('white.700', '#CCCCCC');
+    const whiteSnow = getThemeColor('whiteSnow.500', '#FFFAFA');
+    const blackish = getThemeColor('blackish.500', '#333333');
+
     const styles = StyleSheet.create({
         container: {
             flex: 1,
             padding: SIZES.large,
-            backgroundColor: theme.colors.grayishWhite[500]
+            backgroundColor: grayishWhite
         },
         scrollViewContent: {
             flexGrow: 1,
             justifyContent: 'flex-start'
         },
         submitButton: {
-            backgroundColor: theme.colors.yaleBlue[500],
+            backgroundColor: yaleBlue,
             margin: SIZES.xSmall,
             marginLeft: SIZES.smallMedium,
             marginRight: SIZES.smallMedium,
@@ -133,7 +178,7 @@ const LoginScreen = () => {
             borderRadius: SIZES.xSmall
         },
         buttonText: {
-            color: theme.colors.whiteSmoke[400],
+            color: whiteSmoke,
             fontSize: SIZES.mediumLarge,
             textAlign: ALIGNMENT.centered
         },
@@ -143,7 +188,7 @@ const LoginScreen = () => {
             height: SIZES.xxxLarge,
             borderWidth: 1,
             borderRadius: SIZES.xSmall,
-            borderColor: theme.colors.yaleBlue[500],
+            borderColor: yaleBlue,
             margin: SIZES.smallMedium,
             marginTop: SIZES.xSmall,
             paddingHorizontal: SIZES.xSmall
@@ -155,7 +200,7 @@ const LoginScreen = () => {
         },
         signUpStyle: {
             fontSize: 12,
-            color: theme.colors.blackish[500]
+            color: blackish
         }
     });
 
@@ -170,44 +215,43 @@ const LoginScreen = () => {
                         actionText={toastInfo.actionText}
                         actionTextColor={toastInfo.actionTextColor}
                         backgroundColor={toastInfo.backgroundColor}
-                        textColor={toastInfo.textColor || theme.colors.yaleBlue[500]}
+                        textColor={toastInfo.textColor || yaleBlue}
                     />
                 </View>
-                {/* <Text style={{ color: theme.colors.spanishPink[500], fontSize: 25 }}> mode: {theme} </Text> */}
                 <View style={styles.inputContainer}>
-                    <FontAwesome5 name='school' color={theme.colors.yaleBlue[500]} size={22}
+                    <FontAwesome5 name='school' color={yaleBlue} size={22}
                         style={styles.icon}
                     />
                     <TextInput
-                        style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
+                        style={{ flex: 1, color: yaleBlue }}
                         placeholder="School Code*"
-                        placeholderTextColor={theme.colors.white[700]}
+                        placeholderTextColor={white700}
                         ref={inputRef}
                         value={formData.school_code}
                         onChangeText={(value) => handleFormDataChange("school_code", value)}
                     />
                 </View>
                 <View style={styles.inputContainer}>
-                    <FontAwesome5 name='user-circle' color={theme.colors.yaleBlue[500]} size={22}
+                    <FontAwesome5 name='user-circle' color={yaleBlue} size={22}
                         style={styles.icon}
                     />
                     <TextInput
-                        style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
+                        style={{ flex: 1, color: yaleBlue }}
                         placeholder="Contact*"
-                        placeholderTextColor={theme.colors.white[700]}
+                        placeholderTextColor={white700}
                         keyboardType="numeric"
                         value={formData.contact_no}
                         onChangeText={(value) => handleFormDataChange("contact_no", value)}
                     />
                 </View>
                 <View style={styles.inputContainer}>
-                    <FontAwesome5 name='unlock' color={theme.colors.yaleBlue[500]} size={22}
+                    <FontAwesome5 name='unlock' color={yaleBlue} size={22}
                         style={styles.icon}
                     />
                     <TextInput
-                        style={{ flex: 1, color: theme.colors.yaleBlue[500] }}
+                        style={{ flex: 1, color: yaleBlue }}
                         placeholder="Password*"
-                        placeholderTextColor={theme.colors.white[700]}
+                        placeholderTextColor={white700}
                         value={formData.password}
                         secureTextEntry={!showPassword}      // To type hidden password
                         onChangeText={(value) => handleFormDataChange("password", value)}
@@ -218,14 +262,14 @@ const LoginScreen = () => {
                     >
                         <FontAwesome5
                             name={showPassword ? 'eye-slash' : 'eye'}
-                            color={theme.colors.yaleBlue[500]}
+                            color={yaleBlue}
                             size={20}
                         />
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={handleSubmit} style={styles.submitButton} disabled={loading}>
                     {loading ? (
-                        <ActivityIndicator animating={true} color={theme.colors.whiteSnow[500]} />
+                        <ActivityIndicator animating={true} color={whiteSnow} />
                     ) : (
                         <Text style={styles.buttonText}>Login</Text>
                     )}
@@ -235,9 +279,9 @@ const LoginScreen = () => {
                     <Text style={styles.signUpStyle}> By continuing, you agree to our </Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', width: WINDOW_WIDTH - 40, paddingBottom: 4 }}>
-                    <Text style={{ color: theme.colors.white[700], fontSize: 11 }}> Terms of Service</Text>
-                    <Text style={{ color: theme.colors.white[700], fontSize: 11 }}>      Privacy Policy</Text>
-                    <Text style={{ color: theme.colors.white[700], fontSize: 11 }}>      Content Policy</Text>
+                    <Text style={{ color: white700, fontSize: 11 }}> Terms of Service</Text>
+                    <Text style={{ color: white700, fontSize: 11 }}>      Privacy Policy</Text>
+                    <Text style={{ color: white700, fontSize: 11 }}>      Content Policy</Text>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
