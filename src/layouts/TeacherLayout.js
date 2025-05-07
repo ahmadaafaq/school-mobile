@@ -63,6 +63,16 @@ const TeacherLayout = () => {
                     }
                 }}
             />
+            <Stack.Screen
+                name={`(markAttendance)`}
+                options={{
+                    headerTitle: "Mark Attendance",
+                    headerTitleStyle: { color: theme.colors.white[100] },
+                    headerStyle: {
+                        backgroundColor: theme.colors.grayishGreen[500]
+                    }
+                }}
+            />
         </Stack>
     );
 };
